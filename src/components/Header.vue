@@ -1,12 +1,10 @@
 <template>
-<div>
-  this is egFor
-</div>
+  <div>this is header</div>
 </template>
 
 <script>
 export default {
-
+  name: 'Header'
 };
 </script>
 

@@ -1,13 +1,18 @@
 <template>
   <div>
-  <div>this is header</div>
+    <header-menu></header-menu>
   <router-view></router-view>
   </div>
 </template>
 
 <script>
+import Header from './Header';
+
 export default {
-  name: 'Header'
+  name: 'BasicLayout',
+  components: {
+    HeaderMenu: Header
+  }
 };
 </script>
 

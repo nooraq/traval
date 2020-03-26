@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import egFor from './configParts/egFor';
+import writePage from './configParts/writePage';
 
 // router lazy load
 Vue.use(Router);
@@ -14,7 +14,7 @@ export default new Router({
       name: 'basic',
       component: () => import('@/components/BasicLayout'),
       children: [
-        egFor
+        writePage
       ]
     },
     {

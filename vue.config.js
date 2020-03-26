@@ -11,7 +11,6 @@ module.exports = {
   baseUrl: BASE_URL,
   devServer: {
     overlay: {
-      warnings: true,
       errors: true
     },
   },
