@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import writePage from './configParts/writePage';
+import ArticalShow from './configParts/ArticalShow';
 
 // router lazy load
 Vue.use(Router);
@@ -14,7 +15,8 @@ export default new Router({
       name: 'basic',
       component: () => import('@/components/BasicLayout'),
       children: [
-        writePage
+        writePage,
+        ArticalShow
       ]
     },
     {
