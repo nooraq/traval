@@ -5,10 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=t6LwY5oQA0yiesbKtvvGLpGiVmbWlpar"></script>
+  <link rel="stylesheet" href="https://api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.css" />
     <title>vue-demo</title>
     <script>
     // 基准大小
-    const baseSize = 100
+    const baseSize = 60
     // 设置 rem 函数
     function setRem() {
       const scale = document.documentElement.clientWidth / 375

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div ref="editor" style="text-align:left"></div>
-        <button v-on:click="getContent">查看内容</button>
+        <el-button @click="getContent">默认按钮</el-button>
     </div>
 </template>
 
@@ -68,5 +68,5 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 </style>

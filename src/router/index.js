@@ -1,22 +1,24 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import writePage from './configParts/writePage';
-import ArticalShow from './configParts/ArticalShow';
+import articalShow from './configParts/articalShow';
+import mapTrack from './configParts/mapTrack';
 
 // router lazy load
 Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
       name: 'basic',
+      redirect: '/mapTrack',
       component: () => import('@/components/BasicLayout'),
       children: [
         writePage,
-        ArticalShow
+        articalShow,
+        mapTrack
       ]
     },
     {
