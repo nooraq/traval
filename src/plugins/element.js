@@ -1,7 +1,6 @@
 import Vue from 'vue';
-import { Button, Switch } from 'element-ui';
+import Element from 'element-ui';
 import './element-variable.scss';
 
-Vue.use(Button);
-Vue.use(Switch);
+Vue.use(Element);
 Vue.prototype.$ELEMENT = { size: 'small', zIndex: 3000 };

@@ -1,7 +1,35 @@
 <template>
-<div>
-<el-select></el-select>
+<div class="wrapper">
+  <div class="map">
+<el-select class="select" size="big">
+  <el-option ></el-option>
+</el-select>
 <echarts :options="options" class="chart"></echarts>
+  </div>
+<div class="recommend">
+  <div class="recommend-item">
+    <div class="location">
+    <img src="" alt="">
+    <p>{{location}}</p>
+    </div>
+    <p class="title">title</p>
+    <p class="detail">详情详情详情详情详情详情详情详情详情
+      详情详情详情详情详情详情详情详情详情
+    </p>
+  </div>
+  <div class="recommend-item">
+    <p class="title">title</p>
+    <p class="detail">详情详情详情详情详情详情详情详情详情
+      详情详情详情详情详情详情详情详情详情
+    </p>
+  </div>
+  <div class="recommend-item">
+    <p class="title">title</p>
+    <p class="detail">详情详情详情详情详情详情详情详情详情
+      详情详情详情详情详情详情详情详情详情
+    </p>
+  </div>
+</div>
 </div>
 
 </template>
@@ -13,7 +41,13 @@ import 'echarts/lib/chart/scatter';
 import 'echarts/lib/component/geo';
 import 'echarts/lib/component/tooltip';
 import chinaJson from './china.json';
+import styles from '@/theme/variable.scss';
 
+// console.log(`${chinaJson.features.map(item =>
+//   ({
+//     label: item.properties.name,
+//     value: item.properties.childrenNum
+//   }))}`);
 Echarts.registerMap('china', chinaJson);
 export default {
   name: 'MapTrack',
@@ -24,7 +58,12 @@ export default {
           trigger: 'item'
         },
         geo: {
-          map: 'china'
+          map: 'china',
+          itemStyle: { // 定义样式
+            color: styles['map-bg'],
+          },
+          width: 600,
+          height: 600,
         },
         series: [
           {
@@ -32,10 +71,8 @@ export default {
             type: 'map',
             geoIndex: 0,
             roam: false,
-            width: 700,
-            height: 500,
             layoutCenter: ['38%', '65%'],
-            layoutSize: 900,
+            layoutSize: 1000,
             label: {
               normal: {
                 show: false
@@ -44,20 +81,12 @@ export default {
                 show: true
               }
             },
-            itemStyle: { // 定义样式
-              normal: { // 普通状态下的样式
-                areaColor: '#323c48',
-                borderColor: '#111'
-              },
-              emphasis: { // 高亮状态下的样式
-                areaColor: '#2a333d'
-              },
-            },
+
             backgroundColor: '#404a59',
             data: [
-              { name: '北京', value: Math.round(Math.random() * 1000) },
-              { name: '天津', value: Math.round(Math.random() * 1000) },
-              { name: '上海', value: Math.round(Math.random() * 1000) },
+              { name: '北京', value: Math.round(Math.random() * 1000), mark: 0 },
+              { name: '天津', value: Math.round(Math.random() * 1000), mark: 1 },
+              { name: '上海', value: Math.round(Math.random() * 1000), mark: 2 },
               { name: '重庆', value: Math.round(Math.random() * 1000) },
               { name: '河北', value: Math.round(Math.random() * 1000) },
               { name: '河南', value: Math.round(Math.random() * 1000) },
@@ -94,14 +123,37 @@ export default {
           {
             type: 'scatter',
             coordinateSystem: 'geo',
-            data: [{
-              name: '海南', // 数据项名称，在这里指地区名称
+            symbol: 'pin',
+            symbolSize: 18,
+            silent: true,
+            itemStyle: {
+              color({ data }) {
+                return data.mark === 0 ? styles['theme-4-hex'] : 'blue';
+              }
+            },
+            data: [
+              {
+                name: '海南', // 数据项名称，在这里指地区名称
 
-              value: [ // 数据项值
-                110.33119, 20.031971,
-                340 // 北京地区的数值
-              ]
-            }]
+                value: [ // 数据项值
+                  ...(chinaJson.features.find(element =>
+                    element.properties.name === '海南').properties.center),
+                  340 // 北京地区的数值
+                ],
+                mark: 0
+              },
+              {
+                name: '北京', // 数据项名称，在这里指地区名称
+
+                value: [ // 数据项值
+                  ...(chinaJson.features.find(element =>
+                    element.properties.name === '北京').properties.center),
+                  340, // 北京地区的数值
+                  0
+                ],
+                mark: 1
+              }
+            ]
           }
         ]
       }
@@ -113,9 +165,27 @@ export default {
 };
 </script>
 
-<style>
+<style lang='scss' scoped>
 .chart {
-  width: 800px;
+  width: 100%;
   height: 600px;
+  z-index: -1;
+}
+.map {
+  width: 800px;
+  float: left;
+}
+.select {
+  position:absolute;
+  margin-left: 200px;
+  margin-top: 50px;
+}
+.wrapper {
+  position: relative;
+  height: 600px;
+  width: 1440px;
+}
+.recommend {
+margin-left: 810px;
 }
 </style>
