@@ -13,6 +13,8 @@ $theme-3-hex: #F2DABD;
 $theme-4-hex: #8C5042;
 $theme-5-hex: #F26B5E;
 
+$main-bg: rgba($theme-3-hex,0.15);
+
 /* Color Theme Swatches in Hex */
 :export{
   theme-1-hex:$theme-1-hex;
@@ -20,7 +22,9 @@ $theme-5-hex: #F26B5E;
   theme-3-hex:$theme-3-hex;
   theme-4-hex:$theme-4-hex;
   theme-5-hex:$theme-5-hex;
+  selected-bg: rgba($theme-1-hex,0.45);
   map-bg:rgba($theme-1-hex,0.25);
+  map-emphasis-bg:rgba($theme-1-hex,0.55);
 }
 
 

@@ -1,5 +1,8 @@
 <template>
 <div class="wrapper">
+  <div class='main-title'>
+    我的旅行日记
+  </div>
   <div class="map">
 <!-- <el-select class="select" size="big">
   <el-option ></el-option>
@@ -43,6 +46,46 @@ import 'echarts/lib/component/tooltip';
 import chinaJson from './china.json';
 import styles from '@/theme/variable.scss';
 
+const getData = [
+  { name: '北京', value: 1 },
+  { name: '天津', value: 1 },
+  { name: '上海', value: 0 },
+  { name: '重庆', value: 0 },
+  { name: '河北', value: 0 },
+  { name: '河南', value: 1 },
+  { name: '云南', value: 1 },
+  { name: '辽宁', value: 1 },
+  { name: '黑龙江', value: 1 },
+  { name: '湖南', value: 0 },
+  { name: '安徽', value: 0 },
+  { name: '山东', value: 0 },
+  { name: '新疆', value: 0 },
+  { name: '江苏', value: 0 },
+  { name: '浙江', value: 0 },
+  { name: '江西', value: 0 },
+  { name: '湖北', value: 0 },
+  { name: '广西', value: 0 },
+  { name: '甘肃', value: 0 },
+  { name: '山西', value: 0 },
+  // { name: '内蒙古', value: 0 },
+  { name: '陕西', value: 0 },
+  { name: '吉林', value: 0 },
+  { name: '福建', value: 0 },
+  { name: '贵州', value: 0 },
+  { name: '广东', value: 0 },
+  { name: '青海', value: 0 },
+  { name: '西藏', value: 0 },
+  { name: '四川', value: 0 },
+  { name: '宁夏', value: 0 },
+  { name: '海南', value: 0 },
+  { name: '台湾', value: 0 },
+  { name: '香港', value: 0 },
+  { name: '澳门', value: 0 }
+];
+
+const selectedItemStyle = {
+  areaColor: styles['selected-bg']
+};
 // console.log(`${chinaJson.features.map(item =>
 //   ({
 //     label: item.properties.name,
@@ -66,6 +109,16 @@ export default {
         //   width: 600,
         //   height: 600,
         // },
+        visualMap: {
+          min: 800,
+          max: 50000,
+          text: ['High', 'Low'],
+          realtime: false,
+          calculable: true,
+          inRange: {
+            color: ['lightskyblue', 'yellow', 'orangered']
+          }
+        },
         series: [
           {
             name: '我的旅行',
@@ -84,47 +137,28 @@ export default {
                 show: true
               }
             },
-            // itemStyle: { // 定义样式
-            //   color: styles['map-bg'],
-            // },
+            emphasis: {
+              itemStyle: {
+                areaColor: styles['map-emphasis-bg'],
+                shadowColor: 'rgba(0,0,0,.3)',
+                shadowOffsetX: 0,
+                shadowOffsetY: 2,
+                shadowBlur: 8,
+                // shadow: '0 2px 12px 0 '
+              }
+            },
+            itemStyle: { // 定义样式
+              areaColor: styles['map-bg'],
+              color: 'red',
+            },
             width: 600,
             height: 600,
-            data: [
-              { name: '北京', value: Math.round(Math.random() * 1000) },
-              { name: '天津', value: Math.round(Math.random() * 1000) },
-              { name: '上海', value: Math.round(Math.random() * 1000) },
-              { name: '重庆', value: Math.round(Math.random() * 1000) },
-              { name: '河北', value: Math.round(Math.random() * 1000) },
-              { name: '河南', value: Math.round(Math.random() * 1000) },
-              { name: '云南', value: Math.round(Math.random() * 1000) },
-              { name: '辽宁', value: Math.round(Math.random() * 1000) },
-              { name: '黑龙江', value: Math.round(Math.random() * 1000) },
-              { name: '湖南', value: Math.round(Math.random() * 1000) },
-              { name: '安徽', value: Math.round(Math.random() * 1000) },
-              { name: '山东', value: Math.round(Math.random() * 1000) },
-              { name: '新疆', value: Math.round(Math.random() * 1000) },
-              { name: '江苏', value: Math.round(Math.random() * 1000) },
-              { name: '浙江', value: Math.round(Math.random() * 1000) },
-              { name: '江西', value: Math.round(Math.random() * 1000) },
-              { name: '湖北', value: Math.round(Math.random() * 1000) },
-              { name: '广西', value: Math.round(Math.random() * 1000) },
-              { name: '甘肃', value: Math.round(Math.random() * 1000) },
-              { name: '山西', value: Math.round(Math.random() * 1000) },
-              { name: '内蒙古', value: Math.round(Math.random() * 1000) },
-              { name: '陕西', value: Math.round(Math.random() * 1000) },
-              { name: '吉林', value: Math.round(Math.random() * 1000) },
-              { name: '福建', value: Math.round(Math.random() * 1000) },
-              { name: '贵州', value: Math.round(Math.random() * 1000) },
-              { name: '广东', value: Math.round(Math.random() * 1000) },
-              { name: '青海', value: Math.round(Math.random() * 1000) },
-              { name: '西藏', value: Math.round(Math.random() * 1000) },
-              { name: '四川', value: Math.round(Math.random() * 1000) },
-              { name: '宁夏', value: Math.round(Math.random() * 1000) },
-              { name: '海南', value: Math.round(Math.random() * 1000) },
-              { name: '台湾', value: Math.round(Math.random() * 1000) },
-              { name: '香港', value: Math.round(Math.random() * 1000) },
-              { name: '澳门', value: Math.round(Math.random() * 1000) }
-            ]
+            data: getData.map((item) => {
+              if (item.value === 0) {
+                item.itemStyle = selectedItemStyle;
+              }
+              return item;
+            })
           }
           //     {
           //       type: 'scatter',
@@ -172,10 +206,16 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+@import '@/theme/variable.scss';
 .chart {
   width: 100%;
   height: 600px;
   z-index: 1;
+}
+.main-title {
+  color: $theme-4-hex;
+  font-weight: 800;
+  font-size: 32px;
 }
 // .map {
 //   width: 800px;
