@@ -4,18 +4,19 @@
     我的旅行日记
   </div>
   <div class="map">
-<!-- <el-select class="select" size="big">
-  <el-option ></el-option>
-</el-select> -->
-<echarts :options="options" class="chart"></echarts>
+<echarts :options="options" class="chart" @click="Click"></echarts>
   </div>
-<!-- <div class="recommend">
+<div class="recommend">
+  <el-switch
+  v-model="myList"
+  active-text="曾经写过的文章"
+  inactive-text="可能感兴趣的文章">
+</el-switch>
   <div class="recommend-item">
     <div class="location">
-    <img src="" alt="">
     <p>{{location}}</p>
     </div>
-    <p class="title">title</p>
+    <router-link class="title" :to="`/essay/${location}`">这是标题</router-link>
     <p class="detail">详情详情详情详情详情详情详情详情详情
       详情详情详情详情详情详情详情详情详情
     </p>
@@ -31,10 +32,9 @@
     <p class="detail">详情详情详情详情详情详情详情详情详情
       详情详情详情详情详情详情详情详情详情
     </p>
-  </div> -->
-<!-- </div> -->
+  </div>
 </div>
-
+</div>
 </template>
 
 <script>
@@ -48,9 +48,9 @@ import styles from '@/theme/variable.scss';
 
 const getData = [
   { name: '北京', value: 1 },
-  { name: '天津', value: 1 },
-  { name: '上海', value: 0 },
-  { name: '重庆', value: 0 },
+  { name: '天津市', value: 1 },
+  { name: '上海市', value: 0 },
+  { name: '重庆市', value: 0 },
   { name: '河北', value: 0 },
   { name: '河南', value: 1 },
   { name: '云南', value: 1 },
@@ -64,38 +64,35 @@ const getData = [
   { name: '浙江', value: 0 },
   { name: '江西', value: 0 },
   { name: '湖北', value: 0 },
-  { name: '广西', value: 0 },
+  { name: '广西壮族自治区', value: 0 },
   { name: '甘肃', value: 0 },
   { name: '山西', value: 0 },
-  // { name: '内蒙古', value: 0 },
+  { name: '内蒙古自治区', value: 0 },
   { name: '陕西', value: 0 },
   { name: '吉林', value: 0 },
   { name: '福建', value: 0 },
   { name: '贵州', value: 0 },
   { name: '广东', value: 0 },
   { name: '青海', value: 0 },
-  { name: '西藏', value: 0 },
+  { name: '西藏自治区', value: 0 },
   { name: '四川', value: 0 },
-  { name: '宁夏', value: 0 },
+  { name: '宁夏回族自治区', value: 0 },
   { name: '海南', value: 0 },
   { name: '台湾', value: 0 },
-  { name: '香港', value: 0 },
-  { name: '澳门', value: 0 }
+  { name: '香港特别行政区', value: 0 },
+  { name: '澳门特别行政区', value: 0 }
 ];
 
 const selectedItemStyle = {
   areaColor: styles['selected-bg']
 };
-// console.log(`${chinaJson.features.map(item =>
-//   ({
-//     label: item.properties.name,
-//     value: item.properties.childrenNum
-//   }))}`);
 Echarts.registerMap('china', chinaJson);
 export default {
   name: 'MapTrack',
   data() {
     return {
+      myList: true,
+      location: '北京',
       options: {
         // tooltip: {
         //   trigger: 'item',
@@ -127,7 +124,7 @@ export default {
             backgroundColor: styles['map-bg'],
             // geoIndex: 0,
             roam: false,
-            layoutCenter: ['28%', '70%'],
+            layoutCenter: ['50%', '70%'],
             layoutSize: 800,
             label: {
               normal: {
@@ -196,11 +193,14 @@ export default {
           //       ]
           //     }
         ]
-      }
+      },
     };
   },
   components: {
     Echarts
+  },
+  methods: {
+    Click(params) { console.log(params); this.location = params.data.name; }
   }
 };
 </script>
@@ -217,10 +217,10 @@ export default {
   font-weight: 800;
   font-size: 32px;
 }
-// .map {
-//   width: 800px;
-//   float: left;
-// }
+.map {
+  width: 800px;
+  float: left;
+}
 .select {
   position:absolute;
   margin-left: 200px;
@@ -229,9 +229,31 @@ export default {
 .wrapper {
   position: relative;
   height: 600px;
-  width: 1440px;
+  width: 100%;
 }
 .recommend {
-margin-left: 810px;
+  margin-left: 880px;
+  background-color: #FFF;
+  border-radius: 2px;
+  padding: 24px;
+  margin-right: 80px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  height: calc(100vh - 200px);
+  min-height: 400px;
+  line-height: 1.5;
+  .title {
+    color:$title-color;
+  font-weight: 700;
+  line-height: 1.5;
+  font-size: 22px;
+  &:hover {
+    text-decoration: underline;
+    cursor:pointer;
+  }
+  }
+  .detail {
+    color: $detail-color;
+  }
+
 }
 </style>

@@ -13,9 +13,12 @@ $theme-3-hex: #F2DABD;
 $theme-4-hex: #8C5042;
 $theme-5-hex: #F26B5E;
 
+$title-color: #333;
+$detail-color: #999;
+$header-color: $theme-4-hex;
+
 $main-bg: rgba($theme-3-hex,0.15);
 
-/* Color Theme Swatches in Hex */
 :export{
   theme-1-hex:$theme-1-hex;
   theme-2-hex:$theme-2-hex;
