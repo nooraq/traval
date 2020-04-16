@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import writePage from './configParts/writePage';
-import articalShow from './configParts/articalShow';
+import articalShow from './configParts/ArticalShow';
 import mapTrack from './configParts/mapTrack';
 
 // router lazy load

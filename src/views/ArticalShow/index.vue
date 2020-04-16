@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       value: '<p>its a html</p>'
-    };
+    }
   }
 };
 </script>
