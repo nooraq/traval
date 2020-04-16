@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import writePage from './configParts/writePage';
 import articalShow from './configParts/ArticalShow';
 import mapTrack from './configParts/mapTrack';
+import login from './configParts/login';
 
 // router lazy load
 Vue.use(Router);
@@ -10,6 +11,7 @@ Vue.use(Router);
 export default new Router({
   base: process.env.BASE_URL,
   routes: [
+    login,
     {
       path: '/',
       name: 'basic',
