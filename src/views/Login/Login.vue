@@ -9,7 +9,7 @@
 import LoginHeader from './components/Header'
 import LoginPage from './components/LoginPage'
 export default {
-  name: "Login",
+  name: 'Login',
   components: {
     LoginHeader,
     LoginPage
