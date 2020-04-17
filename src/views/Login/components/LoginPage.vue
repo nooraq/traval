@@ -10,8 +10,20 @@
       v-if="show"
     >
       <!-- 显示登录页-->
-      <input class="input-mes" v-model="loginMessage.Userid" type="text" name="userName" placeholder="请输入账号">
-      <input class="input-mes" v-model="loginMessage.Password" type="password" name="password" placeholder="请输入密码">
+      <input
+        class="input-mes"
+        v-model="loginMessage.Userid"
+        type="text" name="userName"
+        placeholder="请输入账号"
+        @click="inputHandleClick"
+      />
+      <input class="input-mes"
+        v-model="loginMessage.Password"
+        type="password" name="password"
+        placeholder="请输入密码"
+        @click="inputHandleClick"
+      />
+      <p class="errorWarn" v-show="showWarn">*输入的账号或密码有误，请重新输入！</p>
       <input class="submit-mes blueBGC" type="submit" value="登录" @click="loginToClick">
       <p class="tips" @click="regiHandleClick">还未有账号？请先注册。</p>
     </div>
@@ -37,6 +49,7 @@ export default {
       show: true,
       tologin: true,
       toregi: false,
+      showWarn: false,
       // 有关账号密码提交的data
       loginMessage: {
         Userid: '',
@@ -47,6 +60,12 @@ export default {
         UserName: '',
         Password: '',
         signDate: null
+      },
+      // 存储存在的用户账号密码
+      userMessage: {
+        Userid: '',
+        Password: '',
+        UserName: ''
       }
     };
   },
@@ -64,17 +83,23 @@ export default {
     },
     // 登录/注册 信息提交
     loginToClick() {
-      console.log(this.loginMessage.Userid);
-      console.log(this.loginMessage.Password);
+      if (this.loginMessage.Userid === this.userMessage.Userid &&
+          this.loginMessage.Password === this.userMessage.Password) {
+        alert('登录成功！');
+        this.$router.push('/mapTrack');
+        this.$store.commit('changeLoginStatus');
+      } else {
+        this.showWarn = true;
+      }
     },
     regiToClick() {
-      this.signDate = new Date();
-      const year = this.signDate.getDate;
-      console.log(year);
-      console.log(this.signDate);
-      console.log(this.regiMessage.Userid);
-      console.log(this.regiMessage.UserName);
-      console.log(this.regiMessage.Password);
+      this.userMessage.Userid = this.regiMessage.Userid;
+      this.userMessage.Password = this.regiMessage.Password;
+      this.userMessage.UserName = this.regiMessage.UserName;
+      this.loginHandleClick();
+    },
+    inputHandleClick() {
+      this.showWarn = false;
     }
   }
 };
@@ -136,6 +161,10 @@ export default {
 }
 .greenBGC {
   background: #2ebc4f;
+}
+.errorWarn {
+  font-size: 12px;
+  color: $theme-5-hex;
 }
 // todo选择器实现登录/注册特殊样式
 .todo {

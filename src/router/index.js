@@ -20,7 +20,8 @@ export default new Router({
       children: [
         writePage,
         articalShow,
-        mapTrack
+        mapTrack,
+        login
       ]
     },
     {
