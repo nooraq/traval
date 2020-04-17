@@ -41,10 +41,13 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
+
 export default {
   name: 'LoginPage',
   data() {
     return {
+      ...mapState(['loginSatus']),
       // 有相关登录/注册选择的data
       show: true,
       tologin: true,
@@ -70,6 +73,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(['changeLoginStatus']),
     // 登录/注册 功能选择
     loginHandleClick() {
       this.show = true;
@@ -87,7 +91,8 @@ export default {
           this.loginMessage.Password === this.userMessage.Password) {
         alert('登录成功！');
         this.$router.push('/mapTrack');
-        this.$store.commit('changeLoginStatus');
+        this.changeLoginStatus();
+        console.log('yes');
       } else {
         this.showWarn = true;
       }
