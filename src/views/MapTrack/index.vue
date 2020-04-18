@@ -40,11 +40,13 @@
 <script>
 import Echarts from 'vue-echarts';
 import 'echarts/lib/chart/map';
-// import 'echarts/lib/chart/scatter';
-// import 'echarts/lib/component/geo';
+import 'echarts/lib/chart/scatter';
+import 'echarts/lib/component/geo';
+import 'echarts/lib/component/visualMap';
 import 'echarts/lib/component/tooltip';
-import chinaJson from './china.json';
 import styles from '@/theme/variable.scss';
+
+import chinaJson from './china.json';
 
 const getData = [
   { name: '北京', value: 1 },
@@ -94,104 +96,81 @@ export default {
       myList: true,
       location: '北京',
       options: {
-        // tooltip: {
-        //   trigger: 'item',
-        //   // formatter: '{b}<br/>{c} (p / km2)'
-        // },
-        // geo: {
-        //   map: 'china',
-        //   itemStyle: { // 定义样式
-        //     color: styles['map-bg'],
-        //   },
-        //   width: 600,
-        //   height: 600,
-        // },
-        visualMap: {
-          min: 800,
-          max: 50000,
-          text: ['High', 'Low'],
-          realtime: false,
-          calculable: true,
-          inRange: {
-            color: ['lightskyblue', 'yellow', 'orangered']
-          }
+        tooltip: {
+          trigger: 'item',
+          // formatter: '{b}<br/>{c} (p / km2)'
         },
+        geo: {
+          map: 'china',
+          width: 600,
+          height: 600,
+          itemStyle: { // 定义样式
+            areaColor: styles['map-bg'],
+          },
+          emphasis: {
+            itemStyle: {
+              areaColor: styles['map-emphasis-bg'],
+              shadowColor: 'rgba(0,0,0,.3)',
+              shadowOffsetX: 0,
+              shadowOffsetY: 2,
+              shadowBlur: 8,
+            }
+          },
+          regions: getData.filter((item) => {
+            if (item.value === 0) {
+              item.itemStyle = selectedItemStyle;
+            }
+            return item;
+          })
+
+        },
+        // visualMap: {
+        //   seriesIndex: 0,
+        //   min: 0,
+        //   max: 1,
+        //   show: false,
+        //   realtime: false,
+        //   calculable: false,
+        //   inRange: {
+        //     color: [styles['selected-bg'], styles['map-bg']]
+        //   }
+        // },
         series: [
-          {
-            name: '我的旅行',
-            type: 'map',
-            mapType: 'china',
-            backgroundColor: styles['map-bg'],
-            // geoIndex: 0,
-            roam: false,
-            layoutCenter: ['50%', '70%'],
-            layoutSize: 800,
-            label: {
-              normal: {
-                show: false
-              },
-              emphasis: {
-                show: true
-              }
-            },
-            emphasis: {
-              itemStyle: {
-                areaColor: styles['map-emphasis-bg'],
-                shadowColor: 'rgba(0,0,0,.3)',
-                shadowOffsetX: 0,
-                shadowOffsetY: 2,
-                shadowBlur: 8,
-                // shadow: '0 2px 12px 0 '
-              }
-            },
-            itemStyle: { // 定义样式
-              areaColor: styles['map-bg'],
-              color: 'red',
-            },
-            width: 600,
-            height: 600,
-            data: getData.map((item) => {
-              if (item.value === 0) {
-                item.itemStyle = selectedItemStyle;
-              }
-              return item;
-            })
-          }
-          //     {
-          //       type: 'scatter',
-          //       coordinateSystem: 'geo',
-          //       symbol: 'pin',
-          //       symbolSize: 18,
-          //       // silent: true,
-          //       itemStyle: {
-          //         color({ data }) {
-          //           return data.mark === 0 ? styles['theme-4-hex'] : 'blue';
-          //         }
-          //       },
-          //       data: [
-          //         {
-          //           name: '海南', // 数据项名称，在这里指地区名称
-
-          //           value: [ // 数据项值
-          //             ...(chinaJson.features.find(element =>
-          //               element.properties.name === '海南').properties.center),
-          //             340 // 北京地区的数值
-          //           ],
-          //           mark: 0
-          //         },
-          //         {
-          //           name: '北京', // 数据项名称，在这里指地区名称
-
-          //           value: [ // 数据项值
-          //             ...(chinaJson.features.find(element =>
-          //               element.properties.name === '北京').properties.center),
-          //             340, // 北京地区的数值
-          //             0
-          //           ],
-          //           mark: 1
-          //         }
-          //       ]
+          // {
+          //   name: '我的旅行',
+          //   type: 'map',
+          //   mapType: 'china',
+          //   backgroundColor: styles['map-bg'],
+          //   geoIndex: 0,
+          //   roam: false,
+          //   layoutCenter: ['50%', '70%'],
+          //   layoutSize: 800,
+          //   label: {
+          //     normal: {
+          //       show: false
+          //     },
+          //     emphasis: {
+          //       show: true
           //     }
+          //   },
+          //   // width: 600,
+          //   // height: 600,
+          //   data: getData,
+          {
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            symbol: 'path://M512 85.333333a341.333333 341.333333 0 0 0-341.333333 337.92c0 233.813333 300.8 494.08 313.6 505.173334a42.666667 42.666667 0 0 0 55.466666 0C554.666667 917.333333 853.333333 657.066667 853.333333 423.253333A341.333333 341.333333 0 0 0 512 85.333333z m0 469.333334a149.333333 149.333333 0 1 1 149.333333-149.333334A149.333333 149.333333 0 0 1 512 554.666667z',
+            symbolSize: 14,
+            symbolKeepAspect: true,
+            silent: true,
+            color: styles['theme-5-hex'],
+            data: getData.map(item =>
+              (item.value === 0 ? {
+                ...item,
+                value: chinaJson.features.find(element =>
+                  element.properties.name === item.name).properties.center
+              } : null))
+          }
         ]
       },
     };
@@ -200,7 +179,7 @@ export default {
     Echarts
   },
   methods: {
-    Click(params) { console.log(params); this.location = params.data.name; }
+    Click(params) { console.log(params); this.location = params.name; }
   }
 };
 </script>
