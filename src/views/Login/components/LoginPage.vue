@@ -7,7 +7,7 @@
     <!-- 优先显示登录页面，若未注册则点击“注册”实现注册功能-->
     <div
       class="user-mes"
-      v-if="show"
+      v-if="showLogin"
     >
       <!-- 显示登录页-->
       <input
@@ -47,9 +47,8 @@ export default {
   name: 'LoginPage',
   data() {
     return {
-      ...mapState(['loginSatus']),
       // 有相关登录/注册选择的data
-      show: true,
+      showLogin: true,
       tologin: true,
       toregi: false,
       showWarn: false,
@@ -59,48 +58,44 @@ export default {
         Password: ''
       },
       regiMessage: {
-        Userid: '',
         UserName: '',
+        Userid: '',
         Password: '',
         signDate: null
       },
-      // 存储存在的用户账号密码
-      userMessage: {
-        Userid: '',
-        Password: '',
-        UserName: ''
-      }
     };
   },
+  computed: {
+     ...mapState(['isLogin'])
+  },
   methods: {
-    ...mapMutations(['changeLoginStatus']),
+    ...mapMutations(['changeLoginStatus', 'saveRegiMes']),
     // 登录/注册 功能选择
     loginHandleClick() {
-      this.show = true;
+      this.showLogin = true;
       this.tologin = true;
       this.toregi = false;
     },
     regiHandleClick() {
-      this.show = false;
+      this.showLogin = false;
       this.tologin = false;
       this.toregi = true;
     },
-    // 登录/注册 信息提交
+    // 登录 信息提交,并判断是否存在对应账号
     loginToClick() {
-      if (this.loginMessage.Userid === this.userMessage.Userid &&
-          this.loginMessage.Password === this.userMessage.Password) {
+      this.changeLoginStatus(this.loginMessage);
+      if (this.isLogin) {
         alert('登录成功！');
         this.$router.push('/mapTrack');
-        this.changeLoginStatus();
-        console.log('yes');
       } else {
         this.showWarn = true;
       }
     },
+    // 注册 信息提交
     regiToClick() {
-      this.userMessage.Userid = this.regiMessage.Userid;
-      this.userMessage.Password = this.regiMessage.Password;
-      this.userMessage.UserName = this.regiMessage.UserName;
+      const time = new Date();
+      this.signDate = time.getDay();
+      this.saveRegiMes(this.regiMessage);
       this.loginHandleClick();
     },
     inputHandleClick() {
