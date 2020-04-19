@@ -9,7 +9,7 @@
 <script>
 export default {
   name: 'LoginHeader'
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -33,6 +33,7 @@ export default {
 .desc {
   font-size: 14px;
   color: $theme-4-hex;
-  padding: 5px 0;
+  // padding: 5px 0;
+  margin-top: 5px; //两个块之间的间距用margin拉开
 }
 </style>

@@ -37,6 +37,33 @@
       <input class="input-mes" type="password" v-model="regiMessage.Password" name="password" placeholder="请输入密码">
       <input class="submit-mes greenBGC" type="submit" value="注册" @click="regiToClick">
     </div>
+
+    <!-- element-ui的tab 写法 -->
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tab-pane label="登陆" name="login">    <!-- 里面是内容-->
+    <div
+      class="user-mes"
+    >
+      <!-- 显示登录页-->
+      <input
+        class="input-mes"
+        v-model="loginMessage.Userid"
+        type="text" name="userName"
+        placeholder="请输入账号"
+        @click="inputHandleClick"
+      />
+      <input class="input-mes"
+        v-model="loginMessage.Password"
+        type="password" name="password"
+        placeholder="请输入密码"
+        @click="inputHandleClick"
+      />
+      <p class="errorWarn" v-show="showWarn">*输入的账号或密码有误，请重新输入！</p>
+      <input class="submit-mes blueBGC" type="submit" value="登录" @click="loginToClick">
+      <p class="tips" @click="regiHandleClick">还未有账号？请先注册。</p>
+    </div></el-tab-pane>
+    <el-tab-pane label="注册" name="regi">注册的input</el-tab-pane>
+  </el-tabs>
   </div>
 </template>
 
