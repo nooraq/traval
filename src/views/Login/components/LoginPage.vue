@@ -44,7 +44,7 @@ export default {
         Password: '',
         signDate: null
       },
-      //要设置初始值为login才能刷新时立即显示login输入框部分
+      // 要设置初始值为login才能刷新时立即显示login输入框部分
       activeName: 'login'
     };
   },
@@ -105,7 +105,7 @@ export default {
 // 登录页提示
 .login-tips {
   font-size: 13px;
-  color: $--color-text-regular;
+  color: $--color-info;
   text-decoration: underline;
   margin-top: 50px;
 }
@@ -126,6 +126,6 @@ export default {
 }
 .errorWarn {
   font-size: 12px;
-  color: $theme-5-hex;
+  color: $--color-danger;
 }
 </style>

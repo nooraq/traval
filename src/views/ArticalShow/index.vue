@@ -6,8 +6,8 @@
 export default {
   data() {
     return {
-      value: '<p>its a html</p>'
-    }
+      value: '<p>articleShow</p>'
+    };
   }
 };
 </script>

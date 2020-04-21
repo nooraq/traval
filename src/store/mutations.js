@@ -1,6 +1,6 @@
 export default {
   // 判断登录的用户账号密码是否存在
-  changeLoginStatus (state,mes) {
+  changeLoginStatus(state,mes) {
     try {
       if (state.users.Userid === mes.Userid && state.users.Password === mes.Password) {
         // 账号密码匹配成功，isLogin 为 true
@@ -18,7 +18,7 @@ export default {
     }
   },
   // 保存用户注册的账号
-  saveRegiMes (state, regimes) {
+  saveRegiMes(state, regimes) {
     try {
       localStorage.Userid = regimes.Userid;
       localStorage.Password = regimes.Password;
@@ -28,4 +28,4 @@ export default {
     } catch (error) {
     }
   }
-}
+};

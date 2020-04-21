@@ -4,6 +4,7 @@ import writePage from './configParts/writePage';
 import articalShow from './configParts/ArticalShow';
 import mapTrack from './configParts/mapTrack';
 import login from './configParts/login';
+import personalSpace from './configParts/personalSpace';
 
 // router lazy load
 Vue.use(Router);
@@ -20,7 +21,9 @@ export default new Router({
       children: [
         writePage,
         articalShow,
-        mapTrack
+        mapTrack,
+        login,
+        personalSpace
       ]
     },
     {

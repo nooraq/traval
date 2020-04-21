@@ -4,14 +4,14 @@
     我的旅行日记
   </div>
   <div class="map">
-<echarts :options="options" class="chart" @click="Click"></echarts>
+    <echarts :options="options" class="chart" @click="Click"></echarts>
   </div>
 <div class="recommend">
   <el-switch
   v-model="myList"
   active-text="曾经写过的文章"
   inactive-text="可能感兴趣的文章">
-</el-switch>
+  </el-switch>
   <div class="recommend-item">
     <div class="location">
     <p>{{location}}</p>
