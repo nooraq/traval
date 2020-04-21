@@ -53,6 +53,8 @@ export default {
     },
     // 更多设置click事件
     handleCommand(command) {
+      this.onTrack = false;
+      this.onArticle = false;
       if (command === 'write') {
         this.$router.push('/writePage');
       }
@@ -83,14 +85,15 @@ export default {
   width: 150px;
 }
 .logo {
-  height: 40px;
-  margin: 9px 6px 9px 10px;
+  height: 36px;
+  margin: 11px 6px 11px 10px;
 }
 .site-name {
   font-size: 15px;
   font-weight: 400;
   padding: 4px;
   border-radius: 4px;
+  color: $--color-title;
 }
 // 标题选项包裹
 .title-wrapper {
@@ -123,6 +126,7 @@ export default {
   cursor: pointer;
   font-size: 15px;
   line-height: 58px;
+  color: $--color-title;
 }
 .el-icon-arrow-down {
   font-size: 15px;
