@@ -17,9 +17,9 @@
           更多<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="write">写文章</el-dropdown-item>
-          <el-dropdown-item command="personal">个人空间</el-dropdown-item>
-          <el-dropdown-item command="logoff">安全退出</el-dropdown-item>
+          <el-dropdown-item command="write" icon="el-icon-edit">写文章</el-dropdown-item>
+          <el-dropdown-item command="personal" icon="el-icon-user-solid">个人空间</el-dropdown-item>
+          <el-dropdown-item command="logoff" icon="el-icon-more">安全退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
   name: 'Header',
   data() {
@@ -36,6 +38,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(['NotLogin']),
     // 选项标题click事件
     handleClickTrack() {
       if (!this.onTrack) {
@@ -57,12 +60,11 @@ export default {
       this.onArticle = false;
       if (command === 'write') {
         this.$router.push('/writePage');
-      }
-      else if (command === 'personal') {
+      } else if (command === 'personal') {
         this.$router.push('/personalSpace');
-      }
-      else {
+      } else {
         this.$router.push('/login');
+        this.NotLogin();
       }
     }
   }
