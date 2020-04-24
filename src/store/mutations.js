@@ -18,6 +18,7 @@ export default {
         state.isLogin = false;
         localStorage.isLogin = false;
         console.log(state.isLogin);
+        console.log(state.users);
       }
     } catch (error) {}
   },

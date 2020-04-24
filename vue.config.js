@@ -8,7 +8,7 @@ const resolve = dir => path.join(__dirname, dir);
 
 module.exports = {
   // 修改为相对路径
-  baseUrl: BASE_URL,
+  publicPath: BASE_URL,
   devServer: {
     overlay: {
       errors: true

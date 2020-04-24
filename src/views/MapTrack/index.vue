@@ -45,6 +45,7 @@ import 'echarts/lib/chart/map';
 import 'echarts/lib/component/tooltip';
 import chinaJson from './china.json';
 import styles from '@/theme/variable.scss';
+import { mapState } from 'vuex';
 
 const getData = [
   { name: '北京', value: 1 },
@@ -201,6 +202,20 @@ export default {
   },
   methods: {
     Click(params) { console.log(params); this.location = params.data.name; }
+  },
+  computed: {
+   ...mapState(['isLogin'])
+  }, 
+  // 判断登录与否，否则跳到登录页
+  mounted () {
+    console.log(this.isLogin);
+    if (!this.isLogin) {
+      alert('还未登录，请先登录！');
+      this.$router.push('/login');
+    }
+    // console.log(window.location.href);
+    // console.log(this.$route.path);
+    // console.log(this.$route.params);
   }
 };
 </script>
