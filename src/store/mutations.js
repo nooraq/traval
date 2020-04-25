@@ -27,8 +27,6 @@ export default {
     try {
       localStorage.Userid = regimes.Userid;
       localStorage.Password = regimes.Password;
-      localStorage.UserName = regimes.UserName;
-      localStorage.signDate = regimes.signDate;
       state.users = regimes;
     } catch (error) {}
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="login-wrapper">
-    <el-tabs v-model="activeName" @tab-click="tabHandleClick" class="tabs">
+    <el-tabs v-model="activeName" class="tabs">
       <!-- 登录项(优先显示) -->
       <el-tab-pane label="登录" name="login">
         <div class="user-mes">
@@ -14,10 +14,10 @@
       <!-- 注册项 -->
       <el-tab-pane label="注册" name="register">
         <div class="user-mes">
-          <el-input class="input-mes" size="large" v-model="regiMessage.UserName" placeholder="请输入用户名" clearable></el-input>
           <el-input class="input-mes" size="large" v-model="regiMessage.Userid" placeholder="请输入账号" clearable></el-input>
           <el-input class="input-mes" size="large" v-model="regiMessage.Password" placeholder="请输入密码" show-password clearable></el-input>
           <el-button type="success" class="button" @click="regiToClick">注册</el-button>
+          <p class="login-tips">期待你的加入！</p>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -39,7 +39,6 @@ export default {
         Password: ''
       },
       regiMessage: {
-        UserName: '',
         Userid: '',
         Password: '',
         signDate: null
@@ -65,8 +64,6 @@ export default {
     },
     // 注册 信息提交
     regiToClick() {
-      const time = new Date();
-      this.signDate = time.getDay();
       this.saveRegiMes(this.regiMessage);
       alert('注册成功，请重新登录！');
       this.activeName = 'login';
@@ -74,10 +71,9 @@ export default {
     inputHandleClick() {
       this.showWarn = false;
     },
-    tabHandleClick(tab) {
-      console.log(tab.name);
-      console.log(this.activeName);
-    }
+    // tabHandleClick(tab) {
+    //   console.log(tab.name);
+    // }
   }
 };
 </script>

@@ -12,14 +12,14 @@
     </div>
     <!-- 更多-->
     <div class="name-wrapper">
+      <el-button type="danger" icon="el-icon-edit" @click="handleWrite" class="write">写文章</el-button>
       <el-dropdown @command="handleCommand">
         <span class="el-dropdown-link">
           更多<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="write" icon="el-icon-edit">写文章</el-dropdown-item>
           <el-dropdown-item command="personal" icon="el-icon-user-solid">个人空间</el-dropdown-item>
-          <el-dropdown-item command="logoff" icon="el-icon-more">安全退出</el-dropdown-item>
+          <el-dropdown-item command="logoff" icon="el-icon-more">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -58,13 +58,31 @@ export default {
     handleCommand(command) {
       this.onTrack = false;
       this.onArticle = false;
-      if (command === 'write') {
-        this.$router.push('/writePage');
-      } else if (command === 'personal') {
+      if (command === 'personal') {
         this.$router.push('/personalSpace');
       } else {
         this.$router.push('/login');
         this.NotLogin();
+      }
+    },
+    handleWrite() {
+      this.$router.push('/writePage');
+      this.onTrack = false;
+      this.onArticle = false;
+    }
+  },
+  // 监听路径的变化，修复返回导致title变色不同步bug
+  watch: {
+    $route: function() {
+      if (this.$route.path === '/mapTrack') {
+        this.onTrack = true;
+        this.onArticle = false;
+      } else if (this.$route.path === '/articalShow') {
+        this.onArticle = true;
+        this.onTrack = false;
+      } else {
+        this.onArticle = false;
+        this.onTrack = false;
       }
     }
   }
@@ -101,7 +119,7 @@ export default {
 .title-wrapper {
   vertical-align: top;
   display: inline-block;
-  width: 950px;
+  width: 840px;
   height: 100%;
   text-align: center;
 }
@@ -120,9 +138,12 @@ export default {
 .name-wrapper {
   vertical-align: top;
   display: inline-block;
-  width: 63px;
+  width: 173px;
   height: 100%;
   margin-left: 100px;
+}
+.write {
+  margin-right: 15px;
 }
 .el-dropdown-link {
   cursor: pointer;

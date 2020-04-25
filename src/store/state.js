@@ -1,9 +1,6 @@
 let defaultUsers = {
-  UserName:'',
   Userid: '',
-  Password: '',
-  signDate: null
-
+  Password: ''
 };
 let defaultIsLogin = false;
 try {
@@ -11,7 +8,6 @@ try {
     defaultIsLogin = localStorage.isLogin;
     defaultUsers.Userid = localStorage.Userid;
     defaultUsers.Password = localStorage.Password;
-    defaultUsers.UserName = localStorage.UserName;
     defaultUsers.signDate = localStorage.signDate;
   }
 } catch (error) {
