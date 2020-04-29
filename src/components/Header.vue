@@ -12,6 +12,14 @@
     </div>
     <!-- 更多-->
     <div class="name-wrapper">
+      <!-- 全局搜索-->
+      <el-input
+        class="all-search"
+        size="mini"
+        placeholder="按时间/地点搜索"
+        suffix-icon="el-icon-search"
+        v-model="allSearch">
+      </el-input>
       <el-button type="danger" icon="el-icon-edit" @click="handleWrite" class="write">写文章</el-button>
       <el-dropdown @command="handleCommand">
         <span class="el-dropdown-link">
@@ -33,8 +41,9 @@ export default {
   name: 'Header',
   data() {
     return {
-      onTrack: true,
-      onArticle: false
+      onTrack: false,
+      onArticle: false,
+      allSearch: ''
     };
   },
   methods: {
@@ -71,9 +80,22 @@ export default {
       this.onArticle = false;
     }
   },
+  // 修复刷新页面后title变色不准确bug
+  mounted () {
+    const path = this.$route.path;
+    console.log('路径'+path);
+    if (path === '/mapTrack') {
+      this.onTrack = true;
+      this.onArticle = false;
+    } else if (path === '/articalShow') {
+      this.onTrack = false;
+      this.onArticle = true;
+    } else {}
+  },
   // 监听路径的变化，修复返回导致title变色不同步bug
   watch: {
-    $route: function() {
+    $route: function () {
+      console.log(this.$route.path);
       if (this.$route.path === '/mapTrack') {
         this.onTrack = true;
         this.onArticle = false;
@@ -119,9 +141,10 @@ export default {
 .title-wrapper {
   vertical-align: top;
   display: inline-block;
-  width: 840px;
+  width: 540px;
   height: 100%;
-  text-align: center;
+  margin-right: 50px;
+  text-align: right;
 }
 .head-title {
   font: bold 20px/58px '微软雅黑';
@@ -138,9 +161,15 @@ export default {
 .name-wrapper {
   vertical-align: top;
   display: inline-block;
-  width: 173px;
+  width: 400px;
   height: 100%;
   margin-left: 100px;
+  margin-right: 20px;
+  text-align: right;
+}
+.all-search {
+  width: 150px;
+  margin-right: 10px;
 }
 .write {
   margin-right: 15px;

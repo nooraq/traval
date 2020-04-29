@@ -9,23 +9,24 @@
           @select="handleSelect"
         >
           <el-menu-item index="1">
-            <!-- <i class="el-icon-user"></i> -->
-            <p class="menu-desc el-icon-user"> 我的关注</p>
+            <i class="el-icon-user"></i>
+            <span class="menu-desc">我的关注</span>
           </el-menu-item>
           <el-menu-item index="2">
-            <p class="menu-desc el-icon-tickets"> 我的文章</p>
+            <i class="el-icon-document"></i>
+            <span class="menu-desc">我的文章</span>
           </el-menu-item>
           <el-menu-item index="3">
-            <p class="menu-desc el-icon-thumb"> 别人赞我</p>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <p class="menu-desc el-icon-thumb"> 我赞别人</p>
+            <i class="el-icon-thumb"></i>
+            <span class="menu-desc">我的点赞</span>
           </el-menu-item>
         </el-menu>
       </div>
       <!-- 走马灯-->
       <div class="block">
-        <p class="demonstration">推荐</p>
+        <el-badge value="hot" class="item">
+          <span class="demonstration">推荐</span>
+        </el-badge>
         <el-carousel height="200px">
           <el-carousel-item v-for="(item,index) in imgs" :key="index">
             <div class="img-wrapper">
@@ -38,21 +39,18 @@
     </div>
     <!-- 列表-->
     <div class="show-list">
-      <!-- <div class="menu-title">{{menuTitle}}</div>
-      <div class="contentWrapper">
-          <div class="content" v-for="(item,index) of contentSum" :key="index">
-          <div class="content-title">{{item.title}}</div>
-          <div class="content-data">{{item.content}}</div>
-      </div>
-      </div> -->
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <p class="menu-title">{{menuTitle}}</p>
         </div>
-        <div class="menu-show" v-infinite-scroll="load" style="overflow:auto">
-          <div v-for="(item,index) in contentSum" :key="index" class="text item">
-          {{item.title}}
-        </div>
+        <div class="menu-show" style="overflow:auto">
+          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
+          <li v-for="(item,index) in contentSum" :key="index" class="infinit-list">
+            <div class="li-title">{{item.title}} <span>{{item.time}}</span></div>
+            <div class="li-words">{{item.content}}</div>
+            <el-divider><i class="el-icon-tickets"></i></el-divider>
+          </li>
+        </ul>
         </div>
       </el-card>
     </div>
@@ -92,11 +90,9 @@ export default {
         this.menuTitle = '我的文章';
         this.contentSum = this.myArticle;
       } else if (index === '3') {
-        this.menuTitle = '别人赞我';
-        this.contentSum = this.getThumbs;
-      } else {
-        this.menuTitle = '我赞别人';
+        this.menuTitle = '我的点赞';
         this.contentSum = this.giveThumbs;
+      } else {
       }
     },
     load() {
@@ -141,16 +137,6 @@ export default {
 .el-menu {
   border-right: none;
 }
-.menu-one {
-  height:40px;
-  line-height: 40px;
-  padding-left: 15px;
-  font-size: 15px;
-  cursor: pointer;
-}
-.menu-one:hover {
-  background: rgba($color: $theme-1-hex, $alpha: 0.2);
-}
 .menu-desc {
   padding-left: 5px;
   color: $--color-title;
@@ -165,13 +151,18 @@ export default {
 }
 .block {
   width: 220px;
-  margin-top: 20px;
+  margin-top: 30px;
+}
+.item {
+  margin-top: 10px;
+  margin-right: 40px;
 }
 .block-img {
   width: 100%;
 }
 .img-wrapper {
   height: 150px;
+  margin-top: 5px;
 }
 .el-carousel__button {
   margin-top: -60px;
@@ -182,23 +173,58 @@ export default {
   font-size: 15px;
   font-weight: normal;
   text-decoration: underline;
-  padding: 4px;
+  padding: 8px;
 }
 // 匹配列表
 .show-list {
   vertical-align: top;
   display: inline-block;
   width: 700px;
-  height: 430px;
-  margin-top: 93px;
+  height: 410px;
+  margin-top: 91px;
 }
-// el 实现列表
-.text {
+.menu-title {
+  text-align: center;
+  color: $--color-title;
+}
+.menu-show {
+  height: 320px;
+  padding-bottom: 10px;
+}
+.menu-show > ul {
+  height: 100%;
+}
+.infinit-list {
+  margin: 5px 0;
+  // border: 1px solid #ebeef5;
+  font-weight: normal;
+  border-radius: 6px;
+  margin-left: 0;
+  padding: 10px;
+}
+.li-title {
+  font-size: 16px;
+  margin: 4px 0 10px 10px;
+  color: $--color-title;
+  font-weight: 600;
+}
+.li-title span {
+  font-size: 12px;
+  font-weight: normal;
+  padding: 0 3px 1px 3px;
+  border-bottom: 1px solid #eaebee;
+}
+.li-words {
   font-size: 14px;
 }
-.item {
-  margin-bottom: 18px;
-}
+// el 实现列表
+// .text {
+//   font-size: 14px;
+//   height: 360px;
+// }
+// .item {
+//   margin-bottom: 18px;
+// }
 .clearfix:before,
 .clearfix:after {
   display: table;
@@ -209,6 +235,6 @@ export default {
 }
 .box-card {
   width: 580px;
-  height: 430px;
+  height: 410px;
 }
 </style>
