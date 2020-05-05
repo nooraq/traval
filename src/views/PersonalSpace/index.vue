@@ -44,16 +44,38 @@
           <p class="menu-title">{{menuTitle}}</p>
         </div>
         <div class="menu-show" style="overflow:auto">
-          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
-          <li v-for="(item,index) in contentSum" :key="index" class="infinit-list">
-            <div class="li-title">{{item.title}} <span>{{item.time}}</span></div>
-            <div class="li-words">{{item.content}}</div>
-            <el-divider><i class="el-icon-tickets"></i></el-divider>
-          </li>
-        </ul>
+          <!-- 我的文章-->
+          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyArticles">
+            <li v-for="(item,index) in myArticle" :key="index" class="infinit-list">
+              <div class="li-title">
+                {{item.title}} <span>{{item.time}}</span>
+              </div>
+              <div class="li-words">{{item.content}}</div>
+              <el-button type="primary" size="mini" plain @click="showDetail">查看详情</el-button>
+              <el-divider><i class="el-icon-tickets"></i></el-divider>
+            </li>
+          </ul>
+          <!-- 我的关注-->
+          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyFocus">
+            <li v-for="(item,index) in focus" :key="index">
+              <div class="focus-name">{{item.name}}</div>
+            </li>
+          </ul>
+          <!-- 我的点赞-->
+          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyThumbs">
+            <li v-for="(item,index) in giveThumbs" :key="index" class="infinit-list">
+              <div class="li-title">
+                {{item.title}} <span>by：{{item.author}}</span>
+              </div>
+              <div class="li-words">{{item.content}}</div>
+              <el-button type="primary" size="mini" plain @click="showDetail">查看详情</el-button>
+              <el-divider><i class="el-icon-tickets"></i></el-divider>
+            </li>
+          </ul>
         </div>
       </el-card>
     </div>
+    <right-side></right-side>
   </div>
 </template>
 
@@ -61,9 +83,13 @@
 import { mapState } from 'vuex';
 
 import personalData from './personal.json';
+import RightSide from './components/RightSide.vue';
 
 export default {
   name: 'personalSpace',
+  components: {
+    RightSide
+  },
   computed: {
     ...mapState(['users'])
   },
@@ -72,41 +98,49 @@ export default {
       // 保存json文档的相关数据
       focus: [],
       myArticle: [],
-      getThumbs: [],
       giveThumbs: [],
       // 列表显示所用数据
       menuTitle: '我的文章',
-      contentSum: [],
       imgs: [],
-      count: 0
+      count: 0,
+      // 列表显示条件
+      isMyArticles: true,
+      isMyFocus: false,
+      isMyThumbs: false
     };
   },
   methods: {
     handleSelect(index) {
       if (index === '1') {
         this.menuTitle = '我的关注';
-        this.contentSum = this.focus;
+        this.isMyFocus = true;
+        this.isMyArticles = false;
+        this.isMyThumbs = false;
       } else if (index === '2') {
         this.menuTitle = '我的文章';
-        this.contentSum = this.myArticle;
+        this.isMyArticles = true;
+        this.isMyFocus = false;
+        this.isMyThumbs = false;
       } else if (index === '3') {
         this.menuTitle = '我的点赞';
-        this.contentSum = this.giveThumbs;
-      } else {
-      }
+        this.isMyThumbs = true;
+        this.isMyArticles = false;
+        this.isMyFocus = false;
+      }// else {}
     },
     load() {
       this.count += 2;
+    },
+    showDetail() {
+      console.log("show details");
     }
   },
   mounted() {
     const Data = personalData.data;
-    this.focus = Data.focus;
-    this.myArticle = Data.myArticle;
-    this.getThumbs = Data.getThumbs;
-    this.giveThumbs = Data.giveThumbs;
-    this.contentSum = Data.myArticle;
-    this.imgs = Data.imgs;
+    this.focus = Data.focus;// 关注的人
+    this.myArticle = Data.myArticle;// 我的文章
+    this.giveThumbs = Data.giveThumbs;// 我的点赞
+    this.imgs = Data.imgs;// 推荐轮播图
   }
 };
 </script>
@@ -114,7 +148,7 @@ export default {
 <style lang="scss">
 @import '@/theme/variable.scss';
 .wrapper {
-  width: 1150px;
+  width: 1200px;
   margin: 0px auto;
   font-weight: 600;
 }
@@ -179,13 +213,18 @@ export default {
 .show-list {
   vertical-align: top;
   display: inline-block;
-  width: 700px;
+  width: 600px;
   height: 410px;
   margin-top: 91px;
 }
 .menu-title {
   text-align: center;
   color: $--color-title;
+}
+
+.infinit-list .el-button {
+  padding: 4px;
+  margin: 15px 0 0 20px;
 }
 .menu-show {
   height: 320px;
@@ -195,12 +234,19 @@ export default {
   height: 100%;
 }
 .infinit-list {
-  margin: 5px 0;
-  // border: 1px solid #ebeef5;
   font-weight: normal;
   border-radius: 6px;
   margin-left: 0;
-  padding: 10px;
+  padding: 0 10px;
+}
+.focus-name {
+  color: $theme-5-hex;
+  font-size: 16px;
+  text-decoration: underline;
+  height: 45px;
+  width: 500px;
+  line-height: 45px;
+  border-bottom: 1px solid $--border-color-base;
 }
 .li-title {
   font-size: 16px;
@@ -216,15 +262,13 @@ export default {
 }
 .li-words {
   font-size: 14px;
+  // 省略内容设置
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow:ellipsis;
+  -webkit-line-clamp:2;
+  -webkit-box-orient: vertical;
 }
-// el 实现列表
-// .text {
-//   font-size: 14px;
-//   height: 360px;
-// }
-// .item {
-//   margin-bottom: 18px;
-// }
 .clearfix:before,
 .clearfix:after {
   display: table;
@@ -236,5 +280,12 @@ export default {
 .box-card {
   width: 580px;
   height: 410px;
+}
+.search-report {
+  display: inline-block;
+  width: 250px;
+  background-color: red;
+  vertical-align: top;
+  margin-top: 91px;
 }
 </style>

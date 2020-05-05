@@ -3,19 +3,31 @@
   "data": {
     "focus": [
       {
-        "title": "helloWord",
-        "time": "2012/07/07",
-        "content": ""
+        "name": "helloWord"
       },
       {
-        "title": "11527",
-        "time": "2012/07/07",
-        "content": ""
+        "name": "amazing!"
       },
       {
-        "title": "想上天啊",
-        "time": "2012/07/07",
-        "content": ""
+        "name": "11342"
+      },
+      {
+        "name": "helloWord"
+      },
+      {
+        "name": "amazing!"
+      },
+      {
+        "name": "11342"
+      },
+      {
+        "name": "helloWord"
+      },
+      {
+        "name": "amazing!"
+      },
+      {
+        "name": "11342"
       } 
     ],
     "myArticle": [
@@ -70,7 +82,7 @@
         "content": "人超多的瓷器口~~~~~~~~~~~~~~~~~~，等待两小时、炫酷两分钟的长江索道~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~灯火红洪崖洞！！！！！！！！！！！！"
       }
     ],
-    "getThumbs": [
+    "giveThumbs": [
       {
         "title": "巴黎铁塔",
         "content": "徒步四千八百万里。。。。。French-----。Paris--------------make it work everyday-----------------running to the moon,chasing the sunrise"
@@ -92,7 +104,6 @@
         "content": "人超多的瓷器口~~~~~~~~~~~~~~~~~~，等待两小时、炫酷两分钟的长江索道~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~灯火红洪崖洞！！！！！！！！！！！！"
       }
     ],
-    "giveThumbs":[],
     "imgs":[
       {
         "url":"https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3383755366,4243257849&fm=26&gp=0.jpg",
