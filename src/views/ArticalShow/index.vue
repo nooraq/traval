@@ -1,7 +1,8 @@
 <template>
   <div class="all-wrapper">
     <div class="show-article">
-      <div class="article-header">
+      <article-detail></article-detail>
+      <!-- <div class="article-header">
         <p class="header-title">{{showArticle.title}}</p>
         <div class="header-msg">
           <span class="msg">地点：{{showArticle.location}}</span>
@@ -18,7 +19,7 @@
           {{showArticle.content}}
           {{showArticle.content}}
           {{showArticle.content}}
-      </div>
+      </div> -->
     </div>
     <div class="article-menu">
       <div class="menu-header">
@@ -35,9 +36,11 @@
 </template>
 
 <script>
+import ArticleDetail from '@/components/Article.vue';
 import articleData from './article.json';
 
 export default {
+  components: { ArticleDetail },
   data() {
     return {
       showArticle: {},
@@ -70,36 +73,36 @@ export default {
 .show-article {
   display: inline-block;
   width: 650px;
-  height: 450px;
-  background: #fff;
+  // height: 450px;
+  // background: #fff;
 }
 // 内容
-.content {
-  width: 610px;
-  height: 340px;
-  padding:0 20px 20px 20px;
-  margin-top: 20px;
-  font-size: 14px;
-}
+// .content {
+//   width: 610px;
+//   height: 340px;
+//   padding:0 20px 20px 20px;
+//   margin: 20px 0;
+//   font-size: 14px;
+// }
 // 文章显示头部
-.article-header {
-  height: 50px;
-  padding-top: 20px;
-  background: rgba($color: $theme-1-hex, $alpha: .5);
-  border-radius: 4px;
-}
-.header-title {
-  font-size: 18px;
-  text-align: center;
-}
-.header-msg {
-  text-align: right;
-  margin-right: 35px;
-}
-.msg {
-  font-size: 13px;
-  padding: 0 10px;
-}
+// .article-header {
+//   height: 50px;
+//   padding-top: 20px;
+//   background: rgba($color: $theme-1-hex, $alpha: .4);
+//   border-radius: 4px;
+// }
+// .header-title {
+//   font-size: 18px;
+//   text-align: center;
+// }
+// .header-msg {
+//   text-align: right;
+//   margin-right: 35px;
+// }
+// .msg {
+//   font-size: 13px;
+//   padding: 0 10px;
+// }
 // 文章推荐列
 .article-menu {
   width: 350px;

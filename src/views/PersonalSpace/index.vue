@@ -1,94 +1,103 @@
 <template>
   <div class="wrapper">
-    <div class="main-left">
-      <div class="show-name">个人空间</div>
-    <!-- el-ui实现导航列表-->
-      <div class="menu">
-        <el-menu default-active="2"
-          class="el-menu-vertical-demo"
-          @select="handleSelect"
-        >
-          <el-menu-item index="1">
-            <i class="el-icon-user"></i>
-            <span class="menu-desc">我的关注</span>
-          </el-menu-item>
-          <el-menu-item index="2">
-            <i class="el-icon-document"></i>
-            <span class="menu-desc">我的文章</span>
-          </el-menu-item>
-          <el-menu-item index="3">
-            <i class="el-icon-thumb"></i>
-            <span class="menu-desc">我的点赞</span>
-          </el-menu-item>
-        </el-menu>
-      </div>
-      <!-- 走马灯-->
-      <div class="block">
-        <el-badge value="hot" class="item">
-          <span class="demonstration">推荐</span>
-        </el-badge>
-        <el-carousel height="200px">
-          <el-carousel-item v-for="(item,index) in imgs" :key="index">
-            <div class="img-wrapper">
-              <img :src="item.url" alt="signt" class="block-img">
-            </div>
-            <p class="small">{{item.title}}</p>
-          </el-carousel-item>
-        </el-carousel>
-      </div>
+    <div  v-show="articleDetailShow">
+      <el-page-header @back="goBack" content="文章详情" class="back-sign"></el-page-header>
+      <article-detail></article-detail>
     </div>
-    <!-- 列表-->
-    <div class="show-list">
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <p class="menu-title">{{menuTitle}}</p>
+    <div v-show="!articleDetailShow">
+      <div class="main-left">
+        <div class="show-name">个人空间</div>
+      <!-- el-ui实现导航列表-->
+        <div class="menu">
+          <el-menu default-active="2"
+            class="el-menu-vertical-demo"
+            @select="handleSelect"
+          >
+            <el-menu-item index="1">
+              <i class="el-icon-user"></i>
+              <span class="menu-desc">我的关注</span>
+            </el-menu-item>
+            <el-menu-item index="2">
+              <i class="el-icon-document"></i>
+              <span class="menu-desc">我的文章</span>
+            </el-menu-item>
+            <el-menu-item index="3">
+              <i class="el-icon-thumb"></i>
+              <span class="menu-desc">我的点赞</span>
+            </el-menu-item>
+          </el-menu>
         </div>
-        <div class="menu-show" style="overflow:auto">
-          <!-- 我的文章-->
-          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyArticles">
-            <li v-for="(item,index) in myArticle" :key="index" class="infinit-list">
-              <div class="li-title">
-                {{item.title}} <span>{{item.time}}</span>
+        <!-- 走马灯-->
+        <div class="block">
+          <el-badge value="hot" class="item">
+            <span class="demonstration">推荐</span>
+          </el-badge>
+          <el-carousel height="200px">
+            <el-carousel-item v-for="(item,index) in imgs" :key="index">
+              <div class="img-wrapper">
+                <img :src="item.url" alt="signt" class="block-img">
               </div>
-              <div class="li-words">{{item.content}}</div>
-              <el-button type="primary" size="mini" plain @click="showDetail">查看详情</el-button>
-              <el-divider><i class="el-icon-tickets"></i></el-divider>
-            </li>
-          </ul>
-          <!-- 我的关注-->
-          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyFocus">
-            <li v-for="(item,index) in focus" :key="index">
-              <div class="focus-name">{{item.name}}</div>
-            </li>
-          </ul>
-          <!-- 我的点赞-->
-          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyThumbs">
-            <li v-for="(item,index) in giveThumbs" :key="index" class="infinit-list">
-              <div class="li-title">
-                {{item.title}} <span>by：{{item.author}}</span>
-              </div>
-              <div class="li-words">{{item.content}}</div>
-              <el-button type="primary" size="mini" plain @click="showDetail">查看详情</el-button>
-              <el-divider><i class="el-icon-tickets"></i></el-divider>
-            </li>
-          </ul>
+              <p class="small">{{item.title}}</p>
+            </el-carousel-item>
+          </el-carousel>
         </div>
-      </el-card>
+      </div>
+      <!-- 列表-->
+      <div class="show-list">
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <p class="menu-title">{{menuTitle}}</p>
+          </div>
+          <div class="menu-show" style="overflow:auto">
+            <!-- 我的文章-->
+            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyArticles">
+              <li v-for="(item,index) in myArticle" :key="index" class="infinit-list">
+                <div class="li-title">
+                  {{item.title}} <span>{{item.time}}</span>
+                </div>
+                <div class="li-words">{{item.content}}</div>
+                <el-button type="primary" size="mini" plain @click="showDetail">查看详情</el-button>
+                <el-divider><i class="el-icon-tickets"></i></el-divider>
+              </li>
+            </ul>
+            <!-- 我的关注-->
+            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyFocus">
+              <li v-for="(item,index) in focus" :key="index">
+                <div class="focus-name">{{item.name}}</div>
+              </li>
+            </ul>
+            <!-- 我的点赞-->
+            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyThumbs">
+              <li v-for="(item,index) in giveThumbs" :key="index" class="infinit-list">
+                <div class="li-title">
+                  {{item.title}} <span>by：{{item.author}}</span>
+                </div>
+                <div class="li-words">{{item.content}}</div>
+                <el-button type="primary" size="mini" plain @click="showDetail">查看详情</el-button>
+                <el-divider><i class="el-icon-tickets"></i></el-divider>
+              </li>
+            </ul>
+          </div>
+        </el-card>
+      </div>
+      <right-side></right-side>
     </div>
-    <right-side></right-side>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import ArticleDetail from '@/components/Article.vue';
 
 import personalData from './personal.json';
 import RightSide from './components/RightSide.vue';
 
+
 export default {
   name: 'personalSpace',
   components: {
-    RightSide
+    RightSide,
+    ArticleDetail
   },
   computed: {
     ...mapState(['users'])
@@ -106,7 +115,9 @@ export default {
       // 列表显示条件
       isMyArticles: true,
       isMyFocus: false,
-      isMyThumbs: false
+      isMyThumbs: false,
+      // 文章详情
+      articleDetailShow: false
     };
   },
   methods: {
@@ -132,7 +143,11 @@ export default {
       this.count += 2;
     },
     showDetail() {
-      console.log("show details");
+      this.articleDetailShow = true;
+      console.log('show it');
+    },
+    goBack() {
+      this.articleDetailShow = false;
     }
   },
   mounted() {
@@ -151,6 +166,9 @@ export default {
   width: 1200px;
   margin: 0px auto;
   font-weight: 600;
+}
+.back-sign {
+  margin: 10px 0 0 50px;
 }
 .main-left {
   width: 300px;
