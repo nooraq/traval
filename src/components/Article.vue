@@ -3,7 +3,7 @@
     <!-- <el-page-header @back="goBack" content="文章详情" class="back-sign"></el-page-header> -->
     <div class="content-wrapper">
       <!-- 文章显示内容-->
-      <div class="show-article">
+      <!-- <div class="show-article">
         <div class="article-header">
           <p class="header-title">{{showArticle.title}}</p>
           <div class="header-msg">
@@ -15,7 +15,20 @@
         <div class="content" v-infinite-scroll="load" style="overflow:auto">
             {{showArticle.content}}
         </div>
-      </div>
+      </div> -->
+      <el-card class="box-card">
+        <!-- 文章头部 -->
+        <div slot="header" class="clearfix">
+          <p class="header-title" v-text="showArticle.title"></p>
+          <div class="header-msg">
+            <span class="msg lighter"><i class="el-icon-user"></i>: {{showArticle.author}}</span>
+            <span class="msg">地点：{{showArticle.location}}</span>
+            <span class="msg">时间：{{showArticle.time}}</span>
+          </div>
+        </div>
+        <!-- 文章内容 -->
+        <div class="content" v-infinite-scroll="load" style="overflow:auto" v-text="showArticle.content"></div>
+      </el-card>
       <!-- 评论、点赞、关注-->
       <div class="show-msg">
         <el-menu
@@ -23,6 +36,9 @@
           class="el-menu-vertical-demo"
           mode="horizontal"
           @select="handleSelect"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
         >
           <el-menu-item index="1"><i class="el-icon-chat-line-square"></i><span class="msg">评论 {{allComments.length}}</span></el-menu-item>
           <el-menu-item index="2"><i class="el-icon-thumb"></i><span class="msg">点赞 {{thumbNum}}</span></el-menu-item>
@@ -62,7 +78,10 @@ export default {
         title: '明天',
         location: '北京',
         time: '2018/07/22',
-        content: '让我掉下眼泪的,不止昨夜的酒。让我依依不舍的 ，止你的温柔。余路还要走多久，你攥着我的手.让我感到为难的 是挣扎的自由 分别总是在九月 回忆是思念的愁,深秋嫩绿的垂柳 亲吻着我额头在那座阴雨的小城里 我从未忘记你。成都，带不走的只有你'
+        content: `让我掉下眼泪的,不止昨夜的酒。让我依依不舍的 ，止你的温柔。
+        余路还要走多久，你攥着我的手.让我感到为难的 是挣扎的自由 分别总是在九月 
+        回忆是思念的愁,深秋嫩绿的垂柳 亲吻着我额头在那座阴雨的小城里 我从未忘记你。
+        成都，带不走的只有你`
       },
       allComments: [
         {userName:'lily', comment: 'this is great'},
@@ -85,7 +104,7 @@ export default {
         this.showComments = false;
         this.startFlag = !this.startFlag;
         if (this.startFlag) {this.startState = '已关注'} else {this.startState  = '关注作者'}
-      } else if (index === '1') { this.showComments = true; }
+      } else if (index === '1') { this.showComments = !this.showComments; }
     },
     // goBack() {
     //   this.$emit('detail-close');
@@ -115,26 +134,22 @@ export default {
   // background-color: $main-bg;
   margin: 0 auto;
 }
-.show-article {
-  display: inline-block;
-  width: 650px;
-  height: 420px;
-  background: #fff;
-}
+// .show-article {
+//   display: inline-block;
+//   width: 650px;
+//   height: 420px;
+//   background: #fff;
+// }
 // 内容
 .content {
-  width: 610px;
-  height: 308px;
-  padding:0 20px 20px 20px;
-  margin: 12px 0 10px 0;
-  font-size: 50px;// 测试字号
+  width: 630px;
+  height: 300px;
+  font-size: 16px;// 测试字号
 }
 // 文章显示头部
-.article-header {
-  height: 50px;
-  padding-top: 20px;
-  background: rgba($color: $theme-1-hex, $alpha: .4);
-}
+// .article-header {
+//   background: rgba($color: $theme-1-hex, $alpha: .4);
+// }
 .header-title {
   font-size: 18px;
   text-align: center;
@@ -168,5 +183,18 @@ export default {
   color: $--color-user;
   margin: 10px;
   border-bottom: 0.7px solid;
+}
+// /////@at-root
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both
+}
+
+.box-card {
+  width: 650px;
 }
 </style>

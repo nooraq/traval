@@ -2,12 +2,12 @@ export default {
   NotLogin(state) {
     state.isLogin = false;
     localStorage.isLogin = false;
-    console.log('changed');
+    console.log('login state changed');
   },
   // 判断登录的用户账号密码是否存在
   changeLoginStatus(state, mes) {
     try {
-      if (state.users.Userid === mes.Userid && state.users.Password === mes.Password) {
+      if (state.users.username === mes.username && state.users.password === mes.password) {
         // 账号密码匹配成功，isLogin 为 true
         state.isLogin = true;
         localStorage.isLogin = true;
@@ -25,9 +25,11 @@ export default {
   // 保存用户注册的账号
   saveRegiMes(state, regimes) {
     try {
-      localStorage.Userid = regimes.Userid;
-      localStorage.Password = regimes.Password;
+      localStorage.username = regimes.username;
+      localStorage.password = regimes.password;
       state.users = regimes;
+      console.log('regi msg:');
+      console.log(state.users);
     } catch (error) {}
   }
 };

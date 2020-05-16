@@ -67,7 +67,7 @@ export default {
 
 .all-wrapper {
   margin: 0 70px;
-  margin-top: 50px;
+  margin-top: 33px;
 }
 // 文章显示框样式
 .show-article {
@@ -120,11 +120,13 @@ export default {
   padding: 0 10px 10px 10px;
 }
 .menu-header {
-  height: 40px;
-  line-height: 40px;
+  height: 50px;
+  line-height: 50px;
   padding-left: 10px;
+  font-size: 16px;
   text-decoration: underline;
-  background: rgba($color: $theme-1-hex, $alpha: .5);
+  background-color: #545c64;
+  color: #ffd04b;
 }
 .menu-content-li {
   height: 90px;

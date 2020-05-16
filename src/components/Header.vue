@@ -13,13 +13,24 @@
     <!-- 更多-->
     <div class="name-wrapper">
       <!-- 全局搜索-->
-      <el-input
+      <el-autocomplete
+        size="mini"
+        class="all-search"
+        placeholder="按时间/地点搜索文章"
+        suffix-icon="el-icon-search"
+        v-model="allSearch"
+        :value="allSearch"
+        @select="handleSelect"
+        :fetch-suggestions="querySearch"
+      >
+      </el-autocomplete>
+      <!-- <el-input
         class="all-search"
         size="mini"
         placeholder="按时间/地点搜索"
         suffix-icon="el-icon-search"
         v-model="allSearch">
-      </el-input>
+      </el-input> -->
       <el-button type="danger" icon="el-icon-edit" @click="handleWrite" class="write">写文章</el-button>
       <el-dropdown @command="handleCommand">
         <span class="el-dropdown-link">
@@ -35,7 +46,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 
 export default {
   name: 'Header',
@@ -43,8 +54,47 @@ export default {
     return {
       onTrack: false,
       onArticle: false,
-      allSearch: ''
+      allSearch: '',
+      allLocals: [
+        { value: '北京' },
+        { value: '天津市' },
+        { value: '上海市' },
+        { value: '重庆市' },
+        { value: '河北' },
+        { value: '河南' },
+        { value: '云南' },
+        { value: '辽宁' },
+        { value: '黑龙江' },
+        { value: '湖南' },
+        { value: '安徽' },
+        { value: '山东' },
+        { value: '新疆' },
+        { value: '江苏' },
+        { value: '浙江' },
+        { value: '江西' },
+        { value: '湖北' },
+        { value: '广西壮族自治区' },
+        { value: '甘肃' },
+        { value: '山西' },
+        { value: '内蒙古自治区' },
+        { value: '陕西' },
+        { value: '吉林' },
+        { value: '福建' },
+        { value: '贵州' },
+        { value: '广东' },
+        { value: '青海' },
+        { value: '西藏自治区' },
+        { value: '四川' },
+        { value: '宁夏回族自治区' },
+        { value: '海南' },
+        { value: '台湾' },
+        { value: '香港特别行政区' },
+        { value: '澳门特别行政区' }
+      ]
     };
+  },
+  computed: {
+    isLogin: function() { return this.$store.state.isLogin; }
   },
   methods: {
     ...mapMutations(['NotLogin']),
@@ -78,24 +128,59 @@ export default {
       this.$router.push('/writePage');
       this.onTrack = false;
       this.onArticle = false;
+    },
+    // 搜索自动匹配
+    querySearch(queryString, cb) {
+      let allLocals = this.allLocals;
+      // console.log("locals:");
+      // console.log(allLocals);
+      // results 保存匹配结果列表
+      let results = queryString? allLocals.filter(this.createFilter(queryString)): allLocals;
+      // console.log("results:");
+      // console.log(results);
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (local) => {
+        return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      }
+    },
+    handleSelect(item) {
+      console.log(item.value);
     }
   },
-  // 修复刷新页面后title变色不准确bug
+  // 修复刷新页面后title变色不准确以及登录状态验证bug
   mounted () {
     const path = this.$route.path;
     console.log('路径'+path);
-    if (path === '/mapTrack') {
-      this.onTrack = true;
-      this.onArticle = false;
-    } else if (path === '/articalShow') {
-      this.onTrack = false;
-      this.onArticle = true;
-    } else {}
+    if (!this.isLogin) {
+      alert('还未登录，请先登录！');
+      this.$router.push('/login');
+      console.log('hello');
+    } else {
+      if (path === '/mapTrack') {
+        this.onTrack = true;
+        this.onArticle = false;
+      } else if (path === '/articalShow') {
+        this.onTrack = false;
+        this.onArticle = true;
+      }
+    }
   },
-  // 监听路径的变化，修复返回导致title变色不同步bug
+  // 监听路径的变化，修复返回导致title变色不同步、登录验证bug
   watch: {
     $route: function () {
-      console.log(this.$route.path);
+      // console.log(this.$route.path);
+      // console.log("header"+this.$store.state.isLogin);
+      // let isLogin = this.$store.state.isLogin;
+      console.log("header isLogin:"+this.isLogin);
+      //  
+      // isLogin为false时跳转至登录页，此处判断用！this.Login则无法达到，有疑。
+      if (!this.isLogin) {
+        alert('还未登录，请先登录！');
+        this.$router.push('/login');
+        console.log('hello');
+      }
       if (this.$route.path === '/mapTrack') {
         this.onTrack = true;
         this.onArticle = false;
@@ -168,7 +253,7 @@ export default {
   text-align: right;
 }
 .all-search {
-  width: 150px;
+  width: 160px;
   margin-right: 10px;
 }
 .write {
