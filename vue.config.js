@@ -8,8 +8,11 @@ const resolve = dir => path.join(__dirname, dir);
 
 module.exports = {
   // 修改为相对路径
-  publicPath: BASE_URL,
   devServer: {
+    publicPath: BASE_URL,
+    proxy: {
+      '/api': { target: 'http://175.24.28.193:8080', secure: false }
+    },
     overlay: {
       errors: true
     },

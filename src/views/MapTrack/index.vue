@@ -43,9 +43,10 @@ import 'echarts/lib/chart/map';
 // import 'echarts/lib/chart/scatter';
 // import 'echarts/lib/component/geo';
 import 'echarts/lib/component/tooltip';
-import chinaJson from './china.json';
-import styles from '@/theme/variable.scss';
 import { mapState } from 'vuex';
+import styles from '@/theme/variable.scss';
+import { getLocation } from '@/api/demo';
+import chinaJson from './china.json';
 
 const getData = [
   { name: '北京', value: 1 },
@@ -204,10 +205,10 @@ export default {
     Click(params) { console.log(params); this.location = params.data.name; }
   },
   computed: {
-   ...mapState(['isLogin'])
-  }, 
+    ...mapState(['isLogin'])
+  },
   // 判断登录与否，否则跳到登录页
-  mounted () {
+  mounted() {
     console.log(this.isLogin);
     if (!this.isLogin) {
       alert('还未登录，请先登录！');
@@ -216,6 +217,14 @@ export default {
     // console.log(window.location.href);
     // console.log(this.$route.path);
     // console.log(this.$route.params);
+  },
+
+  async created() {
+    const res = await getLocation({
+      action: 'have_been',
+      Userid: '2'
+    });
+    this.data = res;
   }
 };
 </script>

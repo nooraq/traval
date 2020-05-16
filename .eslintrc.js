@@ -30,7 +30,8 @@ module.exports = {
       imports: 'never',
       exports: 'never',
       functions: 'never'
-    }]
+    }],
+    "consistent-return": [0],
   },
   parserOptions: {
     parser: 'babel-eslint'

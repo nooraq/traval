@@ -1,4 +1,13 @@
+import { Message } from 'element-ui';
 import { demo } from './adapter';
 
-export const getObject = () => demo.get('/mock/users/1');
-export const getArray = () => demo.get('/mock/users');
+export const getLocation = async (params) => {
+  try {
+    const res = await demo.get('/article', {
+      params
+    });
+    return res;
+  } catch (e) {
+    Message.error(e);
+  }
+};

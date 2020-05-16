@@ -10,11 +10,11 @@ const getInstance = (baseURL) => {
   const instance = axios.create({
     baseURL,
     timeout: 30000,
-    withCredentials: true,
+    withCredentials: false,
   });
   instance.interceptors.response.use((response = {}) => {
-    const { data: { code, data } } = response;
-    if (code === 200) {
+    const { data: { code, data, ret } } = response;
+    if (code === 200 || ret === 0) {
       return data;
     }
     return Promise.reject(response.data);
