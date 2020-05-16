@@ -13,7 +13,7 @@ const getInstance = (baseURL) => {
     withCredentials: false,
   });
   instance.interceptors.response.use((response = {}) => {
-    const { data: { code, data, ret } } = response;
+    const { data: { code, ret }, data } = response;
     if (code === 200 || ret === 0) {
       return data;
     }

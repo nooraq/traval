@@ -12,23 +12,11 @@
   active-text="曾经写过的文章"
   inactive-text="可能感兴趣的文章">
   </el-switch>
-  <div class="recommend-item">
+  <div class="recommend-item" v-for="item in list" :key="item.index">
     <div class="location">
-    <p>{{location}}</p>
+    <p>{{item.location}}</p>
     </div>
-    <router-link class="title" :to="`/essay/${location}`">这是标题</router-link>
-    <p class="detail">详情详情详情详情详情详情详情详情详情
-      详情详情详情详情详情详情详情详情详情
-    </p>
-  </div>
-  <div class="recommend-item">
-    <p class="title">title</p>
-    <p class="detail">详情详情详情详情详情详情详情详情详情
-      详情详情详情详情详情详情详情详情详情
-    </p>
-  </div>
-  <div class="recommend-item">
-    <p class="title">title</p>
+    <router-link class="title" :to="`/essay/${item.location}`">这是标题</router-link>
     <p class="detail">详情详情详情详情详情详情详情详情详情
       详情详情详情详情详情详情详情详情详情
     </p>
@@ -51,38 +39,38 @@ import chinaJson from './china.json';
 const getData = [
   { name: '北京', value: 1 },
   { name: '天津市', value: 1 },
-  { name: '上海市', value: 0 },
-  { name: '重庆市', value: 0 },
-  { name: '河北', value: 0 },
+  { name: '上海市', value: 1 },
+  { name: '重庆市', value: 1 },
+  { name: '河北', value: 1 },
   { name: '河南', value: 1 },
   { name: '云南', value: 1 },
   { name: '辽宁', value: 1 },
   { name: '黑龙江', value: 1 },
-  { name: '湖南', value: 0 },
-  { name: '安徽', value: 0 },
-  { name: '山东', value: 0 },
-  { name: '新疆', value: 0 },
-  { name: '江苏', value: 0 },
-  { name: '浙江', value: 0 },
-  { name: '江西', value: 0 },
-  { name: '湖北', value: 0 },
-  { name: '广西壮族自治区', value: 0 },
-  { name: '甘肃', value: 0 },
-  { name: '山西', value: 0 },
-  { name: '内蒙古自治区', value: 0 },
-  { name: '陕西', value: 0 },
-  { name: '吉林', value: 0 },
-  { name: '福建', value: 0 },
-  { name: '贵州', value: 0 },
-  { name: '广东', value: 0 },
-  { name: '青海', value: 0 },
-  { name: '西藏自治区', value: 0 },
-  { name: '四川', value: 0 },
-  { name: '宁夏回族自治区', value: 0 },
-  { name: '海南', value: 0 },
-  { name: '台湾', value: 0 },
-  { name: '香港特别行政区', value: 0 },
-  { name: '澳门特别行政区', value: 0 }
+  { name: '湖南', value: 1 },
+  { name: '安徽', value: 1 },
+  { name: '山东', value: 1 },
+  { name: '新疆', value: 1 },
+  { name: '江苏', value: 1 },
+  { name: '浙江', value: 1 },
+  { name: '江西', value: 1 },
+  { name: '湖北', value: 1 },
+  { name: '广西壮族自治区', value: 1 },
+  { name: '甘肃', value: 1 },
+  { name: '山西', value: 1 },
+  { name: '内蒙古自治区', value: 1 },
+  { name: '陕西', value: 1 },
+  { name: '吉林', value: 1 },
+  { name: '福建', value: 1 },
+  { name: '贵州', value: 1 },
+  { name: '广东', value: 1 },
+  { name: '青海', value: 1 },
+  { name: '西藏自治区', value: 1 },
+  { name: '四川', value: 1 },
+  { name: '宁夏回族自治区', value: 1 },
+  { name: '海南', value: 1 },
+  { name: '台湾', value: 1 },
+  { name: '香港特别行政区', value: 1 },
+  { name: '澳门特别行政区', value: 1 }
 ];
 
 const selectedItemStyle = {
@@ -95,6 +83,8 @@ export default {
     return {
       myList: true,
       location: '北京',
+      list: [],
+      mapData: [],
       options: {
         // tooltip: {
         //   trigger: 'item',
@@ -152,7 +142,7 @@ export default {
             },
             width: 600,
             height: 600,
-            data: getData.map((item) => {
+            data: this.data.mapData.map((item) => {
               if (item.value === 0) {
                 item.itemStyle = selectedItemStyle;
               }
@@ -221,9 +211,10 @@ export default {
   async created() {
     const res = await getLocation({
       action: 'have_been',
-      Userid: '2'
+      userid: '2'
     });
-    this.data = res;
+    const wentLoc = res.retlist.map(item => ({ name: item.Location, value: 0 }));
+    this.data.mapData = [...getData, ...wentLoc];
   }
   // ,
   // computed: {
