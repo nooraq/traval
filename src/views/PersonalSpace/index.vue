@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div  v-show="articleDetailShow">
+    <div  v-show="articleDetailShow" opacity=".5">
       <el-page-header @back="goBack" content="文章详情" class="back-sign"></el-page-header>
       <article-detail></article-detail>
     </div>
@@ -80,7 +80,7 @@
           </div>
         </el-card>
       </div>
-      <right-side></right-side>
+      <right-side :locals="localName"></right-side>
     </div>
   </div>
 </template>
@@ -89,7 +89,7 @@
 import { mapState } from 'vuex';
 import ArticleDetail from '@/components/Article.vue';
 
-import personalData from './personal.json';
+import personalData from './components/personal.json';
 import RightSide from './components/RightSide.vue';
 
 
@@ -108,6 +108,7 @@ export default {
       focus: [],
       myArticle: [],
       giveThumbs: [],
+      localName:[],
       // 列表显示所用数据
       menuTitle: '我的文章',
       imgs: [],
@@ -156,6 +157,7 @@ export default {
     this.myArticle = Data.myArticle;// 我的文章
     this.giveThumbs = Data.giveThumbs;// 我的点赞
     this.imgs = Data.imgs;// 推荐轮播图
+    this.localName = Data.localName;
   }
 };
 </script>
@@ -169,6 +171,7 @@ export default {
 }
 .back-sign {
   margin: 10px 0 0 50px;
+  color: #f56c6c;
 }
 .main-left {
   width: 300px;
@@ -239,7 +242,6 @@ export default {
   text-align: center;
   color: $--color-title;
 }
-
 .infinit-list .el-button {
   padding: 4px;
   margin: 15px 0 0 20px;

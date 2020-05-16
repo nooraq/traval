@@ -202,14 +202,13 @@ export default {
     Echarts
   },
   methods: {
-    Click(params) { console.log(params); this.location = params.data.name; }
+    Click(params) { this.location = params.data.name; }
   },
   computed: {
     ...mapState(['isLogin'])
   },
   // 判断登录与否，否则跳到登录页
   mounted() {
-    console.log(this.isLogin);
     if (!this.isLogin) {
       alert('还未登录，请先登录！');
       this.$router.push('/login');
@@ -226,6 +225,22 @@ export default {
     });
     this.data = res;
   }
+  // ,
+  // computed: {
+  //  ...mapState(['isLogin'])
+  // }
+  // ,
+  // // 判断登录与否，否则跳到登录页
+  // mounted () {
+  //   console.log(this.isLogin);
+  //   if (!this.isLogin) {
+  //     alert('还未登录，请先登录！');
+  //     this.$router.push('/login');
+  //   }
+  //   // console.log(window.location.href);
+  //   // console.log(this.$route.path);
+  //   // console.log(this.$route.params);
+  // }
 };
 </script>
 

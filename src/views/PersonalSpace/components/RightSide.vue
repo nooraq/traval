@@ -2,13 +2,16 @@
   <div class="right-wrapper">
     <!-- 搜索个人文章-->
     <div class="search">
-      <el-input
+      <el-autocomplete
         size="middle"
         placeholder="按地点搜索我的文章"
         suffix-icon="el-icon-search"
         v-model="inputCity"
-        class="personal-search">
-      </el-input>
+        :value="inputCity"
+        @select="handleSelect"
+        :fetch-suggestions="querySearch"
+      >
+      </el-autocomplete>
     </div>
     <!-- 展示年报-->
     <div class="report" v-show="showReport">
@@ -32,9 +35,46 @@
 <script>
 export default {
   name: 'RightSide',
+  props: ['locals'],
   data: function() {
     return {
       inputCity: '',
+      allLocals: [
+        { value: '北京' },
+        { value: '天津市' },
+        { value: '上海市' },
+        { value: '重庆市' },
+        { value: '河北' },
+        { value: '河南' },
+        { value: '云南' },
+        { value: '辽宁' },
+        { value: '黑龙江' },
+        { value: '湖南' },
+        { value: '安徽' },
+        { value: '山东' },
+        { value: '新疆' },
+        { value: '江苏' },
+        { value: '浙江' },
+        { value: '江西' },
+        { value: '湖北' },
+        { value: '广西壮族自治区' },
+        { value: '甘肃' },
+        { value: '山西' },
+        { value: '内蒙古自治区' },
+        { value: '陕西' },
+        { value: '吉林' },
+        { value: '福建' },
+        { value: '贵州' },
+        { value: '广东' },
+        { value: '青海' },
+        { value: '西藏自治区' },
+        { value: '四川' },
+        { value: '宁夏回族自治区' },
+        { value: '海南' },
+        { value: '台湾' },
+        { value: '香港特别行政区' },
+        { value: '澳门特别行政区' }
+      ],
       showReport: false,
       reportMsg: [
         {msg:"hello"},
@@ -46,6 +86,24 @@ export default {
   methods: {
     changeReportState () {
       this.showReport = !this.showReport;
+    },
+    querySearch(queryString, cb) {
+      let allLocals = this.allLocals;
+      // console.log("locals:");
+      // console.log(allLocals);
+      // results 保存匹配结果列表
+      let results = queryString? allLocals.filter(this.createFilter(queryString)): allLocals;
+      // console.log("results:");
+      // console.log(results);
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (local) => {
+        return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      }
+    },
+    handleSelect(item) {
+      console.log(item.value);
     }
   }
 }
