@@ -11,7 +11,11 @@ module.exports = {
   devServer: {
     publicPath: BASE_URL,
     proxy: {
-      '/api': { target: 'http://175.24.28.193:8080', secure: false }
+      '/api': {
+        target: 'http://175.24.28.193:8080',
+        secure: false,
+        pathRewrite: { '^/api': '' }
+      }
     },
     overlay: {
       errors: true
