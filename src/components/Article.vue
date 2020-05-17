@@ -3,19 +3,6 @@
     <!-- <el-page-header @back="goBack" content="文章详情" class="back-sign"></el-page-header> -->
     <div class="content-wrapper">
       <!-- 文章显示内容-->
-      <!-- <div class="show-article">
-        <div class="article-header">
-          <p class="header-title">{{showArticle.title}}</p>
-          <div class="header-msg">
-            <span class="msg lighter"><i class="el-icon-user"></i>: {{showArticle.author}}</span>
-            <span class="msg">地点：{{showArticle.location}}</span>
-            <span class="msg">时间：{{showArticle.time}}</span>
-          </div>
-        </div>
-        <div class="content" v-infinite-scroll="load" style="overflow:auto">
-            {{showArticle.content}}
-        </div>
-      </div> -->
       <el-card class="box-card">
         <!-- 文章头部 -->
         <div slot="header" class="clearfix">
@@ -185,15 +172,14 @@ export default {
   border-bottom: 0.7px solid;
 }
 // /////@at-root
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-.clearfix:after {
-  clear: both
-}
-
+// .clearfix:before,
+// .clearfix:after {
+//   display: table;
+//   content: "";
+// }
+// .clearfix:after {
+//   clear: both
+// }
 .box-card {
   width: 650px;
 }

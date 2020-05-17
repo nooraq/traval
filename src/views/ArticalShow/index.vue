@@ -2,35 +2,38 @@
   <div class="all-wrapper">
     <div class="show-article">
       <article-detail></article-detail>
-      <!-- <div class="article-header">
-        <p class="header-title">{{showArticle.title}}</p>
-        <div class="header-msg">
-          <span class="msg">地点：{{showArticle.location}}</span>
-          <span class="msg">时间：{{showArticle.time}}</span>
-        </div>
-      </div>
-      <div class="content" v-infinite-scroll="load" style="overflow:auto">
-          {{showArticle.content}}
-          {{showArticle.content}}
-          {{showArticle.content}}
-          {{showArticle.content}}
-          {{showArticle.content}}
-          {{showArticle.content}}
-          {{showArticle.content}}
-          {{showArticle.content}}
-          {{showArticle.content}}
-      </div> -->
     </div>
     <div class="article-menu">
-      <div class="menu-header">
-        推荐列表
-      </div>
-      <ul class="menu-content" v-infinite-scroll="load" style="overflow:auto">
-        <li v-for="(item,index) of recommendArticles" :key="index" class="menu-content-li">
-          <p class="li-header">{{item.title}}</p>
-          <div class="li-content">{{item.content}}</div>
-        </li>
-      </ul>
+      <!-- 全局搜索 -->
+      <el-autocomplete
+        size="large"
+        class="all-search"
+        placeholder="按时间/地点搜索文章"
+        suffix-icon="el-icon-search"
+        v-model="allSearch"
+        :value="allSearch"
+        @select="handleSelect"
+        :fetch-suggestions="querySearch"
+      >
+      </el-autocomplete>
+      <!-- 推荐列表 -->
+      <el-card class="box-card">
+        <div slot="header" class="clearfix">
+          <span class="recommend">推荐列表</span>
+        </div>
+        <ul class="menu-content" v-infinite-scroll="load" style="overflow:auto">
+          <li v-for="(item,index) of recommendArticles" :key="index" class="menu-content-li">
+            <!-- <p class="li-header">{{item.title}} </p> -->
+            <div class="header-msg">
+              <span class="li-header">{{item.title}}</span>
+              <span class="msg lighter"><i class="el-icon-user"></i>：{{showArticle.author}}</span>
+              <span class="msg">地点：{{showArticle.location}}</span>
+            </div>
+            <div class="li-content">{{item.content}}</div>
+            <el-divider></el-divider>
+          </li>
+        </ul>
+      </el-card>
     </div>
   </div>
 </template>
@@ -45,12 +48,64 @@ export default {
     return {
       showArticle: {},
       count: 0,
-      recommendArticles: []
+      recommendArticles: [],
+      allSearch: '',
+      allLocals: [
+        { value: '北京' },
+        { value: '天津市' },
+        { value: '上海市' },
+        { value: '重庆市' },
+        { value: '河北' },
+        { value: '河南' },
+        { value: '云南' },
+        { value: '辽宁' },
+        { value: '黑龙江' },
+        { value: '湖南' },
+        { value: '安徽' },
+        { value: '山东' },
+        { value: '新疆' },
+        { value: '江苏' },
+        { value: '浙江' },
+        { value: '江西' },
+        { value: '湖北' },
+        { value: '广西壮族自治区' },
+        { value: '甘肃' },
+        { value: '山西' },
+        { value: '内蒙古自治区' },
+        { value: '陕西' },
+        { value: '吉林' },
+        { value: '福建' },
+        { value: '贵州' },
+        { value: '广东' },
+        { value: '青海' },
+        { value: '西藏自治区' },
+        { value: '四川' },
+        { value: '宁夏回族自治区' },
+        { value: '海南' },
+        { value: '台湾' },
+        { value: '香港特别行政区' },
+        { value: '澳门特别行政区' }
+      ]
     };
   },
   methods: {
     load() {
       this.count += 2;
+    },
+    // 搜索自动匹配
+    querySearch(queryString, cb) {
+      let allLocals = this.allLocals;
+      // results 保存匹配结果列表
+      let results = queryString? allLocals.filter(this.createFilter(queryString)): allLocals;
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (local) => {
+        return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      }
+    },
+    handleSelect(item) {
+      console.log(item.value);
     }
   },
   mounted() {
@@ -73,77 +128,63 @@ export default {
 .show-article {
   display: inline-block;
   width: 650px;
-  // height: 450px;
-  // background: #fff;
 }
-// 内容
-// .content {
-//   width: 610px;
-//   height: 340px;
-//   padding:0 20px 20px 20px;
-//   margin: 20px 0;
-//   font-size: 14px;
-// }
-// 文章显示头部
-// .article-header {
-//   height: 50px;
-//   padding-top: 20px;
-//   background: rgba($color: $theme-1-hex, $alpha: .4);
-//   border-radius: 4px;
-// }
-// .header-title {
-//   font-size: 18px;
-//   text-align: center;
-// }
-// .header-msg {
-//   text-align: right;
-//   margin-right: 35px;
-// }
-// .msg {
-//   font-size: 13px;
-//   padding: 0 10px;
-// }
+.all-search {
+  width: 300px;
+  margin-bottom: 25px;
+}
 // 文章推荐列
+.recommend {
+  font-size: 15px;
+}
+// .clearfix:before,
+// .clearfix:after {
+//   display: table;
+//   content: "";
+// }
+// .clearfix:after {
+//   clear: both
+// }
+.box-card {
+  width: 350px;
+  height: 410px;
+}
 .article-menu {
   width: 350px;
   height: 450px;
   display: inline-block;
   margin-left: 120px;
-  border-radius: 6px;
   vertical-align: top;
-  font-size: 15px;
-  background-color: #fff;
-  // padding: 4px;
 }
 .menu-content {
-  height: 400px;
-  padding: 0 10px 10px 10px;
-}
-.menu-header {
-  height: 50px;
-  line-height: 50px;
-  padding-left: 10px;
-  font-size: 16px;
-  text-decoration: underline;
-  background-color: #545c64;
-  color: #ffd04b;
+  height: 320px;
+  width: 332px;
 }
 .menu-content-li {
-  height: 90px;
+  height: 88px;
   margin-top: 10px;
-  border-bottom: 1px solid rgb(151, 145, 145);
 }
 .li-content {
   width: 314px;
   font-size: 13px;
-  margin-top: 10px;
-  // white-space: nowrap;
-  // overflow: hidden;
-  // text-overflow: ellipsis;
+  // 部分显示
   overflow: hidden;
   display: -webkit-box;
   text-overflow:ellipsis;
-  -webkit-line-clamp:3;
+  -webkit-line-clamp:2;
   -webkit-box-orient: vertical
+}
+// 列表信息
+.header-msg {
+  margin-bottom: 8px;
+}
+.msg {
+  font-size: 13px;
+  margin-left: 15px;
+}
+.header-msg .lighter {
+  color: $--color-user;
+  border-bottom: 0.7px solid;
+  margin-left: 80px;
 }
 </style>

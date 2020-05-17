@@ -49,9 +49,9 @@
             <p class="menu-title">{{menuTitle}}</p>
           </div>
           <div class="menu-show" style="overflow:auto">
-            <!-- 我的文章-->
-            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyArticles">
-              <li v-for="(item,index) in myArticle" :key="index" class="infinit-list">
+            <!-- 我的文章/我的点赞 -->
+            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isArticles">
+              <li v-for="(item,index) in theArticle" :key="index" class="infinit-list">
                 <div class="li-title">
                   {{item.title}} <span>{{item.time}}</span>
                 </div>
@@ -64,17 +64,6 @@
             <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyFocus">
               <li v-for="(item,index) in focus" :key="index">
                 <div class="focus-name">{{item.name}}</div>
-              </li>
-            </ul>
-            <!-- 我的点赞-->
-            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyThumbs">
-              <li v-for="(item,index) in giveThumbs" :key="index" class="infinit-list">
-                <div class="li-title">
-                  {{item.title}} <span>by：{{item.author}}</span>
-                </div>
-                <div class="li-words">{{item.content}}</div>
-                <el-button type="primary" size="mini" plain @click="showDetail">查看详情</el-button>
-                <el-divider><i class="el-icon-tickets"></i></el-divider>
               </li>
             </ul>
           </div>
@@ -111,12 +100,13 @@ export default {
       localName:[],
       // 列表显示所用数据
       menuTitle: '我的文章',
-      imgs: [],
+      theArticle: [],
+      imgs: [],// 推荐走马灯
       count: 0,
       // 列表显示条件
-      isMyArticles: true,
+      isArticles: true,
       isMyFocus: false,
-      isMyThumbs: false,
+      // isMyThumbs: false,
       // 文章详情
       articleDetailShow: false
     };
@@ -126,17 +116,19 @@ export default {
       if (index === '1') {
         this.menuTitle = '我的关注';
         this.isMyFocus = true;
-        this.isMyArticles = false;
-        this.isMyThumbs = false;
+        this.isArticles = false;
+        // this.isMyThumbs = false;
       } else if (index === '2') {
         this.menuTitle = '我的文章';
-        this.isMyArticles = true;
+        this.theArticle = this.myArticle;
+        this.isArticles = true;
         this.isMyFocus = false;
-        this.isMyThumbs = false;
+        // this.isMyThumbs = false;
       } else if (index === '3') {
         this.menuTitle = '我的点赞';
-        this.isMyThumbs = true;
-        this.isMyArticles = false;
+        // this.isMyThumbs = true;
+        this.isMyArticles = true;
+        this.theArticle = this.giveThumbs;
         this.isMyFocus = false;
       }// else {}
     },
@@ -155,9 +147,10 @@ export default {
     const Data = personalData.data;
     this.focus = Data.focus;// 关注的人
     this.myArticle = Data.myArticle;// 我的文章
+    this.theArticle = Data.myArticle;
     this.giveThumbs = Data.giveThumbs;// 我的点赞
     this.imgs = Data.imgs;// 推荐轮播图
-    this.localName = Data.localName;
+    this.localName = Data.localName;// 搜索补充
   }
 };
 </script>
@@ -288,14 +281,6 @@ export default {
   text-overflow:ellipsis;
   -webkit-line-clamp:2;
   -webkit-box-orient: vertical;
-}
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-.clearfix:after {
-  clear: both
 }
 .box-card {
   width: 580px;
