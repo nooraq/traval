@@ -33,8 +33,8 @@
           <p class="errorWarn" v-show="emptyRWarn">*输入的账号或密码为空，请输入完整！</p> -->
         <div class="user-mes">
           <el-form :model="regiMessage" status-icon size="large" :rules="rules" ref="regiMessage" class="demo-ruleForm">
-            <el-form-item prop="username">
-              <el-input maxlength="15" minlength="6" show-word-limit class="input-mes" v-model="regiMessage.username" placeholder="请输入账号" autocomplete="off"></el-input>
+            <el-form-item prop="UserName">
+              <el-input maxlength="15" minlength="6" show-word-limit class="input-mes" v-model="regiMessage.UserName" placeholder="请输入账号" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item prop="password">
               <el-input maxlength="15" placeholder="请输入密码" v-model="regiMessage.password" show-password autocomplete="off"></el-input>
@@ -52,6 +52,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
+import { postRegUser } from '@/api/demo';
 
 export default {
   name: 'LoginPage',
@@ -107,7 +108,7 @@ export default {
         ]
       },
       regiMessage: {
-        username: '',
+        UserName: '',
         password: ''
       },
       // 要设置初始值为login才能刷新时立即显示login输入框部分
@@ -137,8 +138,10 @@ export default {
       });
     },
     submitRegiForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
+          const res = await postRegUser(this.regiMessage);
+          console.log(res);
           this.saveRegiMes(this.regiMessage);
           alert('注册成功，请重新登录！');
           this.activeName = 'login';

@@ -88,10 +88,10 @@
 <script>
 import { mapState } from 'vuex';
 import ArticleDetail from '@/components/Article.vue';
+import { getMyArticles } from '@/api/demo';
 
 import personalData from './components/personal.json';
 import RightSide from './components/RightSide.vue';
-
 
 export default {
   name: 'personalSpace',
@@ -108,7 +108,7 @@ export default {
       focus: [],
       myArticle: [],
       giveThumbs: [],
-      localName:[],
+      localName: [],
       // 列表显示所用数据
       menuTitle: '我的文章',
       imgs: [],
@@ -158,6 +158,9 @@ export default {
     this.giveThumbs = Data.giveThumbs;// 我的点赞
     this.imgs = Data.imgs;// 推荐轮播图
     this.localName = Data.localName;
+  },
+  created() {
+    getMyArticles({ userName: 'a' });
   }
 };
 </script>

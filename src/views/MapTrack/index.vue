@@ -85,19 +85,24 @@ export default {
       location: '北京',
       list: [],
       mapData: [],
-      options: {
-        // tooltip: {
-        //   trigger: 'item',
-        //   // formatter: '{b}<br/>{c} (p / km2)'
-        // },
-        // geo: {
-        //   map: 'china',
-        //   itemStyle: { // 定义样式
-        //     color: styles['map-bg'],
-        //   },
-        //   width: 600,
-        //   height: 600,
-        // },
+    };
+  },
+  computed: {
+    ...mapState(['isLogin']),
+    options() {
+      return {
+      // tooltip: {
+      //   trigger: 'item',
+      //   // formatter: '{b}<br/>{c} (p / km2)'
+      // },
+      // geo: {
+      //   map: 'china',
+      //   itemStyle: { // 定义样式
+      //     color: styles['map-bg'],
+      //   },
+      //   width: 600,
+      //   height: 600,
+      // },
         visualMap: {
           min: 800,
           max: 50000,
@@ -133,7 +138,7 @@ export default {
                 shadowOffsetX: 0,
                 shadowOffsetY: 2,
                 shadowBlur: 8,
-                // shadow: '0 2px 12px 0 '
+              // shadow: '0 2px 12px 0 '
               }
             },
             itemStyle: { // 定义样式
@@ -142,51 +147,51 @@ export default {
             },
             width: 600,
             height: 600,
-            data: this.data.mapData.map((item) => {
+            data: this.mapData.map((item) => {
               if (item.value === 0) {
                 item.itemStyle = selectedItemStyle;
               }
               return item;
             })
           }
-          //     {
-          //       type: 'scatter',
-          //       coordinateSystem: 'geo',
-          //       symbol: 'pin',
-          //       symbolSize: 18,
-          //       // silent: true,
-          //       itemStyle: {
-          //         color({ data }) {
-          //           return data.mark === 0 ? styles['theme-4-hex'] : 'blue';
-          //         }
-          //       },
-          //       data: [
-          //         {
-          //           name: '海南', // 数据项名称，在这里指地区名称
+        //     {
+        //       type: 'scatter',
+        //       coordinateSystem: 'geo',
+        //       symbol: 'pin',
+        //       symbolSize: 18,
+        //       // silent: true,
+        //       itemStyle: {
+        //         color({ data }) {
+        //           return data.mark === 0 ? styles['theme-4-hex'] : 'blue';
+        //         }
+        //       },
+        //       data: [
+        //         {
+        //           name: '海南', // 数据项名称，在这里指地区名称
 
-          //           value: [ // 数据项值
-          //             ...(chinaJson.features.find(element =>
-          //               element.properties.name === '海南').properties.center),
-          //             340 // 北京地区的数值
-          //           ],
-          //           mark: 0
-          //         },
-          //         {
-          //           name: '北京', // 数据项名称，在这里指地区名称
+        //           value: [ // 数据项值
+        //             ...(chinaJson.features.find(element =>
+        //               element.properties.name === '海南').properties.center),
+        //             340 // 北京地区的数值
+        //           ],
+        //           mark: 0
+        //         },
+        //         {
+        //           name: '北京', // 数据项名称，在这里指地区名称
 
-          //           value: [ // 数据项值
-          //             ...(chinaJson.features.find(element =>
-          //               element.properties.name === '北京').properties.center),
-          //             340, // 北京地区的数值
-          //             0
-          //           ],
-          //           mark: 1
-          //         }
-          //       ]
-          //     }
+        //           value: [ // 数据项值
+        //             ...(chinaJson.features.find(element =>
+        //               element.properties.name === '北京').properties.center),
+        //             340, // 北京地区的数值
+        //             0
+        //           ],
+        //           mark: 1
+        //         }
+        //       ]
+        //     }
         ]
-      },
-    };
+      };
+    }
   },
   components: {
     Echarts
@@ -194,9 +199,8 @@ export default {
   methods: {
     Click(params) { this.location = params.data.name; }
   },
-  computed: {
-    ...mapState(['isLogin'])
-  },
+  // computed: {
+  // },
   // 判断登录与否，否则跳到登录页
   mounted() {
     if (!this.isLogin) {
@@ -211,10 +215,10 @@ export default {
   async created() {
     const res = await getLocation({
       action: 'have_been',
-      userid: '2'
+      userid: localStorage.userid
     });
     const wentLoc = res.retlist.map(item => ({ name: item.Location, value: 0 }));
-    this.data.mapData = [...getData, ...wentLoc];
+    this.mapData = [...getData, ...wentLoc];
   }
   // ,
   // computed: {
