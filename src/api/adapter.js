@@ -6,9 +6,10 @@
 import axios from 'axios';
 import { domains } from '@/config';
 
+// eslint-disable-next-line no-unused-vars
 const getInstance = (baseURL) => {
   const instance = axios.create({
-    baseURL,
+    baseURL: 'http://175.24.28.193:8080/',
     timeout: 30000,
     withCredentials: false,
   });
