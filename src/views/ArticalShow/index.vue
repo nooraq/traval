@@ -94,15 +94,13 @@ export default {
     },
     // 搜索自动匹配
     querySearch(queryString, cb) {
-      let allLocals = this.allLocals;
+      const allLocals = this.allLocals;
       // results 保存匹配结果列表
-      let results = queryString? allLocals.filter(this.createFilter(queryString)): allLocals;
+      const results = queryString ? allLocals.filter(this.createFilter(queryString)) : allLocals;
       cb(results);
     },
     createFilter(queryString) {
-      return (local) => {
-        return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      }
+      return (local) => { return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0); };
     },
     handleSelect(item) {
       console.log(item.value);

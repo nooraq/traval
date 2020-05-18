@@ -46,39 +46,6 @@ import { mapState, mapMutations } from 'vuex';
 export default {
   name: 'LoginPage',
   data() {
-    // const validateName = (rule, value, callback) => {
-    //   if (value === '') {
-    //     callback(new Error('别忘记输入账号呀！'));
-    //   } else {
-    //     if (this.loginMessage.password !== '') {
-    //       this.$refs.loginMessage.validateField('password');
-    //     }
-    //     if (this.regiMessage.password !== '') {
-    //       this.$refs.regiMessage.validateField('password');
-    //     }
-    //     // callback();
-    //   }
-    //   setTimeout(() => {
-    //     if (value.length < 6 || value.length > 15) {
-    //       callback(new Error('账号和密码不能少于6位数或大于15位数呀！'));
-    //     } else {
-    //       callback();
-    //     }
-    //   }, 1000);
-    // };
-    // const validatePass = (rule, value, callback) => {
-    //   if (value === '') {
-    //     callback(new Error('别忘记输入密码呀!'));
-    //   } else {
-    //     setTimeout(() => {
-    //       if (value.length < 6 || value.length > 15) {
-    //         callback(new Error('账号和密码不能少于6位数或大于15位数呀！'));
-    //       } else {
-    //         callback();
-    //       }
-    //     }, 1000);
-    //   }
-    // };
     return {
       // 有相关登录/注册选择的data
       showWarn: false,

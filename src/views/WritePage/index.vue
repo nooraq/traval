@@ -131,7 +131,7 @@ export default {
       editor.create();
     },
     goBack() {
-      window.history.back()
+      window.history.back();
     },
     onSubmit() {
       this.$message('form');
