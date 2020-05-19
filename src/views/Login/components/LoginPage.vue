@@ -42,49 +42,21 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
-import { postRegUser } from '@/api/demo';
+import { postRegUser, postLogUser, getRe, pt } from '@/api/demo';
+
 
 export default {
   name: 'LoginPage',
   data() {
-    // const validateName = (rule, value, callback) => {
-    //   if (value === '') {
-    //     callback(new Error('别忘记输入账号呀！'));
-    //   } else {
-    //     if (this.loginMessage.password !== '') {
-    //       this.$refs.loginMessage.validateField('password');
-    //     }
-    //     if (this.regiMessage.password !== '') {
-    //       this.$refs.regiMessage.validateField('password');
-    //     }
-    //     // callback();
-    //   }
-    //   setTimeout(() => {
-    //     if (value.length < 6 || value.length > 15) {
-    //       callback(new Error('账号和密码不能少于6位数或大于15位数呀！'));
-    //     } else {
-    //       callback();
-    //     }
-    //   }, 1000);
-    // };
-    // const validatePass = (rule, value, callback) => {
-    //   if (value === '') {
-    //     callback(new Error('别忘记输入密码呀!'));
-    //   } else {
-    //     setTimeout(() => {
-    //       if (value.length < 6 || value.length > 15) {
-    //         callback(new Error('账号和密码不能少于6位数或大于15位数呀！'));
-    //       } else {
-    //         callback();
-    //       }
-    //     }, 1000);
-    //   }
-    // };
     return {
       // 有相关登录/注册选择的data
       showWarn: false,
       // 有关账号密码提交的data
       loginMessage: {
+        username: '',
+        password: ''
+      },
+      regiMessage: {
         username: '',
         password: ''
       },
@@ -106,10 +78,6 @@ export default {
             min: 6, max: 15, message: '密码应为 6 到 15 个字符呀！', trigger: 'blur'
           }
         ]
-      },
-      regiMessage: {
-        username: '',
-        password: ''
       },
       // 要设置初始值为login才能刷新时立即显示login输入框部分
       activeName: 'login'
@@ -140,11 +108,30 @@ export default {
     submitRegiForm(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          const res = await postRegUser(this.regiMessage);
+          // console.log(this.regiMessage);
+          // const res = await postRegUser({
+          //   'username': 'yesss',
+          //   'password': 'yesss'
+          // });
+          // console.log(res);
+          // const res = await getRe(
+          //   {
+          //     'ret': 1, 'msg': 'wrong method!'
+          //   }
+          // );
+          const aa = JSON.stringify({
+            a: 'yes',
+            b: 'yes'
+          });
+          const res = await pt(aa);
           console.log(res);
-          this.saveRegiMes(this.regiMessage);
-          this.$message('注册成功，请重新登录！');
-          this.activeName = 'login';
+          // var user = JSON.stringify(this.regiMessage);
+          // console.log('regi',user);
+          // const res = await postRegUser(user);
+          // console.log(res);
+          // this.saveRegiMes(this.regiMessage);
+          // this.$message('注册成功，请重新登录！');
+          // this.activeName = 'login';
         } else {
           console.log('error submit!');
           return false;

@@ -13,6 +13,12 @@ export const getMyArticles = async params => await demo.get(
     params
   }
 );
+export const getRe = async params => await demo.get(
+  '/regist/',
+  {
+    params
+  }
+);
 
 // post，delete，put不加括号，第二个参数直接为params
 // eg
@@ -22,3 +28,12 @@ export const getMyArticles = async params => await demo.get(
 // );
 // post第一个参数为url，调用处传params
 export const postRegUser = post('/regist/');
+
+export const postLogUser = async data => await demo.post(
+  '/login/',
+  data
+);
+export const pt = async data => await demo.post(
+  '/tests/',
+  data
+);

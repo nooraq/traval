@@ -20,7 +20,7 @@ export default {
         console.log(state.isLogin);
         console.log(state.users);
       }
-    } catch (error) {}
+    } catch (error) { console.log(''); }
   },
   // 保存用户注册的账号
   saveRegiMes(state, regimes) {
@@ -30,6 +30,6 @@ export default {
       state.users = regimes;
       console.log('regi msg:');
       console.log(state.users);
-    } catch (error) {}
+    } catch (error) { console.log(''); }
   }
 };

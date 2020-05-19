@@ -5,7 +5,7 @@
     </div>
     <div class="article-menu">
       <!-- 全局搜索 -->
-      <el-autocomplete
+      <!-- <el-autocomplete
         size="large"
         class="all-search"
         placeholder="按时间/地点搜索文章"
@@ -15,7 +15,32 @@
         @select="handleSelect"
         :fetch-suggestions="querySearch"
       >
-      </el-autocomplete>
+      </el-autocomplete> -->
+      <el-tabs v-model="activeName" class="search-part">
+        <el-tab-pane label="按地点搜索" name="local"><!-- 全局搜索 -->
+          <el-autocomplete
+            size="large"
+            class="all-search"
+            placeholder="按地点搜索文章"
+            v-model="searchLocal"
+            :value="allSearch"
+            @select="handleSelect"
+            :fetch-suggestions="querySearch"
+          >
+          </el-autocomplete>
+          <el-button class="send-se" @click="handleSearch">搜索</el-button>
+        </el-tab-pane>
+        <el-tab-pane label="按时间搜索" name="time">
+          <el-date-picker
+            v-model="searchTime"
+            type="date"
+            placeholder="按开始日期搜索文章"
+            size="large"
+            class="all-search">
+          </el-date-picker>
+          <el-button class="send-se" @click="handleSearch">搜索</el-button>
+        </el-tab-pane>
+      </el-tabs>
       <!-- 推荐列表 -->
       <el-card class="box-card">
         <div slot="header" class="clearfix">
@@ -46,10 +71,12 @@ export default {
   components: { ArticleDetail },
   data() {
     return {
+      activeName: 'local',
       showArticle: {},
       count: 0,
       recommendArticles: [],
-      allSearch: '',
+      searchLocal: '',
+      searchTime: null,
       allLocals: [
         { value: '北京' },
         { value: '天津市' },
@@ -94,18 +121,19 @@ export default {
     },
     // 搜索自动匹配
     querySearch(queryString, cb) {
-      let allLocals = this.allLocals;
+      const allLocals = this.allLocals;
       // results 保存匹配结果列表
-      let results = queryString? allLocals.filter(this.createFilter(queryString)): allLocals;
+      const results = queryString ? allLocals.filter(this.createFilter(queryString)) : allLocals;
       cb(results);
     },
     createFilter(queryString) {
-      return (local) => {
-        return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      }
+      return (local) => { return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0); };
     },
     handleSelect(item) {
       console.log(item.value);
+    },
+    handleSearch() {
+      console.log('search');
     }
   },
   mounted() {
@@ -128,10 +156,6 @@ export default {
 .show-article {
   display: inline-block;
   width: 650px;
-}
-.all-search {
-  width: 300px;
-  margin-bottom: 25px;
 }
 // 文章推荐列
 .recommend {
@@ -186,5 +210,19 @@ export default {
   color: $--color-user;
   border-bottom: 0.7px solid;
   margin-left: 80px;
+}
+// .search-part {
+//   margin-bottom: 20px;
+// }
+.all-search {
+  width: 260px;
+  margin-bottom: 25px;
+}
+.send-se {
+  background-color: #545c64;
+  color: #ffd04b;
+  font-size: 14px;
+  padding: 12px 20px;
+  margin-left: 20px;
 }
 </style>
