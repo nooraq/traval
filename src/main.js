@@ -9,6 +9,9 @@ import store from './store';
 
 import App from './App.vue';
 
+// 修复输出路由bug
+import Router from 'vue-router';
+
 
 Vue.config.productionTip = false;
 
@@ -19,10 +22,7 @@ new Vue({
   render(h) { return h(App); }
 }).$mount('#app');
 
-// 修复输出路由bug
-import Router from 'vue-router'
-
-const originalPush = Router.prototype.push
+const originalPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
-}
+  return originalPush.call(this, location).catch(err => err);
+};

@@ -77,10 +77,10 @@
 <script>
 import { mapState } from 'vuex';
 import ArticleDetail from '@/components/Article.vue';
+import { getMyArticles } from '@/api/demo';
 
 import personalData from './components/personal.json';
 import RightSide from './components/RightSide.vue';
-
 
 export default {
   name: 'personalSpace',
@@ -97,11 +97,11 @@ export default {
       focus: [],
       myArticle: [],
       giveThumbs: [],
-      localName:[],
+      localName: [],
       // 列表显示所用数据
       menuTitle: '我的文章',
       theArticle: [],
-      imgs: [],// 推荐走马灯
+      imgs: [], // 推荐走马灯
       count: 0,
       // 列表显示条件
       isArticles: true,
@@ -150,7 +150,10 @@ export default {
     this.theArticle = Data.myArticle;
     this.giveThumbs = Data.giveThumbs;// 我的点赞
     this.imgs = Data.imgs;// 推荐轮播图
-    this.localName = Data.localName;// 搜索补充
+    this.localName = Data.localName;
+  },
+  created() {
+    getMyArticles({ userName: 'a' });
   }
 };
 </script>

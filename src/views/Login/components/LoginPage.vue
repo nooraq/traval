@@ -42,6 +42,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
+import { postRegUser } from '@/api/demo';
 
 export default {
   name: 'LoginPage',
@@ -137,8 +138,10 @@ export default {
       });
     },
     submitRegiForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
+          const res = await postRegUser(this.regiMessage);
+          console.log(res);
           this.saveRegiMes(this.regiMessage);
           this.$message('注册成功，请重新登录！');
           this.activeName = 'login';
