@@ -50,8 +50,11 @@
 </template>
 
 <script>
+import { postRemark, postLike } from '@/api/demo';
+
 export default {
   name: 'Article',
+  props: ['detail'],
   data() {
     return {
       count: 0,
@@ -84,6 +87,8 @@ export default {
   methods: {
     handleSelect(index) {
       if (index === '2') {
+        // post请求
+        const res = postLike()
         this.showComments = false;
         this.thumbFlag = !this.thumbFlag;
         if (this.thumbFlag) {this.thumbNum++;} else {this.thumbNum--;}

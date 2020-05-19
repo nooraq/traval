@@ -3,25 +3,37 @@
       <el-page-header @back="goBack" class="back-sign"></el-page-header>
       <div class="editor-wrapper">
         <div ref="editor" style="text-align:left" class="the-editor"></div>
-        <el-button @click="getContent">提交文本</el-button>
+        <el-input
+          v-model="articleMsg.Title"
+          placeholder="请输入你的文章标题"
+          class="title-input"
+          maxlength="20"
+          suffix-icon="el-icon-edit"></el-input>
+        <el-button @click="getContent">提交我的文章</el-button>
       </div>
       <div class="set-msg">
         <el-card class="box-card">
           <el-form ref="form" :model="form" class="demo-form-inline">
           <el-form-item label="旅游地点">
-            <el-select v-model="form.local" placeholder="请选择旅游地点">
+            <el-select v-model="form.Localtion" placeholder="请选择旅游地点">
               <el-option v-for="(item,index) of allLocals" :label="item.value" :value="item.value" :key="index"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="开始时间">
-            <el-date-picker v-model="form.timeStart" type="date" placeholder="开始日期" value-format="yyyy-MM-dd"></el-date-picker>
+            <el-date-picker v-model="form.SDate" type="date" placeholder="开始日期"></el-date-picker>
           </el-form-item>
           <el-form-item label="结束时间">
-            <el-date-picker v-model="form.timeEnd" type="date" placeholder="结束日期" value-format="yyyy-MM-dd"></el-date-picker>
+            <el-date-picker v-model="form.EDate" type="date" placeholder="结束日期"></el-date-picker>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="文章状态">
+            <el-select v-model="form.Public" placeholder="请选择公开或私密">
+              <el-option label="公开" value="1"></el-option>
+              <el-option label="私密" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- <el-form-item>
             <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         </el-card>
       </div>
@@ -31,7 +43,9 @@
 
 <script>
 import E from 'wangeditor';
+import { mapState } from 'vuex';
 import emoji from './emoji.json';
+import { postArticle } from '@/api/demo';
 
 const MENUS = [
   'head', // 标题
@@ -101,18 +115,39 @@ export default {
       ],
       // 编辑器数据
       form: {
-        content: {},
-        local: '',
-        timeStart: null,
-        timeEnd: null
+        Public: null,
+        Localtion: null,
+        SDate: null,
+        EDate: null
+      },
+      articleMsg: {
+        // Userid: 0,
+        Title: '',
+        // Body: this.editorContent,
+        // Public: null,
+        // Localtion: null,
+        // SDate: null,
+        // EDate: null
       },
       showE: false
     };
   },
+  computed: {
+    getId: function() { return this.$store.state.user.userid; }
+  },
   methods: {
-    getContent() {
-      alert(this.editorContent);
+    async getContent() {
+      const params = this.articleMsg;
+      params.Userid = this.getId;
+      params.Body = this.editorContent;
+      params.Public = this.form.Public;
+      params.Localtion = this.form.Localtion;
+      params.SDate = this.form.SDate;
+      params.EDate = this.form.EDate;
       this.showE = true;
+      console.log('amsg:', params);
+      const res = await postArticle(params);
+      console.log('res results:', res);
     },
     initialEditor() {
       const editor = new E(this.$refs.editor);
@@ -133,13 +168,14 @@ export default {
     goBack() {
       window.history.back();
     },
-    onSubmit() {
-      this.$message('form');
-      console.log(this.form);
-    }
+    // onSubmit() {
+    //   this.$message('form');
+    //   console.log(this.form);
+    // }
   },
   mounted() {
     this.initialEditor();
+    // console.log('idType', typeof(this.user.userid), this.user.userid);
   }
 };
 </script>
@@ -171,5 +207,8 @@ export default {
   width: 900px;
   margin: 100px auto;
   background-color: #fff;
+}
+.title-input {
+  margin: 10px 0;
 }
 </style>

@@ -93,9 +93,9 @@ export default {
       ],
       showReport: false,
       reportMsg: [
-        { msg: "hello" },
-        { msg: "yes" },
-        { msg: "bye" }
+        { msg: 'hello' },
+        { msg: 'yes' },
+        { msg: 'bye' }
       ]
     };
   },
@@ -112,6 +112,9 @@ export default {
       return (local) => {
         return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       };
+    },
+    handleSearch() {
+      console.log('handleSearch');
     }
   }
 };
@@ -140,7 +143,7 @@ export default {
 }
 .all-search{
   width: 185px;
-  margin: 0 20px 15px 0;
+  margin: 0 20px 25px 0;
 }
 .el-carousel__item {
   color: #475669;

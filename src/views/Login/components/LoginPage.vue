@@ -42,8 +42,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
-import { postRegUser, postLogUser, getRe, pt } from '@/api/demo';
-
+import { postRegUser, postLogUser } from '@/api/demo';
 
 export default {
   name: 'LoginPage',
@@ -87,21 +86,19 @@ export default {
     ...mapState(['isLogin'])
   },
   methods: {
-    ...mapMutations(['changeLoginStatus', 'saveRegiMes']),
+    ...mapMutations(['changeLoginStatus', 'saveId']),
     // 登录 信息提交,并判断是否存在对应账号
     submitLoginForm(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          const params = new URLSearchParams();
-          params.append('username', this.loginMessage.username);
-          params.append('password', this.loginMessage.password);
-          const res = await postLogUser(params);
+          const res = await postLogUser(this.loginMessage);
           console.log(res);
           console.log(res.userid);
           if (res.ret === 0) {
-            const { userid } = res.userid;
+            console.log(res.userid);
             // 将登录用户信息和id保存到store,但刷新页面后id会变为String类型
-            this.changeLoginStatus({ ...this.loginMessage, userid });
+            this.saveId(res.userid);
+            this.changeLoginStatus(this.loginMessage);
             this.$message('欢迎来到轻足迹！');
             this.$router.push('/mapTrack');
           } else if (res.ret === 1) { this.$message('密码错误或该账号未注册，请重新输入！'); }
@@ -114,30 +111,7 @@ export default {
     submitRegiForm(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-<<<<<<< HEAD
-          const params = new URLSearchParams();
-          params.append('username', this.regiMessage.username);
-          params.append('password', this.regiMessage.password);
-          console.log(params);
-          const res = await postRegUser(params);
-=======
-          // console.log(this.regiMessage);
-          // const res = await postRegUser({
-          //   'username': 'yesss',
-          //   'password': 'yesss'
-          // });
-          // console.log(res);
-          // const res = await getRe(
-          //   {
-          //     'ret': 1, 'msg': 'wrong method!'
-          //   }
-          // );
-          const aa = JSON.stringify({
-            a: 'yes',
-            b: 'yes'
-          });
-          const res = await pt(aa);
->>>>>>> 3198d81722ef60981f55eb5cfaa5982a7a2ff192
+          const res = await postRegUser(this.regiMessage);
           console.log(res);
           if (res.ret === 0) {
             this.$message('注册成功，欢迎登陆！');
