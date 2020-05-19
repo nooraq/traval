@@ -1,4 +1,5 @@
 import { demo } from './adapter';
+import post from '@/utils/post';
 // get加括号，第二个参数为{
 //   params
 // }
@@ -14,8 +15,9 @@ export const getMyArticles = async params => await demo.get(
 );
 
 // post，delete，put不加括号，第二个参数直接为params
-
-export const postRegUser = async data => await demo.post(
+export const postRegUser = async params => await demo.post(
   '/regist/',
-  data
+  params
 );
+//formData类型的post第一个参数为url，调用处传params
+export const postRegUser = post('/regist/');
