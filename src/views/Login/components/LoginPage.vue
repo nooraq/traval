@@ -42,12 +42,8 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
-<<<<<<< HEAD
-import { postRegUser, postLogUser } from '@/api/demo';
-=======
 import { postRegUser, postLogUser, getRe, pt } from '@/api/demo';
 
->>>>>>> 3198d81722ef60981f55eb5cfaa5982a7a2ff192
 
 export default {
   name: 'LoginPage',
