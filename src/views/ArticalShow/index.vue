@@ -5,19 +5,19 @@
     </div>
     <div class="article-menu">
       <!-- 全局搜索 -->
-      <!-- <el-autocomplete
+      <el-autocomplete
         size="large"
         class="all-search"
-        placeholder="按时间/地点搜索文章"
+        placeholder="按地点搜索文章"
         suffix-icon="el-icon-search"
-        v-model="allSearch"
-        :value="allSearch"
+        v-model="searchCity"
+        :value="searchCity"
         @select="handleSelect"
         :fetch-suggestions="querySearch"
       >
-      </el-autocomplete> -->
-      <el-tabs v-model="activeName" class="search-part">
-        <el-tab-pane label="按地点搜索" name="local"><!-- 全局搜索 -->
+      </el-autocomplete>
+      <!-- <el-tabs v-model="activeName" class="search-part">
+        <el-tab-pane label="按地点搜索" name="local">
           <el-autocomplete
             size="large"
             class="all-search"
@@ -36,11 +36,12 @@
             type="date"
             placeholder="按开始日期搜索文章"
             size="large"
-            class="all-search">
+            class="all-search"
+            value-format="yyyy-MM-dd">
           </el-date-picker>
           <el-button class="send-se" @click="handleSearch">搜索</el-button>
         </el-tab-pane>
-      </el-tabs>
+      </el-tabs> -->
       <!-- 推荐列表 -->
       <el-card class="box-card">
         <div slot="header" class="clearfix">
@@ -75,8 +76,7 @@ export default {
       showArticle: {},
       count: 0,
       recommendArticles: [],
-      searchLocal: '',
-      searchTime: null,
+      searchCity: '',
       allLocals: [
         { value: '北京' },
         { value: '天津市' },
@@ -121,7 +121,7 @@ export default {
     },
     // 搜索自动匹配
     querySearch(queryString, cb) {
-      const allLocals = this.allLocals;
+      const allLocals = [...this.allLocals];
       // results 保存匹配结果列表
       const results = queryString ? allLocals.filter(this.createFilter(queryString)) : allLocals;
       cb(results);
@@ -131,9 +131,6 @@ export default {
     },
     handleSelect(item) {
       console.log(item.value);
-    },
-    handleSearch() {
-      console.log('search');
     }
   },
   mounted() {
@@ -217,12 +214,5 @@ export default {
 .all-search {
   width: 260px;
   margin-bottom: 25px;
-}
-.send-se {
-  background-color: #545c64;
-  color: #ffd04b;
-  font-size: 14px;
-  padding: 12px 20px;
-  margin-left: 20px;
 }
 </style>

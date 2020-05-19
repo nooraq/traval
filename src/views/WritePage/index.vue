@@ -14,10 +14,10 @@
             </el-select>
           </el-form-item>
           <el-form-item label="开始时间">
-            <el-date-picker v-model="form.timeStart" type="date" placeholder="开始日期"></el-date-picker>
+            <el-date-picker v-model="form.timeStart" type="date" placeholder="开始日期" value-format="yyyy-MM-dd"></el-date-picker>
           </el-form-item>
           <el-form-item label="结束时间">
-            <el-date-picker v-model="form.timeEnd" type="date" placeholder="结束日期"></el-date-picker>
+            <el-date-picker v-model="form.timeEnd" type="date" placeholder="结束日期" value-format="yyyy-MM-dd"></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">立即创建</el-button>

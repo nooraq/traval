@@ -2,16 +2,29 @@
   <div class="right-wrapper">
     <!-- 搜索个人文章-->
     <div class="search">
-      <el-autocomplete
-        size="middle"
-        placeholder="按地点搜索我的文章"
-        suffix-icon="el-icon-search"
-        v-model="inputCity"
-        :value="inputCity"
-        @select="handleSelect"
-        :fetch-suggestions="querySearch"
-      >
-      </el-autocomplete>
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="按地点" name="local">
+          <el-autocomplete
+            size="small"
+            class="all-search"
+            placeholder="搜索我的文章"
+            v-model="searchCity"
+            :value="searchCity"
+            :fetch-suggestions="querySearch"
+          >
+          </el-autocomplete>
+          <el-button class="send-se" @click="handleSearch">搜索</el-button>
+        </el-tab-pane>
+        <el-tab-pane label="按时间" name="time">
+          <el-date-picker
+            v-model="searchMonth"
+            class="all-search"
+            type="month"
+            placeholder="搜索我的文章">
+          </el-date-picker>
+          <el-button class="send-se" @click="handleSearch">搜索</el-button>
+        </el-tab-pane>
+      </el-tabs>
     </div>
     <!-- 展示年报-->
     <div class="report" v-show="showReport">
@@ -36,9 +49,12 @@
 export default {
   name: 'RightSide',
   props: ['locals'],
-  data: function() {
+  data() {
     return {
       inputCity: '',
+      searchCity: '',
+      searchMonth: null,
+      activeName: 'local',
       allLocals: [
         { value: '北京' },
         { value: '天津市' },
@@ -77,36 +93,28 @@ export default {
       ],
       showReport: false,
       reportMsg: [
-        {msg:"hello"},
-        {msg:"yes"},
-        {msg:"bye"}
+        { msg: "hello" },
+        { msg: "yes" },
+        { msg: "bye" }
       ]
-    }
+    };
   },
   methods: {
-    changeReportState () {
+    changeReportState() {
       this.showReport = !this.showReport;
     },
     querySearch(queryString, cb) {
-      let allLocals = this.allLocals;
-      // console.log("locals:");
-      // console.log(allLocals);
-      // results 保存匹配结果列表
-      let results = queryString? allLocals.filter(this.createFilter(queryString)): allLocals;
-      // console.log("results:");
-      // console.log(results);
+      const allLocals = [...this.allLocals];
+      const results = queryString ? allLocals.filter(this.createFilter(queryString)) : allLocals;
       cb(results);
     },
     createFilter(queryString) {
       return (local) => {
         return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      }
-    },
-    handleSelect(item) {
-      console.log(item.value);
+      };
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -124,17 +132,15 @@ export default {
   padding: 6px;
 }
 .report {
-  width: 100%;
   height: 310px;
-  background-color: rgba($color: #fff, $alpha: 1);
   background-image: url(images/reportBg.png);
   background-size: contain;
   text-align: center;
   line-height: 310px;
 }
-.search {
-  height: 45px;
-  margin-bottom: 35px;
+.all-search{
+  width: 185px;
+  margin: 0 20px 15px 0;
 }
 .el-carousel__item {
   color: #475669;

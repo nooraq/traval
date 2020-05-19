@@ -2,34 +2,19 @@ export default {
   NotLogin(state) {
     state.isLogin = false;
     localStorage.isLogin = false;
-    console.log('login state changed');
+    console.log('unlogin!');
   },
   // 判断登录的用户账号密码是否存在
   changeLoginStatus(state, mes) {
     try {
-      if (state.users.username === mes.username && state.users.password === mes.password) {
-        // 账号密码匹配成功，isLogin 为 true
-        state.isLogin = true;
-        localStorage.isLogin = true;
-        console.log(state.users);
-        console.log(state.isLogin);
-      } else {
-        // 不匹配则改为 false ，防止上一次匹配结果影响本次匹配
-        state.isLogin = false;
-        localStorage.isLogin = false;
-        console.log(state.isLogin);
-        console.log(state.users);
-      }
+      state.isLogin = true;
+      localStorage.isLogin = true;
+      localStorage.username = mes.username;
+      localStorage.password = mes.password;
+      localStorage.userid = mes.userid;
+      state.user = mes;
+      console.log(state.user);
+      console.log('登录状态', state.isLogin, state.user);
     } catch (error) { console.log(''); }
   },
-  // 保存用户注册的账号
-  saveRegiMes(state, regimes) {
-    try {
-      localStorage.username = regimes.username;
-      localStorage.password = regimes.password;
-      state.users = regimes;
-      console.log('regi msg:');
-      console.log(state.users);
-    } catch (error) { console.log(''); }
-  }
 };

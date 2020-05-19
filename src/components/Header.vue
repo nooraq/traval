@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     isLogin: function () { return this.$store.state.isLogin; },
-    user: function () { return this.$store.state.users; }
+    user: function () { return this.$store.state.user; }
   },
   methods: {
     ...mapMutations(['NotLogin']),
