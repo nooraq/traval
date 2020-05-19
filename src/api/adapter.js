@@ -12,6 +12,9 @@ const getInstance = (baseURL) => {
     baseURL: 'http://175.24.28.193:8080/',
     timeout: 30000,
     withCredentials: false,
+    // headers: {
+
+    // }
   });
   instance.interceptors.response.use((response = {}) => {
     const { data: { code, ret }, data } = response;

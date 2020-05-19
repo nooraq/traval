@@ -101,7 +101,7 @@ export default {
       // 列表显示所用数据
       menuTitle: '我的文章',
       theArticle: [],
-      imgs: [],// 推荐走马灯
+      imgs: [], // 推荐走马灯
       count: 0,
       // 列表显示条件
       isArticles: true,

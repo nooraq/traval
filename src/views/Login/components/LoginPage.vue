@@ -42,7 +42,12 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
+<<<<<<< HEAD
 import { postRegUser, postLogUser } from '@/api/demo';
+=======
+import { postRegUser, postLogUser, getRe, pt } from '@/api/demo';
+
+>>>>>>> 3198d81722ef60981f55eb5cfaa5982a7a2ff192
 
 export default {
   name: 'LoginPage',
@@ -113,11 +118,30 @@ export default {
     submitRegiForm(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
+<<<<<<< HEAD
           const params = new URLSearchParams();
           params.append('username', this.regiMessage.username);
           params.append('password', this.regiMessage.password);
           console.log(params);
           const res = await postRegUser(params);
+=======
+          // console.log(this.regiMessage);
+          // const res = await postRegUser({
+          //   'username': 'yesss',
+          //   'password': 'yesss'
+          // });
+          // console.log(res);
+          // const res = await getRe(
+          //   {
+          //     'ret': 1, 'msg': 'wrong method!'
+          //   }
+          // );
+          const aa = JSON.stringify({
+            a: 'yes',
+            b: 'yes'
+          });
+          const res = await pt(aa);
+>>>>>>> 3198d81722ef60981f55eb5cfaa5982a7a2ff192
           console.log(res);
           if (res.ret === 0) {
             this.$message('注册成功，欢迎登陆！');
