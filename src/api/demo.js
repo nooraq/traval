@@ -1,5 +1,5 @@
-import { demo } from './adapter';
 import post from '@/utils/post';
+import { demo } from './adapter';
 // get加括号，第二个参数为{
 //   params
 // }
