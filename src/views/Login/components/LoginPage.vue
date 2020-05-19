@@ -23,13 +23,8 @@
       <el-tab-pane label="注册" name="register">
         <div class="user-mes">
           <el-form :model="regiMessage" status-icon size="large" :rules="rules" ref="regiMessage" class="demo-ruleForm">
-<<<<<<< HEAD
             <el-form-item prop="username">
               <el-input show-word-limit class="input-mes" v-model="regiMessage.username" placeholder="请输入账号" autocomplete="off"></el-input>
-=======
-            <el-form-item prop="UserName">
-              <el-input maxlength="15" minlength="6" show-word-limit class="input-mes" v-model="regiMessage.UserName" placeholder="请输入账号" autocomplete="off"></el-input>
->>>>>>> d2ed3ffe3cfc916632a559cde00120349c924f62
             </el-form-item>
             <el-form-item prop="password">
               <el-input placeholder="请输入密码" v-model="regiMessage.password" show-password autocomplete="off"></el-input>
@@ -48,6 +43,9 @@
 <script>
 import { mapState, mapMutations } from 'vuex';
 import { postRegUser } from '@/api/demo';
+import { postLogUser } from '@/api/demo';
+import { getRe } from '@/api/demo';
+import { pt } from '@/api/demo';
 
 export default {
   name: 'LoginPage',
@@ -57,6 +55,10 @@ export default {
       showWarn: false,
       // 有关账号密码提交的data
       loginMessage: {
+        username: '',
+        password: ''
+      },
+      regiMessage: {
         username: '',
         password: ''
       },
@@ -78,10 +80,6 @@ export default {
             min: 6, max: 15, message: '密码应为 6 到 15 个字符呀！', trigger: 'blur'
           }
         ]
-      },
-      regiMessage: {
-        UserName: '',
-        password: ''
       },
       // 要设置初始值为login才能刷新时立即显示login输入框部分
       activeName: 'login'
@@ -112,11 +110,30 @@ export default {
     submitRegiForm(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          const res = await postRegUser(this.regiMessage);
+          // console.log(this.regiMessage);
+          // const res = await postRegUser({
+          //   'username': 'yesss',
+          //   'password': 'yesss'
+          // });
+          // console.log(res);
+          // const res = await getRe(
+          //   {
+          //     'ret': 1, 'msg': 'wrong method!'
+          //   }
+          // );
+          var aa = JSON.stringify({
+            a: 'yes',
+            b: 'yes'
+          });
+          const res = await pt(aa);
           console.log(res);
-          this.saveRegiMes(this.regiMessage);
-          this.$message('注册成功，请重新登录！');
-          this.activeName = 'login';
+          // var user = JSON.stringify(this.regiMessage);
+          // console.log('regi',user);
+          // const res = await postRegUser(user);
+          // console.log(res);
+          // this.saveRegiMes(this.regiMessage);
+          // this.$message('注册成功，请重新登录！');
+          // this.activeName = 'login';
         } else {
           console.log('error submit!');
           return false;
