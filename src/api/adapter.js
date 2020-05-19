@@ -17,8 +17,8 @@ const getInstance = (baseURL) => {
     // }
   });
   instance.interceptors.response.use((response = {}) => {
-    const { data: { code, ret }, data } = response;
-    if (code === 200 || ret === 0) {
+    const { data: { status, ret }, data } = response;
+    if (status === 200 || ret === 0) {
       return data;
     }
     return Promise.reject(response.data);
