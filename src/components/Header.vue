@@ -79,14 +79,15 @@ export default {
   // 修复刷新页面后title变色不准确以及登录状态验证bug
   mounted() {
     const path = this.$route.path;
-    console.log('isLogin:' + this.isLogin);
-    console.log('username:' + this.user.username);
+    // console.log('isLogin:' + this.isLogin);
+    // console.log('username:' + this.user.username);
+    // console.log('header userid', this.user.userid);
     console.log('路径 '+ path);
     if (this.isLogin === 'false') {
       this.$message('还未登录，请先登录！');
       this.more = '未登录...';
       this.$router.push('/login');
-      console.log('hello');
+      // console.log('hello');
     } else {
       this.more = this.user.username;
       if (path === '/mapTrack') {

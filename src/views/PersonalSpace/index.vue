@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div  v-show="articleDetailShow" opacity=".5">
       <el-page-header @back="goBack" content="文章详情" class="back-sign"></el-page-header>
-      <article-detail></article-detail>
+      <article-detail :detail="detail"></article-detail>
     </div>
     <div v-show="!articleDetailShow">
       <div class="main-left">
@@ -44,7 +44,7 @@
       </div>
       <!-- 列表-->
       <div class="show-list">
-        <el-card class="box-card">
+        <el-card class="box-card" width="580px" height="410px">
           <div slot="header" class="clearfix">
             <p class="menu-title">{{menuTitle}}</p>
           </div>
@@ -56,7 +56,7 @@
                   {{item.title}} <span>{{item.time}}</span>
                 </div>
                 <div class="li-words">{{item.content}}</div>
-                <el-button type="primary" size="mini" plain @click="showDetail">查看详情</el-button>
+                <el-button type="primary" size="mini" plain @click="handleShowDetail">查看详情</el-button>
                 <el-divider><i class="el-icon-tickets"></i></el-divider>
               </li>
             </ul>
@@ -77,7 +77,7 @@
 <script>
 import { mapState } from 'vuex';
 import ArticleDetail from '@/components/Article.vue';
-import { getMyArticles } from '@/api/demo';
+import { getMyArticles, getArticleDetail, getSearchByLocation, getSearchByDate, getSummary } from '@/api/demo';
 
 import personalData from './components/personal.json';
 import RightSide from './components/RightSide.vue';
@@ -89,7 +89,7 @@ export default {
     ArticleDetail
   },
   computed: {
-    ...mapState(['users'])
+    ...mapState(['user'])
   },
   data() {
     return {
@@ -103,6 +103,7 @@ export default {
       theArticle: [],
       imgs: [], // 推荐走马灯
       count: 0,
+      detail: {},// 文章详情
       // 列表显示条件
       isArticles: true,
       isMyFocus: false,
@@ -135,7 +136,7 @@ export default {
     load() {
       this.count += 2;
     },
-    showDetail() {
+    handleShowDetail() {
       this.articleDetailShow = true;
       console.log('show it');
     },
@@ -152,8 +153,10 @@ export default {
     this.imgs = Data.imgs;// 推荐轮播图
     this.localName = Data.localName;
   },
-  created() {
-    getMyArticles({ userName: 'a' });
+  async created() {
+    // console.log('personal', this.user.username);
+    const res = await getMyArticles({ userName: this.user.username });
+    console.log(res);
   }
 };
 </script>
@@ -285,10 +288,10 @@ export default {
   -webkit-line-clamp:2;
   -webkit-box-orient: vertical;
 }
-.box-card {
-  width: 580px;
-  height: 410px;
-}
+// .box-card {
+//   width: 580px;
+//   height: 410px;
+// }
 .search-report {
   display: inline-block;
   width: 250px;

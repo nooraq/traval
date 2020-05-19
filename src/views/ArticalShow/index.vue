@@ -1,7 +1,7 @@
 <template>
   <div class="all-wrapper">
     <div class="show-article">
-      <article-detail></article-detail>
+      <article-detail :detail="showArticle"></article-detail>
     </div>
     <div class="article-menu">
       <!-- 全局搜索 -->
@@ -16,33 +16,6 @@
         :fetch-suggestions="querySearch"
       >
       </el-autocomplete>
-      <!-- <el-tabs v-model="activeName" class="search-part">
-        <el-tab-pane label="按地点搜索" name="local">
-          <el-autocomplete
-            size="large"
-            class="all-search"
-            placeholder="按地点搜索文章"
-            v-model="searchLocal"
-            :value="allSearch"
-            @select="handleSelect"
-            :fetch-suggestions="querySearch"
-          >
-          </el-autocomplete>
-          <el-button class="send-se" @click="handleSearch">搜索</el-button>
-        </el-tab-pane>
-        <el-tab-pane label="按时间搜索" name="time">
-          <el-date-picker
-            v-model="searchTime"
-            type="date"
-            placeholder="按开始日期搜索文章"
-            size="large"
-            class="all-search"
-            value-format="yyyy-MM-dd">
-          </el-date-picker>
-          <el-button class="send-se" @click="handleSearch">搜索</el-button>
-        </el-tab-pane>
-      </el-tabs> -->
-      <!-- 推荐列表 -->
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span class="recommend">推荐列表</span>
@@ -158,14 +131,6 @@ export default {
 .recommend {
   font-size: 15px;
 }
-// .clearfix:before,
-// .clearfix:after {
-//   display: table;
-//   content: "";
-// }
-// .clearfix:after {
-//   clear: both
-// }
 .box-card {
   width: 350px;
   height: 410px;

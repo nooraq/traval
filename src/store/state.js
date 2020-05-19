@@ -9,7 +9,7 @@ try {
     defaultIsLogin = localStorage.isLogin;
     defaultUsers.username = localStorage.username;
     defaultUsers.password = localStorage.password;
-    defaultUsers.userid = localStorage.userid;
+    defaultUsers.userid = parseInt(localStorage.userid);
   }
 } catch (error) {
 }
