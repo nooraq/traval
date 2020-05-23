@@ -6,15 +6,19 @@
       <el-card class="box-card">
         <!-- 文章头部 -->
         <div slot="header" class="clearfix">
-          <p class="header-title" v-text="showArticle.title"></p>
+          <p class="header-title" v-text="showArticle.Title"></p>
           <div class="header-msg">
             <span class="msg lighter"><i class="el-icon-user"></i>: {{showArticle.author}}</span>
-            <span class="msg">地点：{{showArticle.location}}</span>
-            <span class="msg">时间：{{showArticle.time}}</span>
+            <span class="msg"><i class="el-icon-map-location"></i>：{{showArticle.Location}}</span>
+            <span class="msg">
+              <i class="el-icon-alarm-clock"></i>：{{showArticle.SDate}}
+              <i class="el-icon-minus"></i>{{showArticle.EDate}}
+            </span>
+            <span class="msg" v-if="!showArticle.Public">状态：私密</span>
           </div>
         </div>
         <!-- 文章内容 -->
-        <div class="content" v-infinite-scroll="load" style="overflow:auto" v-text="showArticle.content"></div>
+        <div class="content" v-infinite-scroll="load" style="overflow:auto" v-html="showArticle.Body"></div>
       </el-card>
       <!-- 评论、点赞、关注-->
       <div class="show-msg">
@@ -28,21 +32,35 @@
           active-text-color="#ffd04b"
         >
           <el-menu-item index="1"><i class="el-icon-chat-line-square"></i><span class="msg">评论 {{allComments.length}}</span></el-menu-item>
-          <el-menu-item index="2"><i class="el-icon-thumb"></i><span class="msg">点赞 {{thumbNum}}</span></el-menu-item>
+          <el-menu-item index="2"><i class="el-icon-thumb"></i><span class="msg">点赞 {{likeNum}}</span></el-menu-item>
           <el-menu-item index="3"><i class="el-icon-star-off"></i><span class="msg">{{startState}}</span></el-menu-item>
         </el-menu>
         <div class="show-comment" style="overflow:auto">
           <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto"  v-show="showComments">
             <li v-for="(item,index) in allComments" class="infinite-list-item" :key="index">
               <div class="comment-area">
-                <span class="comment-from"><i class="el-icon-user"></i> {{item.userName}}:</span>
-                <span class="comment-in">{{item.comment}}</span>
+                <span class="comment-from"><i class="el-icon-user"></i> {{item.UserName}}:</span>
+                <span class="comment-in">{{item.Remark}}</span>
                 <el-divider class="divider"></el-divider>
               </div>
-              <!-- <span>{{item.userName}}:</span><p>{{item.comment}}</p> -->
             </li>
           </ul>
-          <div class="add-comment" v-show="showComments"><el-button type="danger">添加评论</el-button></div>
+          <div class="add-comment" v-show="showComments">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+              <el-form-item prop="comment">
+                <el-input
+                  type="textarea"
+                  :rows="4"
+                  placeholder="请输入你的评论"
+                  v-model="ruleForm.comment">
+                </el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="danger" @click="submitForm('ruleForm')">添加评论</el-button>
+                <el-button @click="resetForm('ruleForm')">取消评论</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
         </div>
       </div>
     </div>
@@ -50,7 +68,8 @@
 </template>
 
 <script>
-import { postRemark, postLike } from '@/api/demo';
+import { postRemark, postLike, postDeLike, getArticleDetail, postFollow, postDeFollow } from '@/api/demo';
+import { mapState } from 'vuex';
 
 export default {
   name: 'Article',
@@ -62,76 +81,120 @@ export default {
       thumbFlag: false,
       startFlag: false,
       startState: '关注作者',
-      thumbNum: 200,
-      showArticle: {
-        author: '小明',
-        title: '明天',
-        location: '北京',
-        time: '2018/07/22',
-        content: `让我掉下眼泪的,不止昨夜的酒。让我依依不舍的 ，止你的温柔。
-        余路还要走多久，你攥着我的手.让我感到为难的 是挣扎的自由 分别总是在九月 
-        回忆是思念的愁,深秋嫩绿的垂柳 亲吻着我额头在那座阴雨的小城里 我从未忘记你。
-        成都，带不走的只有你`
+      // msg: {},
+      likeNum: this.detail.likeNum,
+      showArticle: this.detail,
+      allComments: this.detail.allComments,
+      ruleForm: {
+        comment: ''
       },
-      allComments: [
-        {userName:'lily', comment: 'this is great'},
-        {userName:'lily', comment: 'this is great'},
-        {userName:'lily', comment: 'this is great'},
-        {userName:'lily', comment: 'this is great'},
-        {userName:'lily', comment: 'this is great'},
-        {userName:'lily', comment: 'this is great'},
-        {userName:'lily', comment: 'this is great'}
-      ]
+      rules: {
+        comment: [
+          { required: true, message: '请填写你的评论', trigger: 'blur' },
+          { min: 1, max:100, message: '最多输入80个字', trigger: 'blur'}
+        ]
+      }
     }
   },
+  computed: {
+    ...mapState(['user'])
+  },
   methods: {
-    handleSelect(index) {
+    submitForm(formName) {
+      this.$refs[formName].validate(async (valid) => {
+        if (valid) {
+          const msg = {
+            articleid: this.detail.id,
+            remark: this.ruleForm.comment,
+            remarkuserid: this.user.userid
+          };
+          // console.log('msg:', msg);
+          const res = postRemark(msg);
+          console.log('remark:', res, this.detail.id);
+          const res2 = await getArticleDetail({
+          articleId: this.detail.id
+          });
+          console.log('msg:', res2);
+          this.allComments = res2.recommend;
+          this.likeNum = res2.likenumber;
+          this.$message('评论成功！');
+          this.$refs[formName].resetFields();
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    async handleSelect(index) {
       if (index === '2') {
-        // post请求
-        const res = postLike()
-        this.showComments = false;
-        this.thumbFlag = !this.thumbFlag;
-        if (this.thumbFlag) {this.thumbNum++;} else {this.thumbNum--;}
+        // if (!this.thumbFlag) {
+          // post请求
+          // const theParams = {
+          //   articleid: this.detail.id,
+          //   likeuserid: this.detail.Userid_id
+          // };
+          // console.log(theParams);
+          const res = await postLike({
+            articleid: this.detail.id,
+            likeuserid: this.detail.Userid_id
+          });
+          console.log('like:', res);
+          const likeResult = res.msg;
+          // const res2 = await getArticleDetail({
+          // articleId: this.detail.id
+          // });
+          if (likeResult === 'already liked') {
+            this.$message('已经点过赞了呀');
+            const res = await postDeLike({
+              articleid: this.detail.id,
+              likeuserid: this.detail.Userid_id
+            });
+            const likeResult = res.msg;
+            // const res2 = await getArticleDetail({
+            // articleId: this.detail.id
+            // });
+          } else { this.likeNum++; }
+          const res2 = await getArticleDetail({
+          articleId: this.detail.id
+          });
+          console.log('msg:', res2);
+          this.allComments = res2.recommend;
+          this.likeNum = res2.likenumber;
+        // } else { console.log('already thumb'); }
       } else if (index === '3') {
-        this.showComments = false;
+        const res = await postFollow({
+          userid: this.user.userid,
+          followuserid: this.detail.Userid_id
+        });
+        console.log('follow:', res);
         this.startFlag = !this.startFlag;
         if (this.startFlag) {this.startState = '已关注'} else {this.startState  = '关注作者'}
       } else if (index === '1') { this.showComments = !this.showComments; }
     },
-    // goBack() {
-    //   this.$emit('detail-close');
-    // },
     load () {
       this.count += 2;
     }
+  },
+  async mounted() {
+    console.log('at detail', this.detail);
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/theme/variable.scss';
-// .back-sign {
-//   margin: 10px 0 0 50px;
-// }
 .article-body {
   font-weight: normal;
-  // margin-top: 10px;
-  // position: absolute;
   width: 100%;
-  // background-color: $main-bg;
-  // z-index: 20;
 }
 .content-wrapper {
   width: 650px;
   // background-color: $main-bg;
   margin: 0 auto;
 }
-// .show-article {
-//   display: inline-block;
-//   width: 650px;
-//   height: 420px;
-//   background: #fff;
-// }
 // 内容
 .content {
   width: 630px;
@@ -139,21 +202,18 @@ export default {
   font-size: 16px;// 测试字号
 }
 // 文章显示头部
-// .article-header {
-//   background: rgba($color: $theme-1-hex, $alpha: .4);
-// }
 .header-title {
   font-size: 18px;
   text-align: center;
   font-weight: 600;
 }
 .header-msg {
-  text-align: right;
-  margin-right: 35px;
+  margin-bottom: -10px;
+  margin-top: 5px;
 }
 .msg {
   font-size: 13px;
-  margin-left: 15px;
+  margin-left: 20px;
 }
 .header-msg .lighter {
   color: $--color-user;
@@ -176,16 +236,11 @@ export default {
   margin: 10px;
   border-bottom: 0.7px solid;
 }
-// /////@at-root
-// .clearfix:before,
-// .clearfix:after {
-//   display: table;
-//   content: "";
-// }
-// .clearfix:after {
-//   clear: both
-// }
 .box-card {
   width: 650px;
+}
+.add-comment {
+  margin-top: 10px;
+  width: 400px;
 }
 </style>

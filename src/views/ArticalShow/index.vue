@@ -1,34 +1,30 @@
 <template>
   <div class="all-wrapper">
     <div class="show-article">
-      <article-detail :detail="showArticle"></article-detail>
+      <article-detail :detail="detail" v-if="showDetailFlag"></article-detail>
     </div>
     <div class="article-menu">
       <!-- 全局搜索 -->
-      <el-autocomplete
-        size="large"
-        class="all-search"
-        placeholder="按地点搜索文章"
-        suffix-icon="el-icon-search"
-        v-model="searchCity"
-        :value="searchCity"
-        @select="handleSelect"
-        :fetch-suggestions="querySearch"
-      >
-      </el-autocomplete>
+      <el-select class="all-search" v-model="searchCity" placeholder="搜索我的文章" clearable filterable>
+        <el-option
+          v-for="(item,index) in allLocals"
+          :key="index"
+          :label="item.value"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <el-button class="search-button" @click="handleSelect">搜索</el-button>
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span class="recommend">推荐列表</span>
+          <span class="recommend">推荐文章</span>
         </div>
         <ul class="menu-content" v-infinite-scroll="load" style="overflow:auto">
-          <li v-for="(item,index) of recommendArticles" :key="index" class="menu-content-li">
-            <!-- <p class="li-header">{{item.title}} </p> -->
-            <div class="header-msg">
-              <span class="li-header">{{item.title}}</span>
-              <span class="msg lighter"><i class="el-icon-user"></i>：{{showArticle.author}}</span>
-              <span class="msg">地点：{{showArticle.location}}</span>
-            </div>
-            <div class="li-content">{{item.content}}</div>
+          <li v-for="(item,index) of allArticles" :key="index" class="menu-content-li">
+            <p class="li-header">{{item.Title}}</p>
+            <p class="li-msg">
+              <span><i class="el-icon-map-location"></i>{{item.Location}}</span>
+              <el-button type="primary" class="button-detail" plain @click="handleShowDetail(item)">查看详情</el-button>
+            </p>
             <el-divider></el-divider>
           </li>
         </ul>
@@ -39,78 +35,86 @@
 
 <script>
 import ArticleDetail from '@/components/Article.vue';
-import articleData from './article.json';
+import { getArticleSearch, getAll, getShowArticle, getArticleDetail } from '@/api/demo';
+import { mapState } from 'vuex';
+// import articleData from './article.json';
 
 export default {
   components: { ArticleDetail },
   data() {
     return {
+      showDetailFlag: false,
       activeName: 'local',
-      showArticle: {},
+      detail: null,
       count: 0,
+      allArticles: [],
       recommendArticles: [],
       searchCity: '',
-      allLocals: [
-        { value: '北京' },
-        { value: '天津市' },
-        { value: '上海市' },
-        { value: '重庆市' },
-        { value: '河北' },
-        { value: '河南' },
-        { value: '云南' },
-        { value: '辽宁' },
-        { value: '黑龙江' },
-        { value: '湖南' },
-        { value: '安徽' },
-        { value: '山东' },
-        { value: '新疆' },
-        { value: '江苏' },
-        { value: '浙江' },
-        { value: '江西' },
-        { value: '湖北' },
-        { value: '广西壮族自治区' },
-        { value: '甘肃' },
-        { value: '山西' },
-        { value: '内蒙古自治区' },
-        { value: '陕西' },
-        { value: '吉林' },
-        { value: '福建' },
-        { value: '贵州' },
-        { value: '广东' },
-        { value: '青海' },
-        { value: '西藏自治区' },
-        { value: '四川' },
-        { value: '宁夏回族自治区' },
-        { value: '海南' },
-        { value: '台湾' },
-        { value: '香港特别行政区' },
-        { value: '澳门特别行政区' }
-      ]
     };
+  },
+  computed: {
+    ...mapState(['user', 'allLocals'])
   },
   methods: {
     load() {
       this.count += 2;
     },
-    // 搜索自动匹配
-    querySearch(queryString, cb) {
-      const allLocals = [...this.allLocals];
-      // results 保存匹配结果列表
-      const results = queryString ? allLocals.filter(this.createFilter(queryString)) : allLocals;
-      cb(results);
+    async handleShowDetail(item) {
+      console.log(item.id);
+      const res = await getShowArticle({
+        action: 'show_article',
+        articleid: item.id
+      });
+      this.detail = res.article;
+      console.log('de', res);
+      // console.log('de', this.detail);
     },
-    createFilter(queryString) {
-      return (local) => { return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0); };
-    },
-    handleSelect(item) {
-      console.log(item.value);
+    async handleSelect() {
+      const local = this.searchCity;
+      const param = {
+        action: 'search_by_location',
+        userid: this.user.userid,
+        location: local
+      };
+      const res = await getArticleSearch(param);
+      console.log(res);
     }
   },
-  mounted() {
-    console.log(articleData);
-    const Data = articleData.data;
-    this.showArticle = Data.showArticle;
-    this.recommendArticles = Data.recommendArticles;
+  // mounted() {
+  //   // console.log(articleData);
+  // },
+  async created() {
+    const res = await getAll({
+      action: 'recommend'
+    });
+    console.log('all', res.retlist);
+    this.allArticles = res.retlist;
+    console.log('show articles:', res);
+    for (let i = 0; i < 10; i += 1) {
+      if (this.allArticles[i] !== undefined) {
+        this.recommendArticles[i] = this.allArticles[i];
+      } else { break; }
+    }
+    // 获取文章具体内容
+    const resDetail = await getShowArticle({
+      action: 'show_article',
+      articleid: this.allArticles[0].id
+    });
+    console.log('z wy ', resDetail);
+    this.detail = resDetail.article[0];
+    this.detail.author = resDetail.username;
+    // articleMsg.author = resDetail.username;
+    // 获取文章评论点赞数
+    const resMsg = await getArticleDetail({
+      articleId: this.detail.id
+    });
+    this.detail.allComments = resMsg.recommend;
+    this.detail.likeNum = resMsg.likenumber;
+    // console.log('comments:', resMsg);
+    console.log('article msg:', this.detail);
+    this.showDetailFlag = true;
+    // this.detail = this.allArticles[0];
+    // console.log(this.recommendArticles);
   }
 };
 </script>
@@ -135,6 +139,13 @@ export default {
   width: 350px;
   height: 410px;
 }
+.button-detail {
+  padding: 2px;
+  border: none;
+  border-bottom: 0.9px solid;
+  margin-left: 15px;
+  color: $--color-title;
+}
 .article-menu {
   width: 350px;
   height: 450px;
@@ -144,40 +155,40 @@ export default {
 }
 .menu-content {
   height: 320px;
-  width: 332px;
+  width: 330px;
 }
 .menu-content-li {
-  height: 88px;
-  margin-top: 10px;
-}
-.li-content {
-  width: 314px;
-  font-size: 13px;
-  // 部分显示
-  overflow: hidden;
-  display: -webkit-box;
-  text-overflow:ellipsis;
-  -webkit-line-clamp:2;
-  -webkit-box-orient: vertical
+  height: 60px;
+  margin-top: 15px;
 }
 // 列表信息
 .header-msg {
   margin-bottom: 8px;
+  height: 30px;
+  line-height: 30px;
 }
-.msg {
+.li-header {
+  font-size: 15px;
+  color: $--color-title;
+  margin-bottom: 8px;
+  // color: blue;
+}
+.location {
   font-size: 13px;
-  margin-left: 15px;
+  margin-left: 20px;
 }
-.header-msg .lighter {
-  color: $--color-user;
-  border-bottom: 0.7px solid;
-  margin-left: 80px;
+.li-msg {
+  font-size: 12px;
+  color: $--color-info;
 }
-// .search-part {
-//   margin-bottom: 20px;
-// }
 .all-search {
-  width: 260px;
+  width: 270px;
   margin-bottom: 25px;
+}
+.search-button {
+  margin-left: 10px;
+  padding: 9px 20px;
+  background-color: #545c64;
+  color: #ffd04b;
 }
 </style>

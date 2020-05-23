@@ -33,7 +33,7 @@ import 'echarts/lib/chart/map';
 import 'echarts/lib/component/tooltip';
 import { mapState } from 'vuex';
 import styles from '@/theme/variable.scss';
-import { getLocation } from '@/api/demo';
+import { getLocation, getBeen } from '@/api/demo';
 import chinaJson from './china.json';
 
 const getData = [
@@ -199,19 +199,12 @@ export default {
   methods: {
     Click(params) { this.location = params.data.name; }
   },
-  // 判断登录与否，否则跳到登录页
-  mounted() {
-    if (!this.isLogin) {
-      alert('还未登录，请先登录！');
-      this.$router.push('/login');
-    }
-  },
-
   async created() {
     const res = await getLocation({
       action: 'have_been',
-      userid: localStorage.userid
+      userid: parseInt(localStorage.userid, 10)
     });
+    console.log('mapTrack getLocation:', res);
     const wentLoc = res.retlist.map(item => ({ name: item.Location, value: 0 }));
     this.mapData = [...getData, ...wentLoc];
   }
