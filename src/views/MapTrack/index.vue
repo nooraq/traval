@@ -8,19 +8,22 @@
   </div>
 <div class="recommend">
   <el-switch
-  v-model="myList"
+  :value="showList === 'myArticles'"
   active-text="曾经写过的文章"
-  inactive-text="可能感兴趣的文章">
+  inactive-text="可能感兴趣的文章"
+  @change="onShowArticlesChange"
+  >
   </el-switch>
-  <div class="recommend-item" v-for="item in list" :key="item.index">
-    <div class="location">
-    <p>{{item.location}}</p>
-    </div>
-    <router-link class="title" :to="`/essay/${item.location}`">这是标题</router-link>
-    <p class="detail">详情详情详情详情详情详情详情详情详情
-      详情详情详情详情详情详情详情详情详情
-    </p>
-  </div>
+   <ul class="menu-content"  style="overflow:auto">
+          <li v-for="(item) of list[showList]" :key="item.id" class="menu-content-li">
+            <p class="li-header">{{item.Title}}</p>
+            <p class="li-msg">
+              <span><i class="el-icon-map-location"></i>{{item.Location}}</span>
+<el-link type="primary" :href="`/#/articalShow/${item.id}`">查看详情</el-link>
+            </p>
+            <el-divider></el-divider>
+          </li>
+        </ul>
 </div>
 </div>
 </template>
@@ -31,13 +34,14 @@ import 'echarts/lib/chart/map';
 // import 'echarts/lib/chart/scatter';
 // import 'echarts/lib/component/geo';
 import 'echarts/lib/component/tooltip';
+import _ from 'lodash';
 import { mapState } from 'vuex';
 import styles from '@/theme/variable.scss';
-import { getLocation, getBeen } from '@/api/demo';
+import { getLocation, getMyArticles, getArticlesByLocation } from '@/api/demo';
 import chinaJson from './china.json';
 
 const getData = [
-  { name: '北京', value: 1 },
+  { name: '北京', value: 0 },
   { name: '天津市', value: 1 },
   { name: '上海市', value: 1 },
   { name: '重庆市', value: 1 },
@@ -81,9 +85,12 @@ export default {
   name: 'MapTrack',
   data() {
     return {
-      myList: true,
-      location: '北京',
-      list: [],
+      showList: 'myArticles',
+      location: '',
+      list: {
+        myArticles: [],
+        recommendArticles: []
+      },
       mapData: [],
     };
   },
@@ -197,16 +204,36 @@ export default {
     Echarts
   },
   methods: {
-    Click(params) { this.location = params.data.name; }
+    async Click(params) {
+      this.location = params.data.name;
+      const res = await getArticlesByLocation({
+        location: this.location
+      });
+      this.list.recommendArticles = res.retlist;
+    },
+    async onShowArticlesChange(checked) {
+      if (checked) {
+        this.showList = 'myArticles';
+      } else {
+        this.showList = 'recommendArticles';
+        const res = await getArticlesByLocation({
+          location: this.location
+        });
+        this.list.recommendArticles = res.retlist;
+      }
+    }
   },
   async created() {
     const res = await getLocation({
       action: 'have_been',
       userid: parseInt(localStorage.userid, 10)
     });
-    console.log('mapTrack getLocation:', res);
     const wentLoc = res.retlist.map(item => ({ name: item.Location, value: 0 }));
-    this.mapData = [...getData, ...wentLoc];
+    this.mapData = [...(_.differenceBy(getData, wentLoc, 'name')), ...wentLoc];
+    const { data } = await getMyArticles({
+      userName: localStorage.username
+    });
+    this.list.myArticles = data;
   }
 };
 </script>
@@ -260,6 +287,22 @@ export default {
   .detail {
     color: $detail-color;
   }
+
+// .menu-content {
+//   height: 320px;
+//   width: 330px;
+// }
+.menu-content-li {
+  height: 60px;
+  margin-top: 15px;
+}
+
+.li-header {
+  font-size: 15px;
+  color: $--color-title;
+  margin-bottom: 8px;
+  // color: blue;
+}
 
 }
 </style>

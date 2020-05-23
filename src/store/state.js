@@ -4,15 +4,11 @@ const defaultUsers = {
   userid: null
 };
 let defaultIsLogin = false;
-try {
-  if (window.localStorage) {
-    defaultIsLogin = localStorage.isLogin;
-    defaultUsers.username = localStorage.username;
-    defaultUsers.password = localStorage.password;
-    defaultUsers.userid = parseInt(localStorage.userid, 10);
-  }
-} catch (error) {
-  console.log('error');
+if (window.localStorage) {
+  defaultIsLogin = localStorage.isLogin;
+  defaultUsers.username = localStorage.username;
+  defaultUsers.password = localStorage.password;
+  defaultUsers.userid = parseInt(localStorage.userid, 10);
 }
 
 export default {
