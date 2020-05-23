@@ -20,7 +20,7 @@ export default new Router({
       component: () => import('@/components/BasicLayout'),
       children: [
         writePage,
-        articalShow,
+        ...articalShow,
         mapTrack,
         login,
         personalSpace

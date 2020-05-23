@@ -33,6 +33,10 @@ export const deleteArticle = async params => await demo.get(
   '/articl/',
   { params }
 );
+export const getArticlesByLocation = async params => await demo.get(
+  '/articl/',
+  { params: { ...params, action: 'search_by_location' } }
+);
 
 
 // 个人空间部分接口---张羽冰
