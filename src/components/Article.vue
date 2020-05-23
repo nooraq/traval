@@ -31,7 +31,7 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-menu-item index="1"><i class="el-icon-chat-line-square"></i><span class="msg">评论 {{allComments.length}}</span></el-menu-item>
+          <el-menu-item index="1"><i class="el-icon-chat-line-square"></i><span class="msg">评论</span></el-menu-item>
           <el-menu-item index="2"><i class="el-icon-thumb"></i><span class="msg">点赞 {{likeNum}}</span></el-menu-item>
           <el-menu-item index="3"><i class="el-icon-star-off"></i><span class="msg">{{startState}}</span></el-menu-item>
         </el-menu>
@@ -98,25 +98,29 @@ export default {
   },
   computed: {
     ...mapState(['user'])
+  //   theArticle() { return this.detail },
+  //   showArticle() { return this.detail },
+  //   likeNum() { return this.detail.likeNum },
+  //   allComments() { return this.detail.allComments }
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(async (valid) => {
+        //发送评论，over
         if (valid) {
           const msg = {
-            articleid: this.detail.id,
+            articleid: this.showArticle.id,
             remark: this.ruleForm.comment,
             remarkuserid: this.user.userid
           };
-          // console.log('msg:', msg);
           const res = postRemark(msg);
           console.log('remark:', res, this.detail.id);
-          const res2 = await getArticleDetail({
+          const resMsg = await getArticleDetail({
           articleId: this.detail.id
           });
-          console.log('msg:', res2);
-          this.allComments = res2.recommend;
-          this.likeNum = res2.likenumber;
+          console.log('msg:', resMsg);
+          this.allComments = resMsg.recommend;
+          this.likeNum = resMsg.likenumber;
           this.$message('评论成功！');
           this.$refs[formName].resetFields();
         } else {
@@ -130,46 +134,51 @@ export default {
     },
     async handleSelect(index) {
       if (index === '2') {
-        // if (!this.thumbFlag) {
-          // post请求
-          // const theParams = {
-          //   articleid: this.detail.id,
-          //   likeuserid: this.detail.Userid_id
-          // };
-          // console.log(theParams);
-          const res = await postLike({
+        // 点赞
+        const res = await postLike({
+          articleid: this.detail.id,
+          likeuserid: this.user.userid
+        });
+        console.log('like:', res);
+        const likeResult = res.msg;
+        // const resMsg = await getArticleDetail({
+        // articleId: this.detail.id
+        // });
+        if (likeResult === 'already liked') {
+          this.$message('已经点过赞了呀');
+          const res = await postDeLike({
             articleid: this.detail.id,
-            likeuserid: this.detail.Userid_id
+            likeuserid: this.user.userid
           });
-          console.log('like:', res);
-          const likeResult = res.msg;
-          // const res2 = await getArticleDetail({
+          const delikeResult = res.msg;
+          console.log('cancle result:', delikeResult)
+          // const resMsg = await getArticleDetail({
           // articleId: this.detail.id
           // });
-          if (likeResult === 'already liked') {
-            this.$message('已经点过赞了呀');
-            const res = await postDeLike({
-              articleid: this.detail.id,
-              likeuserid: this.detail.Userid_id
-            });
-            const likeResult = res.msg;
-            // const res2 = await getArticleDetail({
-            // articleId: this.detail.id
-            // });
-          } else { this.likeNum++; }
-          const res2 = await getArticleDetail({
-          articleId: this.detail.id
-          });
-          console.log('msg:', res2);
-          this.allComments = res2.recommend;
-          this.likeNum = res2.likenumber;
+        } else { this.likeNum++; }
+        const resMsg = await getArticleDetail({
+        articleId: this.detail.id
+        });
+        console.log('msg:', resMsg);
+        this.allComments = resMsg.recommend;
+        this.likeNum = resMsg.likenumber;
         // } else { console.log('already thumb'); }
       } else if (index === '3') {
+        //判断关注
         const res = await postFollow({
-          userid: this.user.userid,
-          followuserid: this.detail.Userid_id
+          followuserid: this.user.userid,
+          userid: this.detail.Userid_id
         });
-        console.log('follow:', res);
+        console.log('follow:', res);// 出现错误，已关注返回值导致的报错使后面的代码无法进行
+        // if (res.ret === 1) {
+        //   this.startState  = '关注作者';
+        //   const resDel = await postDeFollow({
+        //     followuserid: this.user.userid,
+        //     userid: this.detail.Userid_id
+        //   });
+        //   console.log('delfollow result:', resDel);
+        // }
+        // console.log('测试取关');
         this.startFlag = !this.startFlag;
         if (this.startFlag) {this.startState = '已关注'} else {this.startState  = '关注作者'}
       } else if (index === '1') { this.showComments = !this.showComments; }
@@ -178,9 +187,24 @@ export default {
       this.count += 2;
     }
   },
-  async mounted() {
-    console.log('at detail', this.detail);
-  }
+  watch: {
+    detail: async function() {
+      this.showArticle = this.detail;
+      // this.likeNum = this.detail.likeNum;
+      const resMsg = await getArticleDetail({
+        articleId: this.detail.id
+      });
+      // console.log('get new msg:', resMsg);
+      this.likeNum = resMsg.likenumber;
+      this.allComments = resMsg.recommend;
+      // console.log('new likeNum:', this.likeNum, this.allComments);
+      // console.log('new article:', this.showArticle);
+      // console.log('new detail:', this.detail);
+    }
+  },
+  // async mounted() {
+  //   const latestArticleId = 
+  // }
 }
 </script>
 

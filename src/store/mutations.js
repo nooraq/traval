@@ -4,6 +4,11 @@ export default {
     localStorage.isLogin = false;
     console.log('unlogin!');
   },
+  // 保存最近显示的文章的id
+  changeArticleId(state,id) {
+    state.latestArticleId = id;
+    localStorage.latestArticleId = id;
+  },
   saveId(state, userid) {
     state.userid = userid;
     localStorage.userid = userid;
@@ -14,6 +19,7 @@ export default {
   changeLoginStatus(state, mes) {
     try {
       state.isLogin = true;
+      state.username = mes.username;
       localStorage.isLogin = true;
       localStorage.username = mes.username;
       localStorage.password = mes.password;

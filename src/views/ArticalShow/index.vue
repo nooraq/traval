@@ -5,7 +5,7 @@
     </div>
     <div class="article-menu">
       <!-- 全局搜索 -->
-      <el-select class="all-search" v-model="searchCity" placeholder="搜索我的文章" clearable filterable>
+      <el-select class="all-search" v-model="searchCity" placeholder="搜索感兴趣的文章" clearable filterable>
         <el-option
           v-for="(item,index) in allLocals"
           :key="index"
@@ -36,7 +36,7 @@
 <script>
 import ArticleDetail from '@/components/Article.vue';
 import { getArticleSearch, getAll, getShowArticle, getArticleDetail } from '@/api/demo';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 // import articleData from './article.json';
 
 export default {
@@ -45,7 +45,19 @@ export default {
     return {
       showDetailFlag: false,
       activeName: 'local',
-      detail: null,
+      detail: {
+        Body: '',
+        EDate: '',
+        Location: '',
+        Public: null,
+        SDate: '',
+        Title: '',
+        Userid_id: null,
+        allComments: [],
+        author: '',
+        id: null,
+        likeNum: null
+      },
       count: 0,
       allArticles: [],
       recommendArticles: [],
@@ -53,20 +65,51 @@ export default {
     };
   },
   computed: {
-    ...mapState(['user', 'allLocals'])
+    ...mapState(['user', 'allLocals', 'latestArticleId'])
   },
   methods: {
+    ...mapMutations(['changeArticleId']),
     load() {
       this.count += 2;
     },
     async handleShowDetail(item) {
       console.log(item.id);
-      const res = await getShowArticle({
+      // 获取文章主内容
+      const resA = await getShowArticle({
         action: 'show_article',
         articleid: item.id
       });
-      this.detail = res.article;
-      console.log('de', res);
+      this.detail = resA.article[0];
+      this.detail.author = resA.username;
+      this.changeArticleId(this.detail.id);
+      // console.log('返回latestArticleId:', this.latestArticleId);
+      // 获取文章评论点赞信息
+      const resMsg = await getArticleDetail({
+        articleId: this.detail.id
+      });
+      this.detail.allComments = resMsg.recommend;
+      this.detail.likeNum = resMsg.likenumber;
+      // console.log('comments:', resMsg);
+      console.log('article msg:', this.detail);
+      // const resDetail = await getShowArticle({
+    //   action: 'show_article',
+    //   articleid: this.allArticles[0].id
+    // });
+    // console.log('z wy ', resDetail);
+    // this.detail = resDetail.article[0];
+    // this.detail.author = resDetail.username;
+    // // articleMsg.author = resDetail.username;
+    // // 获取文章评论点赞数
+    // const resMsg = await getArticleDetail({
+    //   articleId: this.detail.id
+    // });
+    // this.detail.allComments = resMsg.recommend;
+    // this.detail.likeNum = resMsg.likenumber;
+    // // console.log('comments:', resMsg);
+    // console.log('article msg:', this.detail);
+    // this.showDetailFlag = true;
+    // this.detail = this.allArticles[0];
+    // console.log(this.recommendArticles);
       // console.log('de', this.detail);
     },
     async handleSelect() {
@@ -76,6 +119,7 @@ export default {
         userid: this.user.userid,
         location: local
       };
+      console.log('check search:', param);
       const res = await getArticleSearch(param);
       console.log(res);
     }
@@ -87,34 +131,37 @@ export default {
     const res = await getAll({
       action: 'recommend'
     });
-    console.log('all', res.retlist);
+    // console.log('all', res.retlist);
     this.allArticles = res.retlist;
-    console.log('show articles:', res);
+    // console.log('show articles:', res);
     for (let i = 0; i < 10; i += 1) {
       if (this.allArticles[i] !== undefined) {
         this.recommendArticles[i] = this.allArticles[i];
       } else { break; }
     }
     // 获取文章具体内容
-    const resDetail = await getShowArticle({
-      action: 'show_article',
-      articleid: this.allArticles[0].id
-    });
-    console.log('z wy ', resDetail);
-    this.detail = resDetail.article[0];
-    this.detail.author = resDetail.username;
-    // articleMsg.author = resDetail.username;
-    // 获取文章评论点赞数
-    const resMsg = await getArticleDetail({
-      articleId: this.detail.id
-    });
-    this.detail.allComments = resMsg.recommend;
-    this.detail.likeNum = resMsg.likenumber;
-    // console.log('comments:', resMsg);
-    console.log('article msg:', this.detail);
     this.showDetailFlag = true;
-    // this.detail = this.allArticles[0];
-    // console.log(this.recommendArticles);
+    // 先完成articleshow的渲染在进行文章内容显示的渲染
+    //否则detail还未成功传送，会报错
+    if (localStorage.latestArticleId === undefined) {
+      console.log('no latestArticleId now');
+    } else {
+      // console.log('latest:', this.latestArticleId);
+      // 重新/初始渲染文章页时请求最近看过的文章详情
+      const res = await getShowArticle({
+        action: 'show_article',
+        articleid: parseInt(localStorage.latestArticleId, 10)
+      });
+      console.log('最近文章：', res);
+      this.detail = res.article[0];
+      this.detail.author = res.username;
+      const resMsg = await getArticleDetail({
+        articleId: this.detail.id
+      });
+      this.detail.allComments = resMsg.recommend;
+      this.detail.likeNum = resMsg.likenumber;
+    }
+    
   }
 };
 </script>

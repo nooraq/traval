@@ -1,7 +1,8 @@
 const defaultUsers = {
   username: '',
   password: '',
-  userid: null
+  userid: null,
+  latestArticleId: null
 };
 let defaultIsLogin = false;
 try {
@@ -9,6 +10,7 @@ try {
     defaultIsLogin = localStorage.isLogin;
     defaultUsers.username = localStorage.username;
     defaultUsers.password = localStorage.password;
+    defaultUsers.latestArticleId = parseInt(localStorage.latestArticleId, 10);
     defaultUsers.userid = parseInt(localStorage.userid, 10);
   }
 } catch (error) {
