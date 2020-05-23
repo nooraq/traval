@@ -22,7 +22,7 @@ const getInstance = (baseURL) => {
     if (status === 200 || ret === 0) {
       return data;
     }
-    Message.error(data.msg);
+    Message.error(data.msg || data.message);
     return Promise.reject(response.data);
   }, error => Promise.reject(error));
   return instance;
