@@ -5,6 +5,7 @@
 
 import axios from 'axios';
 import { domains } from '@/config';
+import { Message } from 'element-ui';
 
 // eslint-disable-next-line no-unused-vars
 const getInstance = (baseURL) => {
@@ -21,6 +22,7 @@ const getInstance = (baseURL) => {
     if (status === 200 || ret === 0) {
       return data;
     }
+    Message.error(data.msg);
     return Promise.reject(response.data);
   }, error => Promise.reject(error));
   return instance;
