@@ -4,25 +4,25 @@
     <div class="search">
       <el-tabs v-model="activeName">
         <el-tab-pane label="按地点" name="local">
-          <el-autocomplete
-            size="small"
-            class="all-search"
-            placeholder="搜索我的文章"
-            v-model="searchCity"
-            :value="searchCity"
-            :fetch-suggestions="querySearch"
-          >
-          </el-autocomplete>
-          <el-button class="send-se" @click="handleSearch">搜索</el-button>
+          <el-select class="all-search" v-model="searchCity" placeholder="搜索我的文章">
+            <el-option
+              v-for="(item,index) in allLocals"
+              :key="index"
+              :label="item.value"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <el-button class="send-se" @click="handleLocationSearch">搜索</el-button>
         </el-tab-pane>
         <el-tab-pane label="按时间" name="time">
           <el-date-picker
             v-model="searchMonth"
             class="all-search"
             type="month"
+            value-format="yyyy-MM"
             placeholder="搜索我的文章">
           </el-date-picker>
-          <el-button class="send-se" @click="handleSearch">搜索</el-button>
+          <el-button class="send-se" @click="handleDateSearch">搜索</el-button>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -46,77 +46,63 @@
 </template>
 
 <script>
+import { getSearchByLocation, getSearchByDate, getSummary } from '@/api/demo';
+import { mapState } from 'vuex';
+
 export default {
   name: 'RightSide',
   props: ['locals'],
   data() {
     return {
-      inputCity: '',
       searchCity: '',
       searchMonth: null,
       activeName: 'local',
-      allLocals: [
-        { value: '北京' },
-        { value: '天津市' },
-        { value: '上海市' },
-        { value: '重庆市' },
-        { value: '河北' },
-        { value: '河南' },
-        { value: '云南' },
-        { value: '辽宁' },
-        { value: '黑龙江' },
-        { value: '湖南' },
-        { value: '安徽' },
-        { value: '山东' },
-        { value: '新疆' },
-        { value: '江苏' },
-        { value: '浙江' },
-        { value: '江西' },
-        { value: '湖北' },
-        { value: '广西壮族自治区' },
-        { value: '甘肃' },
-        { value: '山西' },
-        { value: '内蒙古自治区' },
-        { value: '陕西' },
-        { value: '吉林' },
-        { value: '福建' },
-        { value: '贵州' },
-        { value: '广东' },
-        { value: '青海' },
-        { value: '西藏自治区' },
-        { value: '四川' },
-        { value: '宁夏回族自治区' },
-        { value: '海南' },
-        { value: '台湾' },
-        { value: '香港特别行政区' },
-        { value: '澳门特别行政区' }
-      ],
       showReport: false,
       reportMsg: [
         { msg: 'hello' },
         { msg: 'yes' },
         { msg: 'bye' }
-      ]
+      ],
+      cityResult: [],
+      dateResult: []
     };
   },
+  computed: {
+    ...mapState(['user', 'allLocals'])
+  },
   methods: {
-    changeReportState() {
+    async changeReportState() {
       this.showReport = !this.showReport;
+      if (this.showReport) {
+        const res = await getSummary({
+          // 上传过文章才能正确返回
+          userName: this.user.username
+        });
+        console.log(res);
+      }
     },
-    querySearch(queryString, cb) {
-      const allLocals = [...this.allLocals];
-      const results = queryString ? allLocals.filter(this.createFilter(queryString)) : allLocals;
-      cb(results);
+    async handleLocationSearch() {
+      const res = await getSearchByLocation({
+        userName: this.user.username,
+        location: this.searchCity
+      });
+      console.log(res);
     },
-    createFilter(queryString) {
-      return (local) => {
-        return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
-    handleSearch() {
-      console.log('handleSearch');
+    async handleDateSearch() {
+      console.log('月份', this.searchMonth);
+      const splitTime = this.searchMonth.split('-');
+      const time = splitTime.map(item => parseInt(item, 10));
+      const res = await getSearchByDate({
+        userName: this.user.username,
+        month: time[1],
+        year: time[0]
+      });
+      console.log(res);
     }
-  }
+  },
+  // created() {
+  //   console.log(this.detail.id);
+  // }
 };
 </script>
 

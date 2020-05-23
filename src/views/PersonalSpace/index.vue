@@ -1,10 +1,10 @@
 <template>
   <div class="wrapper">
-    <div  v-show="articleDetailShow" opacity=".5">
+    <div  v-if="isShowDetail" opacity=".5">
       <el-page-header @back="goBack" content="文章详情" class="back-sign"></el-page-header>
       <article-detail :detail="detail"></article-detail>
     </div>
-    <div v-show="!articleDetailShow">
+    <div v-show="!isShowDetail">
       <div class="main-left">
         <div class="show-name">个人空间</div>
       <!-- el-ui实现导航列表-->
@@ -53,10 +53,15 @@
             <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isArticles">
               <li v-for="(item,index) in theArticle" :key="index" class="infinit-list">
                 <div class="li-title">
-                  {{item.title}} <span>{{item.time}}</span>
+                  {{item.Title}}
                 </div>
-                <div class="li-words">{{item.content}}</div>
-                <el-button type="primary" size="mini" plain @click="handleShowDetail">查看详情</el-button>
+                <div class="li-words">
+                  <span class="location"><i class="el-icon-map-location"></i>{{item.Location}}</span>
+                  <span><i class="el-icon-alarm-clock"></i>
+                    {{item.SDate}}<i class="el-icon-minus"></i>{{item.EDate}}
+                  </span>
+                </div>
+                <el-button type="primary" size="mini" plain @click="handleShowDetail(item)">查看详情</el-button>
                 <el-divider><i class="el-icon-tickets"></i></el-divider>
               </li>
             </ul>
@@ -77,7 +82,7 @@
 <script>
 import { mapState } from 'vuex';
 import ArticleDetail from '@/components/Article.vue';
-import { getMyArticles, getArticleDetail, getSearchByLocation, getSearchByDate, getSummary } from '@/api/demo';
+import { getMyArticles, getArticleDetail, getMyFollow, getMyLike } from '@/api/demo';
 
 import personalData from './components/personal.json';
 import RightSide from './components/RightSide.vue';
@@ -109,23 +114,32 @@ export default {
       isMyFocus: false,
       // isMyThumbs: false,
       // 文章详情
-      articleDetailShow: false
+      isShowDetail: false
     };
   },
   methods: {
-    handleSelect(index) {
+    async handleSelect(index) {
       if (index === '1') {
+        const res = await getMyFollow({ userName: this.user.username });
+        console.log('follow:', res);
+        this.focus = res.data;
         this.menuTitle = '我的关注';
         this.isMyFocus = true;
         this.isArticles = false;
         // this.isMyThumbs = false;
       } else if (index === '2') {
+        console.log('personal', this.user.username);
+        const res = await getMyArticles({ userName: this.user.username });
+        console.log('myall', res);
         this.menuTitle = '我的文章';
         this.theArticle = this.myArticle;
         this.isArticles = true;
         this.isMyFocus = false;
         // this.isMyThumbs = false;
       } else if (index === '3') {
+        const res = await getMyLike({ userName: this.user.username });
+        console.log('my like:', res);
+        this.giveThumbs = res.data;
         this.menuTitle = '我的点赞';
         // this.isMyThumbs = true;
         this.isMyArticles = true;
@@ -136,27 +150,41 @@ export default {
     load() {
       this.count += 2;
     },
-    handleShowDetail() {
-      this.articleDetailShow = true;
-      console.log('show it');
+    // 显示文章详情
+    async handleShowDetail(article) {
+      // console.log('detail res:', res);
+      this.detail = article;
+      this.detail.author = this.user.username;
+      const res = await getArticleDetail({
+        articleId: this.detail.id
+      });
+      this.detail.allComments = res.recommend;
+      this.detail.likeNum = res.likenumber;
+      console.log('msg:', this.detail);
+      this.isShowDetail = true;
+      // console.log('detail all', this.detail);
+      
     },
     goBack() {
-      this.articleDetailShow = false;
+      this.isShowDetail = false;
     }
   },
   mounted() {
     const Data = personalData.data;
-    this.focus = Data.focus;// 关注的人
-    this.myArticle = Data.myArticle;// 我的文章
-    this.theArticle = Data.myArticle;
-    this.giveThumbs = Data.giveThumbs;// 我的点赞
+    // this.focus = Data.focus;// 关注的人
+    // this.myArticle = Data.myArticle;// 我的文章
+    this.theArticle = this.myArticle;
+    // this.giveThumbs = Data.giveThumbs;// 我的点赞
     this.imgs = Data.imgs;// 推荐轮播图
     this.localName = Data.localName;
   },
   async created() {
-    // console.log('personal', this.user.username);
     const res = await getMyArticles({ userName: this.user.username });
-    console.log(res);
+    console.log('myall', res);
+    this.myArticle = res.data;
+    // this.myArticle.username = this.user.username;
+    this.theArticle = res.data;
+    console.log('fields', this.myArticle);
   }
 };
 </script>
@@ -269,7 +297,7 @@ export default {
 }
 .li-title {
   font-size: 16px;
-  margin: 4px 0 10px 10px;
+  margin: 4px 0 10px 0;
   color: $--color-title;
   font-weight: 600;
 }
@@ -298,5 +326,8 @@ export default {
   background-color: red;
   vertical-align: top;
   margin-top: 91px;
+}
+.location {
+  margin-right: 15px;
 }
 </style>
