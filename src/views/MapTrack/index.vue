@@ -15,11 +15,13 @@
   >
   </el-switch>
    <ul class="menu-content"  style="overflow:auto">
+     <li v-if="!location && showList !== 'myArticles'">请选择地点推荐</li>
+     <li v-if="list[showList].length === 0">目前暂无推荐</li>
           <li v-for="(item) of list[showList]" :key="item.id" class="menu-content-li">
-            <p class="li-header">{{item.Title}}</p>
+            <p class="title">{{item.Title}}</p>
             <p class="li-msg">
-              <span><i class="el-icon-map-location"></i>{{item.Location}}</span>
-<el-link type="primary" :href="`/#/articalShow/${item.id}`">查看详情</el-link>
+              <span class="location"><i class="el-icon-map-location"></i>{{item.Location}}</span>
+<el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
             </p>
             <el-divider></el-divider>
           </li>
@@ -266,10 +268,10 @@ export default {
 }
 .recommend {
   margin-left: 880px;
+  margin-right: 24px;
   background-color: #FFF;
   border-radius: 2px;
   padding: 24px;
-  margin-right: 80px;
   box-shadow: 0 2px 10px rgba(0,0,0,.05);
   height: calc(100vh - 200px);
   min-height: 400px;
@@ -278,31 +280,27 @@ export default {
     color:$title-color;
   font-weight: 700;
   line-height: 1.5;
-  font-size: 22px;
-  &:hover {
-    text-decoration: underline;
-    cursor:pointer;
+  font-size: 20px;
   }
-  }
-  .detail {
+  .el-icon-map-location,.location {
     color: $detail-color;
+    font-size: 16px;
   }
 
-// .menu-content {
-//   height: 320px;
-//   width: 330px;
-// }
-.menu-content-li {
-  height: 60px;
-  margin-top: 15px;
+.menu-content {
+  margin-top: 24px;
 }
 
 .li-header {
   font-size: 15px;
   color: $--color-title;
-  margin-bottom: 8px;
-  // color: blue;
 }
-
+  .el-divider--horizontal {
+    margin: 12px 0;
+  }
+}
+.link {
+  float: right;
+  margin-right:24px;
 }
 </style>

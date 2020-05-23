@@ -31,7 +31,7 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-menu-item index="1"><i class="el-icon-chat-line-square"></i><span class="msg">评论 {{allComments.length}}</span></el-menu-item>
+          <el-menu-item index="1"><i class="el-icon-chat-line-square"></i><span class="msg">评论 {{allComments && allComments.length}}</span></el-menu-item>
           <el-menu-item index="2"><i class="el-icon-thumb"></i><span class="msg">点赞 {{likeNum}}</span></el-menu-item>
           <el-menu-item index="3"><i class="el-icon-star-off"></i><span class="msg">{{startState}}</span></el-menu-item>
         </el-menu>
@@ -91,10 +91,12 @@ export default {
       rules: {
         comment: [
           { required: true, message: '请填写你的评论', trigger: 'blur' },
-          { min: 1, max:100, message: '最多输入80个字', trigger: 'blur'}
+          {
+            min: 1, max: 100, message: '最多输入80个字', trigger: 'blur'
+          }
         ]
       }
-    }
+    };
   },
   computed: {
     ...mapState(['user'])
@@ -112,7 +114,7 @@ export default {
           const res = postRemark(msg);
           console.log('remark:', res, this.detail.id);
           const res2 = await getArticleDetail({
-          articleId: this.detail.id
+            articleId: this.detail.id
           });
           console.log('msg:', res2);
           this.allComments = res2.recommend;
@@ -131,38 +133,38 @@ export default {
     async handleSelect(index) {
       if (index === '2') {
         // if (!this.thumbFlag) {
-          // post请求
-          // const theParams = {
-          //   articleid: this.detail.id,
-          //   likeuserid: this.detail.Userid_id
-          // };
-          // console.log(theParams);
-          const res = await postLike({
+        // post请求
+        // const theParams = {
+        //   articleid: this.detail.id,
+        //   likeuserid: this.detail.Userid_id
+        // };
+        // console.log(theParams);
+        const res = await postLike({
+          articleid: this.detail.id,
+          likeuserid: this.detail.Userid_id
+        });
+        console.log('like:', res);
+        const likeResult = res.msg;
+        // const res2 = await getArticleDetail({
+        // articleId: this.detail.id
+        // });
+        if (likeResult === 'already liked') {
+          this.$message('已经点过赞了呀');
+          const res = await postDeLike({
             articleid: this.detail.id,
             likeuserid: this.detail.Userid_id
           });
-          console.log('like:', res);
           const likeResult = res.msg;
           // const res2 = await getArticleDetail({
           // articleId: this.detail.id
           // });
-          if (likeResult === 'already liked') {
-            this.$message('已经点过赞了呀');
-            const res = await postDeLike({
-              articleid: this.detail.id,
-              likeuserid: this.detail.Userid_id
-            });
-            const likeResult = res.msg;
-            // const res2 = await getArticleDetail({
-            // articleId: this.detail.id
-            // });
-          } else { this.likeNum++; }
-          const res2 = await getArticleDetail({
+        } else { this.likeNum++; }
+        const res2 = await getArticleDetail({
           articleId: this.detail.id
-          });
-          console.log('msg:', res2);
-          this.allComments = res2.recommend;
-          this.likeNum = res2.likenumber;
+        });
+        console.log('msg:', res2);
+        this.allComments = res2.recommend;
+        this.likeNum = res2.likenumber;
         // } else { console.log('already thumb'); }
       } else if (index === '3') {
         const res = await postFollow({
@@ -171,17 +173,17 @@ export default {
         });
         console.log('follow:', res);
         this.startFlag = !this.startFlag;
-        if (this.startFlag) {this.startState = '已关注'} else {this.startState  = '关注作者'}
+        if (this.startFlag) { this.startState = '已关注'; } else { this.startState = '关注作者'; }
       } else if (index === '1') { this.showComments = !this.showComments; }
     },
-    load () {
+    load() {
       this.count += 2;
     }
   },
   async mounted() {
     console.log('at detail', this.detail);
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

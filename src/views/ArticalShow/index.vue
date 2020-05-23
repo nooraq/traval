@@ -1,7 +1,8 @@
 <template>
   <div class="all-wrapper">
     <div class="show-article">
-      <article-detail :detail="detail" v-if="showDetailFlag"></article-detail>
+      <article-detail :detail="detail" v-if="$route.params.id"></article-detail>
+      <el-card v-else :style="{height: '4.5rem'}">随便搜点什么看看</el-card>
     </div>
     <div class="article-menu">
       <!-- 全局搜索 -->
@@ -43,9 +44,8 @@ export default {
   components: { ArticleDetail },
   data() {
     return {
-      showDetailFlag: false,
       activeName: 'local',
-      detail: null,
+      detail: {},
       count: 0,
       allArticles: [],
       recommendArticles: [],
@@ -60,14 +60,11 @@ export default {
       this.count += 2;
     },
     async handleShowDetail(item) {
-      console.log(item.id);
       const res = await getShowArticle({
         action: 'show_article',
         articleid: item.id
       });
       this.detail = res.article;
-      console.log('de', res);
-      // console.log('de', this.detail);
     },
     async handleSelect() {
       const local = this.searchCity;
@@ -77,44 +74,34 @@ export default {
         location: local
       };
       const res = await getArticleSearch(param);
-      console.log(res);
     }
   },
-  // mounted() {
-  //   // console.log(articleData);
-  // },
+
   async created() {
     const res = await getAll({
       action: 'recommend'
     });
-    console.log('all', res.retlist);
     this.allArticles = res.retlist;
-    console.log('show articles:', res);
     for (let i = 0; i < 10; i += 1) {
       if (this.allArticles[i] !== undefined) {
         this.recommendArticles[i] = this.allArticles[i];
       } else { break; }
+    }
+    if (!this.$route.params.id) {
+      return;
     }
     // 获取文章具体内容
     const resDetail = await getShowArticle({
       action: 'show_article',
       articleid: this.allArticles[0].id
     });
-    console.log('z wy ', resDetail);
-    this.detail = resDetail.article[0];
     this.detail.author = resDetail.username;
-    // articleMsg.author = resDetail.username;
     // 获取文章评论点赞数
     const resMsg = await getArticleDetail({
       articleId: this.detail.id
     });
     this.detail.allComments = resMsg.recommend;
     this.detail.likeNum = resMsg.likenumber;
-    // console.log('comments:', resMsg);
-    console.log('article msg:', this.detail);
-    this.showDetailFlag = true;
-    // this.detail = this.allArticles[0];
-    // console.log(this.recommendArticles);
   }
 };
 </script>
