@@ -1,10 +1,6 @@
 <template>
   <div class="wrapper">
-    <div  v-if="isShowDetail" opacity=".5">
-      <el-page-header @back="goBack" content="文章详情" class="back-sign"></el-page-header>
-      <article-detail :detail="detail"></article-detail>
-    </div>
-    <div v-show="!isShowDetail">
+    <div>
       <div class="main-left">
         <div class="show-name">个人空间</div>
       <!-- el-ui实现导航列表-->
@@ -44,7 +40,31 @@
       </div>
       <!-- 列表-->
       <div class="show-list">
-        <el-card class="box-card" width="580px" height="410px">
+        <el-card class="box-card" v-if="showFocusArticle">
+          <div slot="header" class="clearfix">
+            <el-page-header @back="goBack" content="该作者所有公共文章"></el-page-header>
+          </div>
+          <div class="menu-show" style="overflow:auto">
+            <!-- 被关注人的所有文章 -->
+            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
+              <li v-for="(item,index) in focusArticles" :key="index" class="infinit-list">
+                <div class="li-title">
+                  {{item.Title}}
+                </div>
+                <div class="li-words">
+                  <span class="msg lighter"><i class="el-icon-user"></i></span>
+                  <span class="location"><i class="el-icon-map-location"></i>{{item.Location}}</span>
+                  <span><i class="el-icon-alarm-clock"></i>
+                    {{item.SDate}}<i class="el-icon-minus"></i>{{item.EDate}}
+                  </span>
+                </div>
+                <el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
+                <el-divider><i class="el-icon-tickets"></i></el-divider>
+              </li>
+            </ul>
+          </div>
+        </el-card>
+        <el-card class="box-card" v-else>
           <div slot="header" class="clearfix">
             <p class="menu-title">{{menuTitle}}</p>
           </div>
@@ -60,15 +80,17 @@
                   <span><i class="el-icon-alarm-clock"></i>
                     {{item.SDate}}<i class="el-icon-minus"></i>{{item.EDate}}
                   </span>
+                  <span class="location" v-if="showCondtion">状态：<span v-if="!item.Public">私密</span><span v-else>公开</span> </span>
                 </div>
-                <el-button type="primary" size="mini" plain @click="handleShowDetail(item)">查看详情</el-button>
+                <el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
                 <el-divider><i class="el-icon-tickets"></i></el-divider>
               </li>
             </ul>
             <!-- 我的关注-->
             <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyFocus">
               <li v-for="(item,index) in focus" :key="index">
-                <div class="focus-name">{{item.name}}</div>
+                <p class="focus-name"><i class="el-icon-user"></i><span class="befollow" @click="handleFollowName(item.UserName)">{{item.UserName}}</span></p>
+                <el-divider></el-divider>
               </li>
             </ul>
           </div>
@@ -100,9 +122,12 @@ export default {
     return {
       // 保存json文档的相关数据
       focus: [],
+      focusName: '',// 被展示其所有文章的被关注人
+      focusArticles: [],// 被关注人的所有文章
       myArticle: [],
       giveThumbs: [],
       localName: [],
+      showCondtion: true,
       // 列表显示所用数据
       menuTitle: '我的文章',
       theArticle: [],
@@ -110,17 +135,15 @@ export default {
       count: 0,
       detail: {},// 文章详情
       // 列表显示条件
+      showFocusArticle: false,// 是否展示被关注者文章
       isArticles: true,
       isMyFocus: false,
-      // isMyThumbs: false,
-      // 文章详情
-      isShowDetail: false
     };
   },
   methods: {
     async handleSelect(index) {
       if (index === '1') {
-        const res = await getMyFollow({ userName: this.user.username });
+        const res = await getMyFollow({ userName: localStorage.username });
         console.log('follow:', res);
         this.focus = res.data;
         this.menuTitle = '我的关注';
@@ -128,63 +151,66 @@ export default {
         this.isArticles = false;
         // this.isMyThumbs = false;
       } else if (index === '2') {
-        console.log('personal', this.user.username);
-        const res = await getMyArticles({ userName: this.user.username });
+        console.log('personal', localStorage.username);
+        const res = await getMyArticles({ userName: localStorage.username });
         console.log('myall', res);
         this.menuTitle = '我的文章';
         this.theArticle = this.myArticle;
+        this.goBack();
         this.isArticles = true;
         this.isMyFocus = false;
+        this.showCondtion = true;
         // this.isMyThumbs = false;
       } else if (index === '3') {
-        const res = await getMyLike({ userName: this.user.username });
+        // console.log('user is', localStorage.username);
+        const res = await getMyLike({ userName: localStorage.username });
         console.log('my like:', res);
         this.giveThumbs = res.data;
+        console.log('看点赞：', this.giveThumbs);
         this.menuTitle = '我的点赞';
+        this.goBack();
         // this.isMyThumbs = true;
         this.isMyArticles = true;
+        this.showCondtion = false;
         this.theArticle = this.giveThumbs;
+        console.log('展示看：', this.theArticle);
         this.isMyFocus = false;
       }// else {}
+    },
+    async handleFollowName(name) {
+      // this.$message(name);
+      this.focusArticles = [];// 每次重新查看被关注者要将列表清空
+      const res = await getMyArticles({ userName: name });
+      const followData = res.data;
+      console.log('查看状态：', followData);
+      for (let i = 0; i < followData.length; i+=1) {
+        let isPublic = followData[i].Public;
+        if (isPublic) {
+          this.focusArticles.push(followData[i]);
+        }
+      }
+      // this.focusArticles = res.data;
+      console.log('follow all', this.focusArticles);
+      this.showFocusArticle = true;
+    },
+    goBack() {
+      this.showFocusArticle = false;
     },
     load() {
       this.count += 2;
     },
-    // 显示文章详情
-    async handleShowDetail(article) {
-      // console.log('detail res:', res);
-      this.detail = article;
-      this.detail.author = this.user.username;
-      const res = await getArticleDetail({
-        articleId: this.detail.id
-      });
-      this.detail.allComments = res.recommend;
-      this.detail.likeNum = res.likenumber;
-      console.log('msg:', this.detail);
-      this.isShowDetail = true;
-      // console.log('detail all', this.detail);
-      
-    },
-    goBack() {
-      this.isShowDetail = false;
-    }
   },
   mounted() {
     const Data = personalData.data;
-    // this.focus = Data.focus;// 关注的人
-    // this.myArticle = Data.myArticle;// 我的文章
-    this.theArticle = this.myArticle;
-    // this.giveThumbs = Data.giveThumbs;// 我的点赞
+    // this.theArticle = this.myArticle;
     this.imgs = Data.imgs;// 推荐轮播图
     this.localName = Data.localName;
   },
   async created() {
-    const res = await getMyArticles({ userName: this.user.username });
+    const res = await getMyArticles({ userName: localStorage.username });
     console.log('myall', res);
     this.myArticle = res.data;
-    // this.myArticle.username = this.user.username;
     this.theArticle = res.data;
-    console.log('fields', this.myArticle);
   }
 };
 </script>
@@ -289,11 +315,17 @@ export default {
 .focus-name {
   color: $theme-5-hex;
   font-size: 16px;
-  text-decoration: underline;
+  // padding-right: 20px;
   height: 45px;
-  width: 500px;
+  // width: 500px;
   line-height: 45px;
-  border-bottom: 1px solid $--border-color-base;
+  // border-bottom: 1px solid $--border-color-base;
+}
+.befollow {
+  text-decoration: underline;
+  padding: 10px;
+  font-weight: normal;
+  cursor: pointer;
 }
 .li-title {
   font-size: 16px;
@@ -309,17 +341,11 @@ export default {
 }
 .li-words {
   font-size: 14px;
-  // 省略内容设置
-  overflow: hidden;
-  display: -webkit-box;
-  text-overflow:ellipsis;
-  -webkit-line-clamp:2;
-  -webkit-box-orient: vertical;
 }
-// .box-card {
-//   width: 580px;
-//   height: 410px;
-// }
+.box-card {
+  width: 580px;
+  height: 410px;
+}
 .search-report {
   display: inline-block;
   width: 250px;
@@ -329,5 +355,6 @@ export default {
 }
 .location {
   margin-right: 15px;
+  margin-left: 10px;
 }
 </style>

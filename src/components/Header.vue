@@ -104,18 +104,18 @@ export default {
   // 监听路径的变化，修复返回导致title变色不同步、登录验证bug
   watch: {
     $route: function () {
-      console.log('header isLogin:' + this.isLogin);
+      // console.log('header isLogin:' + this.isLogin);
       // isLogin为false时跳转至登录页，此处判断用！this.Login则无法达到，有疑。
       if (this.isLogin === 'false') {
         this.more = '未登录...';
         this.$message('还未登录，请先登录！');
         this.$router.push('/login');
-        console.log('hello');
+        // console.log('hello');
       } else { this.more = localStorage.username; }
       if (this.$route.path === '/mapTrack') {
         this.onTrack = true;
         this.onArticle = false;
-      } else if (this.$route.path === '/articalShow') {
+      } else if (this.$route.path === '/articalShow' || this.$route.params.id) {
         this.onArticle = true;
         this.onTrack = false;
       } else {

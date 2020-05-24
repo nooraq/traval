@@ -15,7 +15,26 @@
         </el-option>
       </el-select>
       <el-button class="search-button" @click="handleSelect">搜索</el-button>
-      <el-card class="box-card">
+      <!-- 展示搜索结果 -->
+      <el-card class="box-card" v-if="searchNow">
+        <div slot="header" class="clearfix">
+          <el-page-header @back="goBack" content="搜索结果"></el-page-header>
+        </div>
+        <ul class="menu-content" v-infinite-scroll="load" style="overflow:auto">
+          <span class="msg" v-if="searchEmpty">没有搜到该地点的文章</span>
+          <li v-for="(item,index) of searchResults" :key="index" class="menu-content-li">
+            <p class="li-header">{{item.Title}}</p>
+            <p class="li-msg">
+              <span><i class="el-icon-map-location"></i>{{item.Location}}</span>
+              <span class="start-time"><i class="el-icon-time"></i>{{item.SDate}}</span>
+              <el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link-detail">查看详情</el-link>
+            </p>
+            <el-divider></el-divider>
+          </li>
+        </ul>
+      </el-card>
+      <!-- 文章推荐结果 -->
+      <el-card class="box-card" v-else>
         <div slot="header" class="clearfix">
           <span class="recommend">推荐文章</span>
         </div>
@@ -24,7 +43,7 @@
             <p class="li-header">{{item.Title}}</p>
             <p class="li-msg">
               <span><i class="el-icon-map-location"></i>{{item.Location}}</span>
-              <el-button type="primary" class="button-detail" plain @click="handleShowDetail(item)">查看详情</el-button>
+              <el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link-detail">查看详情</el-link>
             </p>
             <el-divider></el-divider>
           </li>
@@ -46,22 +65,25 @@ export default {
     return {
       activeName: 'local',
       detail: {
-        Body: '',
-        EDate: '',
-        Location: '',
-        Public: null,
-        SDate: '',
-        Title: '',
-        Userid_id: null,
-        allComments: [],
-        author: '',
-        id: null,
-        likeNum: null
+        // Body: '',
+        // EDate: '',
+        // Location: '',
+        // Public: null,
+        // SDate: '',
+        // Title: '',
+        // Userid_id: null,
+        // allComments: [],
+        // author: '',
+        // id: null,
+        // likeNum: null
       },
       count: 0,
       allArticles: [],
       recommendArticles: [],
       searchCity: '',
+      searchResults: [],
+      searchNow: false,
+      searchEmpty: false
     };
   },
   computed: {
@@ -83,19 +105,47 @@ export default {
       const local = this.searchCity;
       const param = {
         action: 'search_by_location',
-        userid: this.user.userid,
+        userid: localStorage.userid,
         location: local
       };
-      console.log('check search:', param);
+      // console.log('check search:', param);
       const res = await getArticleSearch(param);
+      console.log('搜索结果：', res);
+      this.searchResults = res.retlist;
+      if (this.searchResults.length === 0){
+        this.searchEmpty = true;
+      } else { this.searchEmpty = false; }
+      this.searchNow = true;
+    },
+    goBack() {
+      this.searchNow = false;
     }
   },
-
+  watch: {
+    $route: async function() {
+      // 路径params变化不产生重新渲染，需通过监听改变文章详情
+      console.log('route changed:', this.$route.params.id);
+      const resDetail = await getShowArticle({
+        action: 'show_article',
+        articleid: this.$route.params.id
+      });
+      // console.log('new articleshow:', resDetail);
+      this.detail = resDetail.article[0];
+      this.detail.author = resDetail.username;
+      // // 获取文章评论点赞数
+      const resMsg = await getArticleDetail({
+        articleId: this.detail.id
+      });
+      this.detail.allComments = resMsg.recommend;
+      this.detail.likeNum = resMsg.likenumber;
+    }
+  },
   async created() {
     const res = await getAll({
       action: 'recommend'
     });
     this.allArticles = res.retlist;
+    // console.log('allArticles:', this.allArticles);
     for (let i = 0; i < 10; i += 1) {
       if (this.allArticles[i] !== undefined) {
         this.recommendArticles[i] = this.allArticles[i];
@@ -104,18 +154,22 @@ export default {
     if (!this.$route.params.id) {
       return;
     }
+    console.log('重新渲染');
     // 获取文章具体内容
     const resDetail = await getShowArticle({
       action: 'show_article',
-      articleid: this.allArticles[0].id
+      articleid: this.$route.params.id
     });
+    // console.log('new articleshow:', resDetail);
+    this.detail = resDetail.article[0];
     this.detail.author = resDetail.username;
-    // 获取文章评论点赞数
+    // // 获取文章评论点赞数
     const resMsg = await getArticleDetail({
       articleId: this.detail.id
     });
     this.detail.allComments = resMsg.recommend;
     this.detail.likeNum = resMsg.likenumber;
+    // console.log('detail:', this.detail);
   }
 };
 </script>
@@ -138,14 +192,15 @@ export default {
 }
 .box-card {
   width: 350px;
-  height: 410px;
+  height: 420px;
 }
-.button-detail {
+.link-detail {
   padding: 2px;
-  border: none;
-  border-bottom: 0.9px solid;
+  // border: none;
+  // border-bottom: 0.9px solid;
   margin-left: 15px;
-  color: $--color-title;
+  // color: $--color-title;
+  font-size: 13px;
 }
 .article-menu {
   width: 350px;
@@ -191,5 +246,8 @@ export default {
   padding: 9px 20px;
   background-color: #545c64;
   color: #ffd04b;
+}
+.start-time {
+  margin: 0 10px;
 }
 </style>

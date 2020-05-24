@@ -11,7 +11,7 @@
             <span class="msg lighter"><i class="el-icon-user"></i>: {{showArticle.author}}</span>
             <span class="msg"><i class="el-icon-map-location"></i>：{{showArticle.Location}}</span>
             <span class="msg">
-              <i class="el-icon-alarm-clock"></i>：{{showArticle.SDate}}
+              <i class="el-icon-time"></i>：{{showArticle.SDate}}
               <i class="el-icon-minus"></i>{{showArticle.EDate}}
             </span>
             <span class="msg" v-if="!showArticle.Public">状态：私密</span>
@@ -31,12 +31,12 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-menu-item index="1"><i class="el-icon-chat-line-square"></i><span class="msg">评论</span></el-menu-item>
-          <el-menu-item index="2"><i class="el-icon-thumb"></i><span class="msg">点赞 {{likeNum}}</span></el-menu-item>
+          <el-menu-item index="1"><i class="el-icon-chat-line-square"></i><span class="msg">评论 {{cLength}}</span></el-menu-item>
+          <el-menu-item index="2"><i class="el-icon-thumb"></i><span class="msg">{{thumbState}} {{likeNum}}</span></el-menu-item>
           <el-menu-item index="3"><i class="el-icon-star-off"></i><span class="msg">{{startState}}</span></el-menu-item>
         </el-menu>
-        <div class="show-comment" style="overflow:auto">
-          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto"  v-show="showComments">
+        <div class="show-comment" style="overflow:auto" v-show="showComments">
+          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="cLength">
             <li v-for="(item,index) in allComments" class="infinite-list-item" :key="index">
               <div class="comment-area">
                 <span class="comment-from"><i class="el-icon-user"></i> {{item.UserName}}:</span>
@@ -45,7 +45,7 @@
               </div>
             </li>
           </ul>
-          <div class="add-comment" v-show="showComments">
+          <div class="add-comment">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
               <el-form-item prop="comment">
                 <el-input
@@ -79,12 +79,15 @@ export default {
       count: 0,
       showComments: false,
       thumbFlag: false,
-      startFlag: false,
+      thumbState: '点赞',
+      // startFlag: false,
       startState: '关注作者',
       // msg: {},
       likeNum: this.detail.likeNum,
       showArticle: this.detail,
       allComments: this.detail.allComments,
+      // commentsLength: this.allComments.length,
+      cLength: 0,
       ruleForm: {
         comment: ''
       },
@@ -113,16 +116,17 @@ export default {
           const msg = {
             articleid: this.showArticle.id,
             remark: this.ruleForm.comment,
-            remarkuserid: this.user.userid
+            remarkuserid: localStorage.userid
           };
           const res = postRemark(msg);
-          console.log('remark:', res, this.detail.id);
+          // console.log('remark:', res, this.detail.id);
           const resMsg = await getArticleDetail({
             articleId: this.detail.id
           });
           console.log('msg:', resMsg);
           this.allComments = resMsg.recommend;
           this.likeNum = resMsg.likenumber;
+          this.cLength = this.allComments.length;
           this.$message('评论成功！');
           this.$refs[formName].resetFields();
         } else {
@@ -137,52 +141,58 @@ export default {
     async handleSelect(index) {
       if (index === '2') {
         // 点赞
-        const res = await postLike({
-          articleid: this.detail.id,
-          likeuserid: this.user.userid
-        });
-        console.log('like:', res);
-        const likeResult = res.msg;
+        if (this.thumbState === '点赞'){
+          const res = await postLike({
+            articleid: this.detail.id,
+            likeuserid: localStorage.userid
+          });
+          this.thumbState = '已点赞';
+          console.log('like:', res);
+          // const likeResult = res.msg;
+        } else if (this.thumbState === '已点赞'){
         // const resMsg = await getArticleDetail({
         // articleId: this.detail.id
         // });
-        if (likeResult === 'already liked') {
-          this.$message('已经点过赞了呀');
+        // if (likeResult === 'already liked') {
+          // this.$message('已经点过赞了呀');
           const res1 = await postDeLike({
             articleid: this.detail.id,
-            likeuserid: this.user.userid
+            likeuserid: localStorage.userid
           });
-          const delikeResult = res1.msg;
-          console.log('cancle result:', delikeResult);
+          this.thumbState = '点赞';
+          console.log('cancle result:', res1);
           // const resMsg = await getArticleDetail({
           // articleId: this.detail.id
           // });
-        } else { this.likeNum++; }
+        }
         const resMsg = await getArticleDetail({
           articleId: this.detail.id
         });
-        console.log('msg:', resMsg);
+        // console.log('msg:', resMsg);
         this.allComments = resMsg.recommend;
         this.likeNum = resMsg.likenumber;
         // } else { console.log('already thumb'); }
       } else if (index === '3') {
         // 判断关注
-        const res = await postFollow({
-          followuserid: this.user.userid,
-          userid: this.detail.Userid_id
-        });
-        console.log('follow:', res);// 出现错误，已关注返回值导致的报错使后面的代码无法进行
-        // if (res.ret === 1) {
-        //   this.startState  = '关注作者';
-        //   const resDel = await postDeFollow({
-        //     followuserid: this.user.userid,
-        //     userid: this.detail.Userid_id
-        //   });
-        //   console.log('delfollow result:', resDel);
-        // }
+        if (this.startState === '关注作者'){
+          const res = await postFollow({
+            followuserid: this.detail.Userid_id,
+            userid: parseInt(localStorage.userid, 10)
+          });
+          this.startState = '已关注该作者'
+          console.log('follow:', res);
+        }
+        else if (this.startState === '已关注该作者') {
+          const resDel = await postDeFollow({
+            followuserid: this.detail.Userid_id,
+            userid: parseInt(localStorage.userid, 10)
+          });
+          this.startState  = '关注作者';
+          console.log('delfollow result:', resDel);
+        }
         // console.log('测试取关');
-        this.startFlag = !this.startFlag;
-        if (this.startFlag) { this.startState = '已关注'; } else { this.startState = '关注作者'; }
+        // this.startFlag = !this.startFlag;
+        // if (this.startFlag) { this.startState = '已关注'; } else { this.startState = '关注作者'; }
       } else if (index === '1') { this.showComments = !this.showComments; }
     },
     load() {
@@ -199,6 +209,10 @@ export default {
       // console.log('get new msg:', resMsg);
       this.likeNum = resMsg.likenumber;
       this.allComments = resMsg.recommend;
+      this.cLength = this.detail.allComments.length;
+      // console.log('新detail：', this.cLength);
+      this.thumbState = '点赞';
+      this.startState = '关注作者';
       // console.log('new likeNum:', this.likeNum, this.allComments);
       // console.log('new article:', this.showArticle);
       // console.log('new detail:', this.detail);
