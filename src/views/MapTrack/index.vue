@@ -8,19 +8,24 @@
   </div>
 <div class="recommend">
   <el-switch
-  v-model="myList"
+  :value="showList === 'myArticles'"
   active-text="曾经写过的文章"
-  inactive-text="可能感兴趣的文章">
+  inactive-text="可能感兴趣的文章"
+  @change="onShowArticlesChange"
+  >
   </el-switch>
-  <div class="recommend-item" v-for="item in list" :key="item.index">
-    <div class="location">
-    <p>{{item.location}}</p>
-    </div>
-    <router-link class="title" :to="`/essay/${item.location}`">这是标题</router-link>
-    <p class="detail">详情详情详情详情详情详情详情详情详情
-      详情详情详情详情详情详情详情详情详情
-    </p>
-  </div>
+   <ul class="menu-content"  style="overflow:auto">
+     <li v-if="!location && showList !== 'myArticles'">请选择地点推荐</li>
+     <li v-if="list[showList].length === 0 && showList !== 'myArticles'">目前暂无推荐</li>
+          <li v-for="(item) of list[showList]" :key="item.id" class="menu-content-li">
+            <p class="title">{{item.Title}}</p>
+            <p class="li-msg">
+              <span class="location"><i class="el-icon-map-location"></i>{{item.Location}}</span>
+<el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
+            </p>
+            <el-divider></el-divider>
+          </li>
+        </ul>
 </div>
 </div>
 </template>
@@ -31,9 +36,10 @@ import 'echarts/lib/chart/map';
 // import 'echarts/lib/chart/scatter';
 // import 'echarts/lib/component/geo';
 import 'echarts/lib/component/tooltip';
+import _ from 'lodash';
 import { mapState } from 'vuex';
 import styles from '@/theme/variable.scss';
-import { getLocation } from '@/api/demo';
+import { getLocation, getMyArticles, getArticlesByLocation } from '@/api/demo';
 import chinaJson from './china.json';
 
 const getData = [
@@ -81,9 +87,12 @@ export default {
   name: 'MapTrack',
   data() {
     return {
-      myList: true,
-      location: '北京',
-      list: [],
+      showList: 'myArticles',
+      location: '',
+      list: {
+        myArticles: [],
+        recommendArticles: []
+      },
       mapData: [],
     };
   },
@@ -197,45 +206,37 @@ export default {
     Echarts
   },
   methods: {
-    Click(params) { this.location = params.data.name; }
-  },
-  // computed: {
-  // },
-  // 判断登录与否，否则跳到登录页
-  mounted() {
-    if (!this.isLogin) {
-      alert('还未登录，请先登录！');
-      this.$router.push('/login');
+    async Click(params) {
+      this.location = params.data.name;
+      const res = await getArticlesByLocation({
+        location: this.location
+      });
+      this.list.recommendArticles = res.retlist;
+    },
+    async onShowArticlesChange(checked) {
+      if (checked) {
+        this.showList = 'myArticles';
+      } else {
+        this.showList = 'recommendArticles';
+        const res = await getArticlesByLocation({
+          location: this.location
+        });
+        this.list.recommendArticles = res.retlist;
+      }
     }
-    // console.log(window.location.href);
-    // console.log(this.$route.path);
-    // console.log(this.$route.params);
   },
-
   async created() {
     const res = await getLocation({
       action: 'have_been',
-      userid: localStorage.userid
+      userid: parseInt(localStorage.userid, 10)
     });
     const wentLoc = res.retlist.map(item => ({ name: item.Location, value: 0 }));
-    this.mapData = [...getData, ...wentLoc];
+    this.mapData = [...(_.differenceBy(getData, wentLoc, 'name')), ...wentLoc];
+    const { data } = await getMyArticles({
+      userName: localStorage.username
+    });
+    this.list.myArticles = data;
   }
-  // ,
-  // computed: {
-  //  ...mapState(['isLogin'])
-  // }
-  // ,
-  // // 判断登录与否，否则跳到登录页
-  // mounted () {
-  //   console.log(this.isLogin);
-  //   if (!this.isLogin) {
-  //     alert('还未登录，请先登录！');
-  //     this.$router.push('/login');
-  //   }
-  //   // console.log(window.location.href);
-  //   // console.log(this.$route.path);
-  //   // console.log(this.$route.params);
-  // }
 };
 </script>
 
@@ -267,10 +268,10 @@ export default {
 }
 .recommend {
   margin-left: 880px;
+  margin-right: 24px;
   background-color: #FFF;
   border-radius: 2px;
   padding: 24px;
-  margin-right: 80px;
   box-shadow: 0 2px 10px rgba(0,0,0,.05);
   height: calc(100vh - 200px);
   min-height: 400px;
@@ -279,15 +280,27 @@ export default {
     color:$title-color;
   font-weight: 700;
   line-height: 1.5;
-  font-size: 22px;
-  &:hover {
-    text-decoration: underline;
-    cursor:pointer;
+  font-size: 20px;
   }
-  }
-  .detail {
+  .el-icon-map-location,.location {
     color: $detail-color;
+    font-size: 16px;
   }
 
+.menu-content {
+  margin-top: 24px;
+}
+
+.li-header {
+  font-size: 15px;
+  color: $--color-title;
+}
+  .el-divider--horizontal {
+    margin: 12px 0;
+  }
+}
+.link {
+  float: right;
+  margin-right:24px;
 }
 </style>

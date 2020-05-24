@@ -7,34 +7,16 @@
     </div>
     <!-- 选项-->
     <div class="title-wrapper">
-      <span class="head-title track" :class="{onTrack: onTrack}" @click="handleClickTrack">我的足迹</span>
+      <span class="head-title track"
+      :class="{onTrack: onTrack}" @click="handleClickTrack">我的足迹</span>
       <span class="head-title article" :class="{onArticle: onArticle}" @click="handleClickArticle">文章</span>
     </div>
     <!-- 更多-->
     <div class="name-wrapper">
-      <!-- 全局搜索-->
-      <el-autocomplete
-        size="mini"
-        class="all-search"
-        placeholder="按时间/地点搜索文章"
-        suffix-icon="el-icon-search"
-        v-model="allSearch"
-        :value="allSearch"
-        @select="handleSelect"
-        :fetch-suggestions="querySearch"
-      >
-      </el-autocomplete>
-      <!-- <el-input
-        class="all-search"
-        size="mini"
-        placeholder="按时间/地点搜索"
-        suffix-icon="el-icon-search"
-        v-model="allSearch">
-      </el-input> -->
       <el-button type="danger" icon="el-icon-edit" @click="handleWrite" class="write">写文章</el-button>
-      <el-dropdown @command="handleCommand">
+      <el-dropdown @command="handleCommand" trigger="click">
         <span class="el-dropdown-link">
-          更多<i class="el-icon-arrow-down el-icon--right"></i>
+          <i class="el-icon-user-solid"></i>{{more}}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="personal" icon="el-icon-user-solid">个人空间</el-dropdown-item>
@@ -54,47 +36,13 @@ export default {
     return {
       onTrack: false,
       onArticle: false,
-      allSearch: '',
-      allLocals: [
-        { value: '北京' },
-        { value: '天津市' },
-        { value: '上海市' },
-        { value: '重庆市' },
-        { value: '河北' },
-        { value: '河南' },
-        { value: '云南' },
-        { value: '辽宁' },
-        { value: '黑龙江' },
-        { value: '湖南' },
-        { value: '安徽' },
-        { value: '山东' },
-        { value: '新疆' },
-        { value: '江苏' },
-        { value: '浙江' },
-        { value: '江西' },
-        { value: '湖北' },
-        { value: '广西壮族自治区' },
-        { value: '甘肃' },
-        { value: '山西' },
-        { value: '内蒙古自治区' },
-        { value: '陕西' },
-        { value: '吉林' },
-        { value: '福建' },
-        { value: '贵州' },
-        { value: '广东' },
-        { value: '青海' },
-        { value: '西藏自治区' },
-        { value: '四川' },
-        { value: '宁夏回族自治区' },
-        { value: '海南' },
-        { value: '台湾' },
-        { value: '香港特别行政区' },
-        { value: '澳门特别行政区' }
-      ]
+      more: '未登录...'
     };
   },
   computed: {
-    isLogin: function() { return this.$store.state.isLogin; }
+    // isLogin: function () { return this.$store.state.isLogin; },
+    // user: function () { return this.$store.state.user; }
+    ...mapState(['isLogin', 'user'])
   },
   methods: {
     ...mapMutations(['NotLogin']),
@@ -129,62 +77,36 @@ export default {
       this.onTrack = false;
       this.onArticle = false;
     },
-    // 搜索自动匹配
-    querySearch(queryString, cb) {
-      let allLocals = this.allLocals;
-      // console.log("locals:");
-      // console.log(allLocals);
-      // results 保存匹配结果列表
-      let results = queryString? allLocals.filter(this.createFilter(queryString)): allLocals;
-      // console.log("results:");
-      // console.log(results);
-      cb(results);
-    },
-    createFilter(queryString) {
-      return (local) => {
-        return (local.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      }
-    },
-    handleSelect(item) {
-      console.log(item.value);
-    }
   },
   // 修复刷新页面后title变色不准确以及登录状态验证bug
-  mounted () {
+  mounted() {
+    this.more = localStorage.username;
     const path = this.$route.path;
-    console.log('路径'+path);
-    if (!this.isLogin) {
-      alert('还未登录，请先登录！');
+    if (this.isLogin === 'false') {
+      this.$message('还未登录，请先登录！');
+      this.more = '未登录...';
       this.$router.push('/login');
-      console.log('hello');
-    } else {
-      if (path === '/mapTrack') {
-        this.onTrack = true;
-        this.onArticle = false;
-      } else if (path === '/articalShow') {
-        this.onTrack = false;
-        this.onArticle = true;
-      }
+    } else if (path === '/mapTrack') {
+      this.onTrack = true;
+      this.onArticle = false;
+    } else if (path === '/articalShow') {
+      this.onTrack = false;
+      this.onArticle = true;
     }
   },
   // 监听路径的变化，修复返回导致title变色不同步、登录验证bug
   watch: {
-    $route: function () {
-      // console.log(this.$route.path);
-      // console.log("header"+this.$store.state.isLogin);
-      // let isLogin = this.$store.state.isLogin;
-      console.log("header isLogin:"+this.isLogin);
-      //  
+    $route() {
       // isLogin为false时跳转至登录页，此处判断用！this.Login则无法达到，有疑。
-      if (!this.isLogin) {
-        alert('还未登录，请先登录！');
+      if (this.isLogin === 'false') {
+        this.more = '未登录...';
+        this.$message('还未登录，请先登录！');
         this.$router.push('/login');
-        console.log('hello');
-      }
+      } else { this.more = localStorage.username; }
       if (this.$route.path === '/mapTrack') {
         this.onTrack = true;
         this.onArticle = false;
-      } else if (this.$route.path === '/articalShow') {
+      } else if (this.$route.path === '/articalShow' || this.$route.params.id) {
         this.onArticle = true;
         this.onTrack = false;
       } else {
@@ -204,6 +126,7 @@ export default {
   height: 58px;
   box-shadow: 0 2px 10px rgba(0,0,0,.05);
   width:100%;
+  min-width: 1000px; /* no */
   color: $header-color;
 }
 // 网站logo包裹
@@ -226,10 +149,7 @@ export default {
 .title-wrapper {
   vertical-align: top;
   display: inline-block;
-  width: 540px;
-  height: 100%;
-  margin-right: 50px;
-  text-align: right;
+  margin-left: 400px;
 }
 .head-title {
   font: bold 20px/58px '微软雅黑';
@@ -244,26 +164,17 @@ export default {
 }
 // 更多选择包裹
 .name-wrapper {
-  vertical-align: top;
-  display: inline-block;
-  width: 400px;
-  height: 100%;
-  margin-left: 100px;
+  line-height: 58px;
   margin-right: 20px;
-  text-align: right;
-}
-.all-search {
-  width: 160px;
-  margin-right: 10px;
+  float: right;
 }
 .write {
-  margin-right: 15px;
+  margin-right: 20px;
 }
 .el-dropdown-link {
   cursor: pointer;
-  font-size: 15px;
-  line-height: 58px;
-  color: $--color-title;
+  font-size: 14px;
+  color: $--color-user;
 }
 .el-icon-arrow-down {
   font-size: 15px;
