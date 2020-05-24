@@ -39,8 +39,8 @@ export default {
     };
   },
   computed: {
-    isLogin: function () { return this.$store.state.isLogin; },
-    user: function () { return this.$store.state.user; }
+    isLogin() { return this.$store.state.isLogin; },
+    user() { return this.$store.state.user; }
   },
   methods: {
     ...mapMutations(['NotLogin']),
@@ -82,7 +82,7 @@ export default {
     // console.log('isLogin:' + this.isLogin);
     // console.log('username:' + this.user.username);
     // console.log('header userid', this.user.userid);
-    console.log('路径 '+ path);
+    console.log(`路径 ${path}`);
     if (this.isLogin === 'false') {
       this.$message('还未登录，请先登录！');
       this.more = '未登录...';
@@ -101,8 +101,8 @@ export default {
   },
   // 监听路径的变化，修复返回导致title变色不同步、登录验证bug
   watch: {
-    $route: function () {
-      console.log('header isLogin:' + this.isLogin);
+    $route() {
+      console.log(`header isLogin:${this.isLogin}`);
       // isLogin为false时跳转至登录页，此处判断用！this.Login则无法达到，有疑。
       if (this.isLogin === 'false') {
         this.more = '未登录...';
@@ -133,6 +133,7 @@ export default {
   height: 58px;
   box-shadow: 0 2px 10px rgba(0,0,0,.05);
   width:100%;
+  min-width: 1000px; /* no */
   color: $header-color;
 }
 // 网站logo包裹
@@ -155,10 +156,7 @@ export default {
 .title-wrapper {
   vertical-align: top;
   display: inline-block;
-  width: 540px;
-  height: 100%;
-  margin-right: 50px;
-  text-align: right;
+  margin-left: 400px;
 }
 .head-title {
   font: bold 20px/58px '微软雅黑';
@@ -173,14 +171,9 @@ export default {
 }
 // 更多选择包裹
 .name-wrapper {
-  vertical-align: top;
-  display: inline-block;
-  width: 400px;
-  height: 100%;
   line-height: 58px;
-  margin-left: 100px;
   margin-right: 20px;
-  text-align: right;
+  float: right;
 }
 .write {
   margin-right: 20px;
