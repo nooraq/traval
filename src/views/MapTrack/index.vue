@@ -43,7 +43,7 @@ import { getLocation, getMyArticles, getArticlesByLocation } from '@/api/demo';
 import chinaJson from './china.json';
 
 const getData = [
-  { name: '北京', value: 0 },
+  { name: '北京', value: 1 },
   { name: '天津市', value: 1 },
   { name: '上海市', value: 1 },
   { name: '重庆市', value: 1 },

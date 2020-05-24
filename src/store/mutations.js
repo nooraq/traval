@@ -6,11 +6,11 @@ export default {
   },
   // 保存最近显示的文章的id
   changeArticleId(state,id) {
-    state.latestArticleId = id;
+    state.user.latestArticleId = id;
     localStorage.latestArticleId = id;
   },
   saveId(state, userid) {
-    state.userid = userid;
+    state.user.userid = userid;
     localStorage.userid = userid;
     console.log('localStorage', localStorage.userid);
     console.log('state', state.userid);
@@ -18,8 +18,8 @@ export default {
   // 判断登录的用户账号密码是否存在
   changeLoginStatus(state, mes) {
     try {
-      state.isLogin = true;
-      state.username = mes.username;
+      state.user.isLogin = true;
+      state.user.username = mes.username;
       localStorage.isLogin = true;
       localStorage.username = mes.username;
       localStorage.password = mes.password;
