@@ -148,11 +148,11 @@ export default {
         // });
         if (likeResult === 'already liked') {
           this.$message('已经点过赞了呀');
-          const res = await postDeLike({
+          const res1 = await postDeLike({
             articleid: this.detail.id,
             likeuserid: this.user.userid
           });
-          const delikeResult = res.msg;
+          const delikeResult = res1.msg;
           console.log('cancle result:', delikeResult);
           // const resMsg = await getArticleDetail({
           // articleId: this.detail.id
