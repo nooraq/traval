@@ -112,14 +112,12 @@ export default {
           const resMsg = await getArticleDetail({
             articleId: this.detail.id
           });
-          console.log('msg:', resMsg);
           this.allComments = resMsg.recommend;
           this.likeNum = resMsg.likenumber;
           this.cLength = this.allComments.length;
           this.$message('评论成功！');
           this.$refs[formName].resetFields();
         } else {
-          console.log('error submit!!');
           return false;
         }
       });
@@ -130,8 +128,8 @@ export default {
     async handleSelect(index) {
       if (index === '2') {
         // 点赞
-        if (this.thumbState === '点赞'){
-          const res = await postLike({
+        if (this.thumbState === '点赞') {
+          await postLike({
             articleid: this.detail.id,
             likeuserid: localStorage.userid
           });
@@ -152,21 +150,18 @@ export default {
         this.likeNum = resMsg.likenumber;
       } else if (index === '3') {
         // 判断关注
-        if (this.startState === '关注作者'){
+        if (this.startState === '关注作者') {
           const res = await postFollow({
             followuserid: this.detail.Userid_id,
             userid: parseInt(localStorage.userid, 10)
           });
-          this.startState = '已关注该作者'
-          console.log('follow:', res);
-        }
-        else if (this.startState === '已关注该作者') {
-          const resDel = await postDeFollow({
+          this.startState = '已关注该作者';
+        } else if (this.startState === '已关注该作者') {
+          await postDeFollow({
             followuserid: this.detail.Userid_id,
             userid: parseInt(localStorage.userid, 10)
           });
-          this.startState  = '关注作者';
-          console.log('delfollow result:', resDel);
+          this.startState = '关注作者';
         }
       } else if (index === '1') { this.showComments = !this.showComments; }
     },

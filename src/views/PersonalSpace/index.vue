@@ -122,8 +122,8 @@ export default {
     return {
       // 保存json文档的相关数据
       focus: [],
-      focusName: '',// 被展示其所有文章的被关注人
-      focusArticles: [],// 被关注人的所有文章
+      focusName: '', // 被展示其所有文章的被关注人
+      focusArticles: [], // 被关注人的所有文章
       myArticle: [],
       giveThumbs: [],
       localName: [],
@@ -133,9 +133,9 @@ export default {
       theArticle: [],
       imgs: [], // 推荐走马灯
       count: 0,
-      detail: {},// 文章详情
+      detail: {}, // 文章详情
       // 列表显示条件
-      showFocusArticle: false,// 是否展示被关注者文章
+      showFocusArticle: false, // 是否展示被关注者文章
       isArticles: true,
       isMyFocus: false,
     };
@@ -144,16 +144,13 @@ export default {
     async handleSelect(index) {
       if (index === '1') {
         const res = await getMyFollow({ userName: localStorage.username });
-        console.log('follow:', res);
         this.focus = res.data;
         this.menuTitle = '我的关注';
         this.isMyFocus = true;
         this.isArticles = false;
         // this.isMyThumbs = false;
       } else if (index === '2') {
-        console.log('personal', localStorage.username);
         const res = await getMyArticles({ userName: localStorage.username });
-        console.log('myall', res);
         this.menuTitle = '我的文章';
         this.theArticle = this.myArticle;
         this.goBack();
@@ -162,18 +159,14 @@ export default {
         this.showCondtion = true;
         // this.isMyThumbs = false;
       } else if (index === '3') {
-        // console.log('user is', localStorage.username);
         const res = await getMyLike({ userName: localStorage.username });
-        console.log('my like:', res);
         this.giveThumbs = res.data;
-        console.log('看点赞：', this.giveThumbs);
         this.menuTitle = '我的点赞';
         this.goBack();
         // this.isMyThumbs = true;
         this.isMyArticles = true;
         this.showCondtion = false;
         this.theArticle = this.giveThumbs;
-        console.log('展示看：', this.theArticle);
         this.isMyFocus = false;
       }// else {}
     },
@@ -182,15 +175,13 @@ export default {
       this.focusArticles = [];// 每次重新查看被关注者要将列表清空
       const res = await getMyArticles({ userName: name });
       const followData = res.data;
-      console.log('查看状态：', followData);
-      for (let i = 0; i < followData.length; i+=1) {
-        let isPublic = followData[i].Public;
+      for (let i = 0; i < followData.length; i += 1) {
+        const isPublic = followData[i].Public;
         if (isPublic) {
           this.focusArticles.push(followData[i]);
         }
       }
       // this.focusArticles = res.data;
-      console.log('follow all', this.focusArticles);
       this.showFocusArticle = true;
     },
     goBack() {
@@ -208,7 +199,6 @@ export default {
   },
   async created() {
     const res = await getMyArticles({ userName: localStorage.username });
-    console.log('myall', res);
     this.myArticle = res.data;
     this.theArticle = res.data;
   }

@@ -104,7 +104,6 @@ export default {
           userName: localStorage.username
         });
         const summaryData = res.data;
-        // console.log(data);
         this.reportMsg[0].msg = `${'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}感谢你来到轻足迹`;
         this.reportMsg[1].msg = `<p>你已经加入轻足迹${summaryData.sighUpDays}天了，</p><br/><p>在些天里，你记录了许多旅游心得~</p>`;
         this.reportMsg[2].msg = `<p>你最近的旅游地点是<br/>${'&nbsp;&nbsp;'}${summaryData.cityLast}</p><br/><p>你在这次旅途中收获了许多许多</p>`;
@@ -113,7 +112,6 @@ export default {
                                 <p>直到 ${summaryData.cityLongest_end} 才离开,<br/>这里一定有很吸引你的地方！</p>`;
         this.reportMsg[4].msg = `<p>你对许多旅游地点都写下了你的感受和喜爱</p><br/>
                                 <p>希望我们能在今后的旅途中，一直陪伴你~</p>`;
-        // console.log(this.reportMsg);
       }
     },
     load() {
@@ -136,7 +134,6 @@ export default {
       this.searchNow = true;
     },
     async handleDateSearch() {
-      console.log('月份', this.searchMonth);
       const splitTime = this.searchMonth.split('-');
       const time = splitTime.map(item => parseInt(item, 10));
       const res = await getSearchByDate({
@@ -153,9 +150,6 @@ export default {
       this.searchNow = true;
     }
   },
-  // created() {
-  //   console.log(this.detail.id);
-  // }
 };
 </script>
 

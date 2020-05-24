@@ -7,7 +7,8 @@
     </div>
     <!-- 选项-->
     <div class="title-wrapper">
-      <span class="head-title track" :class="{onTrack: onTrack}" @click="handleClickTrack">我的足迹</span>
+      <span class="head-title track"
+      :class="{onTrack: onTrack}" @click="handleClickTrack">我的足迹</span>
       <span class="head-title article" :class="{onArticle: onArticle}" @click="handleClickArticle">文章</span>
     </div>
     <!-- 更多-->
@@ -81,36 +82,26 @@ export default {
   mounted() {
     this.more = localStorage.username;
     const path = this.$route.path;
-    // console.log('isLogin:' + this.isLogin);
-    // console.log('username:' + this.user.username);
-    // console.log('header userid', this.user.userid);
-    console.log('路径 '+ path);
     if (this.isLogin === 'false') {
       this.$message('还未登录，请先登录！');
       this.more = '未登录...';
       this.$router.push('/login');
-      // console.log('hello');
-    } else {
-      if (path === '/mapTrack') {
-        this.onTrack = true;
-        this.onArticle = false;
-        console.log('username: check', localStorage.username);
-      } else if (path === '/articalShow') {
-        this.onTrack = false;
-        this.onArticle = true;
-      }
+    } else if (path === '/mapTrack') {
+      this.onTrack = true;
+      this.onArticle = false;
+    } else if (path === '/articalShow') {
+      this.onTrack = false;
+      this.onArticle = true;
     }
   },
   // 监听路径的变化，修复返回导致title变色不同步、登录验证bug
   watch: {
-    $route: function () {
-      // console.log('header isLogin:' + this.isLogin);
+    $route() {
       // isLogin为false时跳转至登录页，此处判断用！this.Login则无法达到，有疑。
       if (this.isLogin === 'false') {
         this.more = '未登录...';
         this.$message('还未登录，请先登录！');
         this.$router.push('/login');
-        // console.log('hello');
       } else { this.more = localStorage.username; }
       if (this.$route.path === '/mapTrack') {
         this.onTrack = true;
@@ -135,6 +126,7 @@ export default {
   height: 58px;
   box-shadow: 0 2px 10px rgba(0,0,0,.05);
   width:100%;
+  min-width: 1000px; /* no */
   color: $header-color;
 }
 // 网站logo包裹
@@ -157,10 +149,7 @@ export default {
 .title-wrapper {
   vertical-align: top;
   display: inline-block;
-  width: 540px;
-  height: 100%;
-  margin-right: 50px;
-  text-align: right;
+  margin-left: 400px;
 }
 .head-title {
   font: bold 20px/58px '微软雅黑';
@@ -175,14 +164,9 @@ export default {
 }
 // 更多选择包裹
 .name-wrapper {
-  vertical-align: top;
-  display: inline-block;
-  width: 400px;
-  height: 100%;
   line-height: 58px;
-  margin-left: 100px;
   margin-right: 20px;
-  text-align: right;
+  float: right;
 }
 .write {
   margin-right: 20px;

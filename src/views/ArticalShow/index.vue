@@ -108,11 +108,9 @@ export default {
         userid: localStorage.userid,
         location: local
       };
-      // console.log('check search:', param);
       const res = await getArticleSearch(param);
-      console.log('搜索结果：', res);
       this.searchResults = res.retlist;
-      if (this.searchResults.length === 0){
+      if (this.searchResults.length === 0) {
         this.searchEmpty = true;
       } else { this.searchEmpty = false; }
       this.searchNow = true;
@@ -122,14 +120,12 @@ export default {
     }
   },
   watch: {
-    $route: async function() {
+    async $route() {
       // 路径params变化不产生重新渲染，需通过监听改变文章详情
-      console.log('route changed:', this.$route.params.id);
       const resDetail = await getShowArticle({
         action: 'show_article',
         articleid: this.$route.params.id
       });
-      // console.log('new articleshow:', resDetail);
       this.detail = resDetail.article[0];
       this.detail.author = resDetail.username;
       // // 获取文章评论点赞数
@@ -145,7 +141,6 @@ export default {
       action: 'recommend'
     });
     this.allArticles = res.retlist;
-    // console.log('allArticles:', this.allArticles);
     for (let i = 0; i < 10; i += 1) {
       if (this.allArticles[i] !== undefined) {
         this.recommendArticles[i] = this.allArticles[i];
@@ -154,13 +149,11 @@ export default {
     if (!this.$route.params.id) {
       return;
     }
-    console.log('重新渲染');
     // 获取文章具体内容
     const resDetail = await getShowArticle({
       action: 'show_article',
       articleid: this.$route.params.id
     });
-    // console.log('new articleshow:', resDetail);
     this.detail = resDetail.article[0];
     this.detail.author = resDetail.username;
     // // 获取文章评论点赞数
@@ -169,7 +162,6 @@ export default {
     });
     this.detail.allComments = resMsg.recommend;
     this.detail.likeNum = resMsg.likenumber;
-    // console.log('detail:', this.detail);
   }
 };
 </script>

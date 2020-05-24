@@ -92,10 +92,7 @@ export default {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           const res = await postLogUser(this.loginMessage);
-          console.log(res);
-          console.log(res.userid);
           if (res.ret === 0) {
-            console.log(res.userid);
             // 将登录用户信息和id保存到store,但刷新页面后id会变为String类型
             this.saveId(res.userid);
             this.changeLoginStatus(this.loginMessage);
@@ -103,7 +100,6 @@ export default {
             this.$router.push('/mapTrack');
           } else if (res.ret === 1) { this.$message('密码错误或该账号未注册，请重新输入！'); }
         } else {
-          console.log('error submit!');
           return false;
         }
       });
@@ -112,13 +108,11 @@ export default {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           const res = await postRegUser(this.regiMessage);
-          console.log(res);
           if (res.ret === 0) {
             this.$message('注册成功，欢迎登陆！');
             this.activeName = 'login';
           } else if (res.ret === 1) { this.$message('账号已存在，请重新输入账号！'); }
         } else {
-          console.log('error submit!');
           return false;
         }
       });

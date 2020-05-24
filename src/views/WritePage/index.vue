@@ -111,52 +111,35 @@ export default {
     ...mapState(['user', 'allLocals'])
   },
   methods: {
-    // submitForm(form) {
-    //   this.$refs[form].validate((valid) => {
-    //     if (valid) {
-    //       this.formReady = true;
-    //       // this.$message('form:', form);
-    //     } else {
-    //       console.log('error submit!!');
-    //       return false;
-    //     }
-    //   });
-    // },
     handleHide() {
       this.titleEmpty = false;
     },
     async getContent() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs.form.validate((valid) => {
         if (valid) {
           this.formReady = true;
           // this.$message('form:');
         } else {
-          console.log('error submit!!');
           return false;
         }
       });
       if (this.title === '' || this.editorContent === '') {
         this.titleEmpty = true;
-        console.log('文章错');
+      } else if (!this.formReady) {
+        this.titleEmpty = true;
       } else {
-        if (!this.formReady) {
-          this.titleEmpty = true;
-          console.log('表单错');
-        } else {
-          const params = this.form;
-          params.public = parseInt(params.public, 10);
-          params.userid = localStorage.userid;
-          params.body = this.editorContent;
-          params.title = this.title;
-          const res = await postArticle(params);
-          // console.log('res results:', res);
-          this.$message('文章提交成功！');
-          this.$refs['form'].resetFields();
-          this.title = '';
-          const articleId = res.id;
-          // this.$router.push(`/#/articalShow/${articleId}`);
-          this.$router.push(`/articalShow/${articleId}`);
-        }
+        const params = this.form;
+        params.public = parseInt(params.public, 10);
+        params.userid = localStorage.userid;
+        params.body = this.editorContent;
+        params.title = this.title;
+        const res = await postArticle(params);
+        this.$message('文章提交成功！');
+        this.$refs.form.resetFields();
+        this.title = '';
+        const articleId = res.id;
+        // this.$router.push(`/#/articalShow/${articleId}`);
+        this.$router.push(`/articalShow/${articleId}`);
       }
     },
     initialEditor() {

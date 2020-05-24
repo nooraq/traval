@@ -12,7 +12,6 @@ class Logger {
       // eslint-disable-next-line no-console
       this[key] = (...args) => (debug ? console[key](...args) : '');
     });
-    // this.error = console.error;
   }
 }
 
