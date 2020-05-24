@@ -7,7 +7,8 @@
     </div>
     <!-- 选项-->
     <div class="title-wrapper">
-      <span class="head-title track" :class="{onTrack: onTrack}" @click="handleClickTrack">我的足迹</span>
+      <span class="head-title track"
+      :class="{onTrack: onTrack}" @click="handleClickTrack">我的足迹</span>
       <span class="head-title article" :class="{onArticle: onArticle}" @click="handleClickArticle">文章</span>
     </div>
     <!-- 更多-->
