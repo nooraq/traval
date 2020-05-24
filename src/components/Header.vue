@@ -39,8 +39,9 @@ export default {
     };
   },
   computed: {
-    isLogin() { return this.$store.state.isLogin; },
-    user() { return this.$store.state.user; }
+    // isLogin: function () { return this.$store.state.isLogin; },
+    // user: function () { return this.$store.state.user; }
+    ...mapState(['isLogin', 'user'])
   },
   methods: {
     ...mapMutations(['NotLogin']),
@@ -78,6 +79,7 @@ export default {
   },
   // 修复刷新页面后title变色不准确以及登录状态验证bug
   mounted() {
+    this.more = localStorage.username;
     const path = this.$route.path;
     // console.log('isLogin:' + this.isLogin);
     // console.log('username:' + this.user.username);
@@ -88,15 +90,13 @@ export default {
       this.more = '未登录...';
       this.$router.push('/login');
       // console.log('hello');
-    } else {
-      this.more = this.user.username;
-      if (path === '/mapTrack') {
-        this.onTrack = true;
-        this.onArticle = false;
-      } else if (path === '/articalShow') {
-        this.onTrack = false;
-        this.onArticle = true;
-      }
+    } else if (path === '/mapTrack') {
+      this.onTrack = true;
+      this.onArticle = false;
+      console.log('username: check', localStorage.username);
+    } else if (path === '/articalShow') {
+      this.onTrack = false;
+      this.onArticle = true;
     }
   },
   // 监听路径的变化，修复返回导致title变色不同步、登录验证bug
@@ -109,7 +109,7 @@ export default {
         this.$message('还未登录，请先登录！');
         this.$router.push('/login');
         console.log('hello');
-      } else { this.more = this.user.username; }
+      } else { this.more = localStorage.username; }
       if (this.$route.path === '/mapTrack') {
         this.onTrack = true;
         this.onArticle = false;

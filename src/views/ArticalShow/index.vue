@@ -6,7 +6,7 @@
     </div>
     <div class="article-menu">
       <!-- 全局搜索 -->
-      <el-select class="all-search" v-model="searchCity" placeholder="搜索我的文章" clearable filterable>
+      <el-select class="all-search" v-model="searchCity" placeholder="搜索感兴趣的文章" clearable filterable>
         <el-option
           v-for="(item,index) in allLocals"
           :key="index"
@@ -37,7 +37,7 @@
 <script>
 import ArticleDetail from '@/components/Article.vue';
 import { getArticleSearch, getAll, getShowArticle, getArticleDetail } from '@/api/demo';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 // import articleData from './article.json';
 
 export default {
@@ -45,7 +45,19 @@ export default {
   data() {
     return {
       activeName: 'local',
-      detail: {},
+      detail: {
+        Body: '',
+        EDate: '',
+        Location: '',
+        Public: null,
+        SDate: '',
+        Title: '',
+        Userid_id: null,
+        allComments: [],
+        author: '',
+        id: null,
+        likeNum: null
+      },
       count: 0,
       allArticles: [],
       recommendArticles: [],
@@ -53,9 +65,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(['user', 'allLocals'])
+    ...mapState(['user', 'allLocals', 'latestArticleId'])
   },
   methods: {
+    ...mapMutations(['changeArticleId']),
     load() {
       this.count += 2;
     },
@@ -73,6 +86,7 @@ export default {
         userid: this.user.userid,
         location: local
       };
+      console.log('check search:', param);
       const res = await getArticleSearch(param);
     }
   },

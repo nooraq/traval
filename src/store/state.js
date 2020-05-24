@@ -1,7 +1,8 @@
 const defaultUsers = {
   username: '',
   password: '',
-  userid: null
+  userid: null,
+  latestArticleId: null
 };
 let defaultIsLogin = false;
 if (window.localStorage) {
