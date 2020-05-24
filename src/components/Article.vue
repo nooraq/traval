@@ -1,6 +1,5 @@
 <template>
   <div class="article-body">
-    <!-- <el-page-header @back="goBack" content="文章详情" class="back-sign"></el-page-header> -->
     <div class="content-wrapper">
       <!-- 文章显示内容-->
       <el-card class="box-card">
@@ -80,13 +79,10 @@ export default {
       showComments: false,
       thumbFlag: false,
       thumbState: '点赞',
-      // startFlag: false,
       startState: '关注作者',
-      // msg: {},
       likeNum: this.detail.likeNum,
       showArticle: this.detail,
       allComments: this.detail.allComments,
-      // commentsLength: this.allComments.length,
       cLength: 0,
       ruleForm: {
         comment: ''
@@ -94,24 +90,18 @@ export default {
       rules: {
         comment: [
           { required: true, message: '请填写你的评论', trigger: 'blur' },
-          {
-            min: 1, max: 100, message: '最多输入80个字', trigger: 'blur'
-          }
+          { min: 1, max: 100, message: '最多输入80个字', trigger: 'blur' }
         ]
       }
     };
   },
   computed: {
     ...mapState(['user'])
-  //   theArticle() { return this.detail },
-  //   showArticle() { return this.detail },
-  //   likeNum() { return this.detail.likeNum },
-  //   allComments() { return this.detail.allComments }
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(async (valid) => {
-        // 发送评论，over
+        // 发送评论
         if (valid) {
           const msg = {
             articleid: this.showArticle.id,
@@ -119,7 +109,6 @@ export default {
             remarkuserid: localStorage.userid
           };
           const res = postRemark(msg);
-          // console.log('remark:', res, this.detail.id);
           const resMsg = await getArticleDetail({
             articleId: this.detail.id
           });
@@ -148,30 +137,19 @@ export default {
           });
           this.thumbState = '已点赞';
           console.log('like:', res);
-          // const likeResult = res.msg;
         } else if (this.thumbState === '已点赞'){
-        // const resMsg = await getArticleDetail({
-        // articleId: this.detail.id
-        // });
-        // if (likeResult === 'already liked') {
-          // this.$message('已经点过赞了呀');
           const res1 = await postDeLike({
             articleid: this.detail.id,
             likeuserid: localStorage.userid
           });
           this.thumbState = '点赞';
           console.log('cancle result:', res1);
-          // const resMsg = await getArticleDetail({
-          // articleId: this.detail.id
-          // });
         }
         const resMsg = await getArticleDetail({
           articleId: this.detail.id
         });
-        // console.log('msg:', resMsg);
         this.allComments = resMsg.recommend;
         this.likeNum = resMsg.likenumber;
-        // } else { console.log('already thumb'); }
       } else if (index === '3') {
         // 判断关注
         if (this.startState === '关注作者'){
@@ -190,9 +168,6 @@ export default {
           this.startState  = '关注作者';
           console.log('delfollow result:', resDel);
         }
-        // console.log('测试取关');
-        // this.startFlag = !this.startFlag;
-        // if (this.startFlag) { this.startState = '已关注'; } else { this.startState = '关注作者'; }
       } else if (index === '1') { this.showComments = !this.showComments; }
     },
     load() {
@@ -202,25 +177,16 @@ export default {
   watch: {
     async detail() {
       this.showArticle = this.detail;
-      // this.likeNum = this.detail.likeNum;
       const resMsg = await getArticleDetail({
         articleId: this.detail.id
       });
-      // console.log('get new msg:', resMsg);
       this.likeNum = resMsg.likenumber;
       this.allComments = resMsg.recommend;
       this.cLength = this.detail.allComments.length;
-      // console.log('新detail：', this.cLength);
       this.thumbState = '点赞';
       this.startState = '关注作者';
-      // console.log('new likeNum:', this.likeNum, this.allComments);
-      // console.log('new article:', this.showArticle);
-      // console.log('new detail:', this.detail);
     }
   },
-  // async mounted() {
-  //   const latestArticleId =
-  // }
 };
 </script>
 

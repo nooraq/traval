@@ -87,10 +87,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(['user', 'allLocals', 'latestArticleId'])
+    ...mapState(['user', 'allLocals'])
   },
   methods: {
-    ...mapMutations(['changeArticleId']),
+    // ...mapMutations(['changeArticleId']),
     load() {
       this.count += 2;
     },
