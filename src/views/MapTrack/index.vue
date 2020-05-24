@@ -16,7 +16,7 @@
   </el-switch>
    <ul class="menu-content"  style="overflow:auto">
      <li v-if="!location && showList !== 'myArticles'">请选择地点推荐</li>
-     <li v-if="list[showList].length === 0">目前暂无推荐</li>
+     <li v-if="list[showList].length === 0 && showList !== 'myArticles'">目前暂无推荐</li>
           <li v-for="(item) of list[showList]" :key="item.id" class="menu-content-li">
             <p class="title">{{item.Title}}</p>
             <p class="li-msg">
