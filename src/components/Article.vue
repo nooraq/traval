@@ -91,10 +91,12 @@ export default {
       rules: {
         comment: [
           { required: true, message: '请填写你的评论', trigger: 'blur' },
-          { min: 1, max:100, message: '最多输入80个字', trigger: 'blur'}
+          {
+            min: 1, max: 100, message: '最多输入80个字', trigger: 'blur'
+          }
         ]
       }
-    }
+    };
   },
   computed: {
     ...mapState(['user'])
@@ -106,7 +108,7 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(async (valid) => {
-        //发送评论，over
+        // 发送评论，over
         if (valid) {
           const msg = {
             articleid: this.showArticle.id,
@@ -116,7 +118,7 @@ export default {
           const res = postRemark(msg);
           console.log('remark:', res, this.detail.id);
           const resMsg = await getArticleDetail({
-          articleId: this.detail.id
+            articleId: this.detail.id
           });
           console.log('msg:', resMsg);
           this.allComments = resMsg.recommend;
@@ -151,20 +153,20 @@ export default {
             likeuserid: this.user.userid
           });
           const delikeResult = res.msg;
-          console.log('cancle result:', delikeResult)
+          console.log('cancle result:', delikeResult);
           // const resMsg = await getArticleDetail({
           // articleId: this.detail.id
           // });
         } else { this.likeNum++; }
         const resMsg = await getArticleDetail({
-        articleId: this.detail.id
+          articleId: this.detail.id
         });
         console.log('msg:', resMsg);
         this.allComments = resMsg.recommend;
         this.likeNum = resMsg.likenumber;
         // } else { console.log('already thumb'); }
       } else if (index === '3') {
-        //判断关注
+        // 判断关注
         const res = await postFollow({
           followuserid: this.user.userid,
           userid: this.detail.Userid_id
@@ -180,15 +182,15 @@ export default {
         // }
         // console.log('测试取关');
         this.startFlag = !this.startFlag;
-        if (this.startFlag) {this.startState = '已关注'} else {this.startState  = '关注作者'}
+        if (this.startFlag) { this.startState = '已关注'; } else { this.startState = '关注作者'; }
       } else if (index === '1') { this.showComments = !this.showComments; }
     },
-    load () {
+    load() {
       this.count += 2;
     }
   },
   watch: {
-    detail: async function() {
+    async detail() {
       this.showArticle = this.detail;
       // this.likeNum = this.detail.likeNum;
       const resMsg = await getArticleDetail({
@@ -203,9 +205,9 @@ export default {
     }
   },
   // async mounted() {
-  //   const latestArticleId = 
+  //   const latestArticleId =
   // }
-}
+};
 </script>
 
 <style lang="scss" scoped>
