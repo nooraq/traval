@@ -165,7 +165,7 @@ export default {
       } else if (index === '3') {
         // 判断关注
         if (this.startState === '关注作者') {
-          const res = await postFollow({
+          await postFollow({
             followuserid: this.detail.Userid_id,
             userid: parseInt(localStorage.userid, 10)
           });

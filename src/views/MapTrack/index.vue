@@ -226,16 +226,21 @@ export default {
     }
   },
   async created() {
-    const res = await getLocation({
-      action: 'have_been',
-      userid: parseInt(localStorage.userid, 10)
-    });
-    const wentLoc = res.retlist.map(item => ({ name: item.Location, value: 0 }));
-    this.mapData = [...(_.differenceBy(getData, wentLoc, 'name')), ...wentLoc];
-    const { data } = await getMyArticles({
-      userName: localStorage.username
-    });
-    this.list.myArticles = data;
+    if (this.isLogin === 0) {
+      this.$message('还未登录，请先登录！');
+      this.$router.push('/login');
+    } else {
+      const res = await getLocation({
+        action: 'have_been',
+        userid: parseInt(localStorage.userid, 10)
+      });
+      const wentLoc = res.retlist.map(item => ({ name: item.Location, value: 0 }));
+      this.mapData = [...(_.differenceBy(getData, wentLoc, 'name')), ...wentLoc];
+      const { data } = await getMyArticles({
+        userName: localStorage.username
+      });
+      this.list.myArticles = data;
+    }
   }
 };
 </script>

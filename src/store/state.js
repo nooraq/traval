@@ -2,11 +2,14 @@ const defaultUsers = {
   username: '',
   password: '',
   userid: null,
-  latestArticleId: null
 };
-let defaultIsLogin = false;
+let defaultIsLogin = 0;
 if (window.localStorage) {
-  defaultIsLogin = localStorage.isLogin;
+  if (localStorage.isLogin === undefined) {
+    defaultIsLogin = 0;
+  } else {
+    defaultIsLogin = parseInt(localStorage.isLogin, 10);
+  }
   defaultUsers.username = localStorage.username;
   defaultUsers.password = localStorage.password;
   defaultUsers.userid = parseInt(localStorage.userid, 10);
