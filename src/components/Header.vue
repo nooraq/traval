@@ -90,7 +90,7 @@ export default {
       if (path === '/mapTrack') {
         this.onTrack = true;
         this.onArticle = false;
-      } else if (path === '/articalShow') {
+      } else if (this.$route.path === '/articalShow' || this.$route.params.id) {
         this.onTrack = false;
         this.onArticle = true;
       }

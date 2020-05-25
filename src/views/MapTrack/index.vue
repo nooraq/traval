@@ -6,7 +6,7 @@
   <div class="map">
     <echarts :options="options" class="chart" @click="Click"></echarts>
   </div>
-<div class="recommend">
+<div class="recommend" style="overflow:auto">
   <el-switch
   :value="showList === 'myArticles'"
   active-text="曾经写过的文章"
@@ -14,14 +14,14 @@
   @change="onShowArticlesChange"
   >
   </el-switch>
-   <ul class="menu-content"  style="overflow:auto">
+   <ul class="menu-content" style="overflow:auto">
      <li v-if="!location && showList !== 'myArticles'">请选择地点推荐</li>
      <li v-if="list[showList].length === 0 && showList !== 'myArticles'">目前暂无推荐</li>
           <li v-for="(item) of list[showList]" :key="item.id" class="menu-content-li">
             <p class="title">{{item.Title}}</p>
             <p class="li-msg">
               <span class="location"><i class="el-icon-map-location"></i>{{item.Location}}</span>
-<el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
+              <el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
             </p>
             <el-divider></el-divider>
           </li>

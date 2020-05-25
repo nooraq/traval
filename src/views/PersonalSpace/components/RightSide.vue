@@ -156,12 +156,12 @@ export default {
 <style lang="scss" scoped>
 @import '@/theme/variable.scss';
 
-.right-wrapper {
-  margin: 92px 0 0 50px;
-  vertical-align: top;
-  display: inline-block;
-  width: 250px;
-}
+// .right-wrapper {
+//   // margin-top: 92px;
+//   // vertical-align: top;
+//   display: inline-block;
+//   width: 100%;
+// }
 // 年报
 .el-button {
   font-size: 14px;
@@ -199,7 +199,7 @@ export default {
   font-size: 12px;
 }
 .all-search{
-  width: 185px;
+  width: 74%;
   margin: 0 20px 25px 0;
 }
 .el-carousel__item {

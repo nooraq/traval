@@ -9,7 +9,7 @@ export default {
   },
   // 判断登录的用户账号密码是否存在
   changeLoginStatus(state, mes) {
-    state.user.isLogin = 1;
+    state.isLogin = 1;
     state.user.username = mes.username;
     localStorage.isLogin = '1';
     localStorage.username = mes.username;

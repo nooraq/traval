@@ -1,101 +1,101 @@
 <template>
   <div class="wrapper">
-    <div>
-      <div class="main-left">
-        <div class="show-name">个人空间</div>
-      <!-- el-ui实现导航列表-->
-        <div class="menu">
-          <el-menu default-active="2"
-            class="el-menu-vertical-demo"
-            @select="handleSelect"
-          >
-            <el-menu-item index="1">
-              <i class="el-icon-user"></i>
-              <span class="menu-desc">我的关注</span>
-            </el-menu-item>
-            <el-menu-item index="2">
-              <i class="el-icon-document"></i>
-              <span class="menu-desc">我的文章</span>
-            </el-menu-item>
-            <el-menu-item index="3">
-              <i class="el-icon-thumb"></i>
-              <span class="menu-desc">我的点赞</span>
-            </el-menu-item>
-          </el-menu>
+    <div class="main-left">
+      <div class="show-name">个人空间</div>
+    <!-- el-ui实现导航列表-->
+      <div class="menu">
+        <el-menu default-active="2"
+          class="el-menu-vertical-demo"
+          @select="handleSelect"
+        >
+          <el-menu-item index="1">
+            <i class="el-icon-user"></i>
+            <span class="menu-desc">我的关注</span>
+          </el-menu-item>
+          <el-menu-item index="2">
+            <i class="el-icon-document"></i>
+            <span class="menu-desc">我的文章</span>
+          </el-menu-item>
+          <el-menu-item index="3">
+            <i class="el-icon-thumb"></i>
+            <span class="menu-desc">我的点赞</span>
+          </el-menu-item>
+        </el-menu>
+      </div>
+      <!-- 走马灯-->
+      <div class="block">
+        <el-badge value="hot" class="item">
+          <span class="demonstration">推荐</span>
+        </el-badge>
+        <el-carousel height="200px">
+          <el-carousel-item v-for="(item,index) in imgs" :key="index">
+            <div class="img-wrapper">
+              <img :src="item.url" alt="signt" class="block-img">
+            </div>
+            <p class="small">{{item.title}}</p>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+    </div>
+    <!-- 列表-->
+    <div class="show-list">
+      <el-card class="box-card" v-if="showFocusArticle">
+        <div slot="header" class="clearfix">
+          <el-page-header @back="goBack" content="该作者所有公共文章"></el-page-header>
         </div>
-        <!-- 走马灯-->
-        <div class="block">
-          <el-badge value="hot" class="item">
-            <span class="demonstration">推荐</span>
-          </el-badge>
-          <el-carousel height="200px">
-            <el-carousel-item v-for="(item,index) in imgs" :key="index">
-              <div class="img-wrapper">
-                <img :src="item.url" alt="signt" class="block-img">
+        <div class="menu-show" style="overflow:auto">
+          <!-- 被关注人的所有文章 -->
+          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
+            <li v-for="(item,index) in focusArticles" :key="index" class="infinit-list">
+              <div class="li-title">
+                {{item.Title}}
               </div>
-              <p class="small">{{item.title}}</p>
-            </el-carousel-item>
-          </el-carousel>
+              <div class="li-words">
+                <span class="msg lighter"><i class="el-icon-user"></i></span>
+                <span class="location"><i class="el-icon-map-location"></i>{{item.Location}}</span>
+                <span><i class="el-icon-alarm-clock"></i>
+                  {{item.SDate}}<i class="el-icon-minus"></i>{{item.EDate}}
+                </span>
+              </div>
+              <el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
+              <el-divider><i class="el-icon-tickets"></i></el-divider>
+            </li>
+          </ul>
         </div>
-      </div>
-      <!-- 列表-->
-      <div class="show-list">
-        <el-card class="box-card" v-if="showFocusArticle">
-          <div slot="header" class="clearfix">
-            <el-page-header @back="goBack" content="该作者所有公共文章"></el-page-header>
-          </div>
-          <div class="menu-show" style="overflow:auto">
-            <!-- 被关注人的所有文章 -->
-            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
-              <li v-for="(item,index) in focusArticles" :key="index" class="infinit-list">
-                <div class="li-title">
-                  {{item.Title}}
-                </div>
-                <div class="li-words">
-                  <span class="msg lighter"><i class="el-icon-user"></i></span>
-                  <span class="location"><i class="el-icon-map-location"></i>{{item.Location}}</span>
-                  <span><i class="el-icon-alarm-clock"></i>
-                    {{item.SDate}}<i class="el-icon-minus"></i>{{item.EDate}}
-                  </span>
-                </div>
-                <el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
-                <el-divider><i class="el-icon-tickets"></i></el-divider>
-              </li>
-            </ul>
-          </div>
-        </el-card>
-        <el-card class="box-card" v-else>
-          <div slot="header" class="clearfix">
-            <p class="menu-title">{{menuTitle}}</p>
-          </div>
-          <div class="menu-show" style="overflow:auto">
-            <!-- 我的文章/我的点赞 -->
-            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isArticles">
-              <li v-for="(item,index) in theArticle" :key="index" class="infinit-list">
-                <div class="li-title">
-                  {{item.Title}}
-                </div>
-                <div class="li-words">
-                  <span class="location"><i class="el-icon-map-location"></i>{{item.Location}}</span>
-                  <span><i class="el-icon-alarm-clock"></i>
-                    {{item.SDate}}<i class="el-icon-minus"></i>{{item.EDate}}
-                  </span>
-                  <span class="location" v-if="showCondtion">状态：<span v-if="!item.Public">私密</span><span v-else>公开</span> </span>
-                </div>
-                <el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
-                <el-divider><i class="el-icon-tickets"></i></el-divider>
-              </li>
-            </ul>
-            <!-- 我的关注-->
-            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyFocus">
-              <li v-for="(item,index) in focus" :key="index">
-                <p class="focus-name"><i class="el-icon-user"></i><span class="befollow" @click="handleFollowName(item.UserName)">{{item.UserName}}</span></p>
-                <el-divider></el-divider>
-              </li>
-            </ul>
-          </div>
-        </el-card>
-      </div>
+      </el-card>
+      <el-card class="box-card" v-else>
+        <div slot="header">
+          <p class="menu-title">{{menuTitle}}</p>
+        </div>
+        <div class="menu-show" style="overflow:auto">
+          <!-- 我的文章/我的点赞 -->
+          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isArticles">
+            <li v-for="(item,index) in theArticle" :key="index" class="infinit-list">
+              <div class="li-title">
+                {{item.Title}}
+              </div>
+              <div class="li-words">
+                <span class="location"><i class="el-icon-map-location"></i>{{item.Location}}</span>
+                <span><i class="el-icon-alarm-clock"></i>
+                  {{item.SDate}}<i class="el-icon-minus"></i>{{item.EDate}}
+                </span>
+                <span class="location" v-if="showCondtion">状态：<span v-if="!item.Public">私密</span><span v-else>公开</span> </span>
+              </div>
+              <el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
+              <el-divider><i class="el-icon-tickets"></i></el-divider>
+            </li>
+          </ul>
+          <!-- 我的关注-->
+          <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto" v-show="isMyFocus">
+            <li v-for="(item,index) in focus" :key="index">
+              <p class="focus-name"><i class="el-icon-user"></i><span class="befollow" @click="handleFollowName(item.UserName)">{{item.UserName}}</span></p>
+              <el-divider></el-divider>
+            </li>
+          </ul>
+        </div>
+      </el-card>
+    </div>
+    <div class="show-right">
       <right-side :locals="localName"></right-side>
     </div>
   </div>
@@ -199,32 +199,28 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/theme/variable.scss';
+
 .wrapper {
-  width: 1200px;
-  margin: 0px auto;
-  font-weight: 600;
-}
-.back-sign {
-  margin: 10px 0 0 50px;
-  color: #f56c6c;
+  width: 96%;
+  margin: 0 auto;
+  font-weight: normal;
 }
 .main-left {
-  width: 300px;
+  width: 22%;
   display: inline-block;
 }
 .show-name {
   margin:30px 0;
-  width: 300px;
+  font-weight: 600;
   color: $--color-title;
   font-size: 25px;
 }
 // 导航条
 .menu {
   display: inline-block;
-  width: 180px;
-  margin-right: 100px;
+  width: 60%;
 }
 .el-menu {
   border-right: none;
@@ -237,12 +233,11 @@ export default {
 // 走马灯
 .small {
   font-size: 13px;
-  font-weight: normal;
   color: $--color-info;
   text-align: center;
 }
 .block {
-  width: 220px;
+  width: 73%;
   margin-top: 30px;
 }
 .item {
@@ -263,7 +258,6 @@ export default {
 }
 .demonstration {
   font-size: 15px;
-  font-weight: normal;
   text-decoration: underline;
   padding: 8px;
 }
@@ -271,9 +265,15 @@ export default {
 .show-list {
   vertical-align: top;
   display: inline-block;
-  width: 600px;
+  width: 48%;
   height: 410px;
   margin-top: 91px;
+}
+.show-right {
+  position: absolute;
+  top: 140px;
+  right: 35px;
+  width: 22%;
 }
 .menu-title {
   text-align: center;
@@ -287,11 +287,7 @@ export default {
   height: 320px;
   padding-bottom: 10px;
 }
-.menu-show > ul {
-  height: 100%;
-}
 .infinit-list {
-  font-weight: normal;
   border-radius: 6px;
   margin-left: 0;
   padding: 0 10px;
@@ -299,16 +295,12 @@ export default {
 .focus-name {
   color: $theme-5-hex;
   font-size: 16px;
-  // padding-right: 20px;
   height: 45px;
-  // width: 500px;
   line-height: 45px;
-  // border-bottom: 1px solid $--border-color-base;
 }
 .befollow {
   text-decoration: underline;
   padding: 10px;
-  font-weight: normal;
   cursor: pointer;
 }
 .li-title {
@@ -319,7 +311,6 @@ export default {
 }
 .li-title span {
   font-size: 12px;
-  font-weight: normal;
   padding: 0 3px 1px 3px;
   border-bottom: 1px solid #eaebee;
 }
@@ -327,15 +318,9 @@ export default {
   font-size: 14px;
 }
 .box-card {
-  width: 580px;
+  width: 100%;
   height: 410px;
-}
-.search-report {
   display: inline-block;
-  width: 250px;
-  background-color: red;
-  vertical-align: top;
-  margin-top: 91px;
 }
 .location {
   margin-right: 15px;
