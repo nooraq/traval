@@ -104,7 +104,7 @@
 <script>
 import { mapState } from 'vuex';
 import ArticleDetail from '@/components/Article.vue';
-import { getMyArticles, getArticleDetail, getMyFollow, getMyLike } from '@/api/demo';
+import { getMyArticles, getMyFollow, getMyLike } from '@/api/demo';
 
 import personalData from './components/personal.json';
 import RightSide from './components/RightSide.vue';
@@ -148,22 +148,18 @@ export default {
         this.menuTitle = '我的关注';
         this.isMyFocus = true;
         this.isArticles = false;
-        // this.isMyThumbs = false;
       } else if (index === '2') {
-        const res = await getMyArticles({ userName: localStorage.username });
         this.menuTitle = '我的文章';
         this.theArticle = this.myArticle;
         this.goBack();
         this.isArticles = true;
         this.isMyFocus = false;
         this.showCondtion = true;
-        // this.isMyThumbs = false;
       } else if (index === '3') {
         const res = await getMyLike({ userName: localStorage.username });
         this.giveThumbs = res.data;
         this.menuTitle = '我的点赞';
         this.goBack();
-        // this.isMyThumbs = true;
         this.isMyArticles = true;
         this.showCondtion = false;
         this.theArticle = this.giveThumbs;
@@ -171,7 +167,6 @@ export default {
       }// else {}
     },
     async handleFollowName(name) {
-      // this.$message(name);
       this.focusArticles = [];// 每次重新查看被关注者要将列表清空
       const res = await getMyArticles({ userName: name });
       const followData = res.data;
@@ -181,7 +176,6 @@ export default {
           this.focusArticles.push(followData[i]);
         }
       }
-      // this.focusArticles = res.data;
       this.showFocusArticle = true;
     },
     goBack() {
