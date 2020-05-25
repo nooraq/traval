@@ -1,6 +1,5 @@
 <template>
   <div class="article-body">
-    <!-- <el-page-header @back="goBack" content="文章详情" class="back-sign"></el-page-header> -->
     <div class="content-wrapper">
       <!-- 文章显示内容-->
       <el-card class="box-card">
@@ -80,13 +79,10 @@ export default {
       showComments: false,
       thumbFlag: false,
       thumbState: '点赞',
-      // startFlag: false,
       startState: '关注作者',
-      // msg: {},
       likeNum: this.detail.likeNum,
       showArticle: this.detail,
       allComments: this.detail.allComments,
-      // commentsLength: this.allComments.length,
       cLength: 0,
       ruleForm: {
         comment: ''
@@ -94,31 +90,25 @@ export default {
       rules: {
         comment: [
           { required: true, message: '请填写你的评论', trigger: 'blur' },
-          {
-            min: 1, max: 100, message: '最多输入80个字', trigger: 'blur'
-          }
+          { min: 1, max: 100, message: '最多输入80个字', trigger: 'blur' }
         ]
       }
     };
   },
   computed: {
     ...mapState(['user'])
-  //   theArticle() { return this.detail },
-  //   showArticle() { return this.detail },
-  //   likeNum() { return this.detail.likeNum },
-  //   allComments() { return this.detail.allComments }
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(async (valid) => {
-        // 发送评论，over
+        // 发送评论
         if (valid) {
           const msg = {
             articleid: this.showArticle.id,
             remark: this.ruleForm.comment,
             remarkuserid: localStorage.userid
           };
-          postRemark(msg);
+          const res = postRemark(msg);
           const resMsg = await getArticleDetail({
             articleId: this.detail.id
           });
@@ -144,18 +134,14 @@ export default {
             likeuserid: localStorage.userid
           });
           this.thumbState = '已点赞';
-          // const likeResult = res.msg;
-        } else if (this.thumbState === '已点赞') {
-        // const resMsg = await getArticleDetail({
-        // articleId: this.detail.id
-        // });
-        // if (likeResult === 'already liked') {
-          // this.$message('已经点过赞了呀');
-          await postDeLike({
+          console.log('like:', res);
+        } else if (this.thumbState === '已点赞'){
+          const res1 = await postDeLike({
             articleid: this.detail.id,
             likeuserid: localStorage.userid
           });
           this.thumbState = '点赞';
+          console.log('cancle result:', res1);
         }
         const resMsg = await getArticleDetail({
           articleId: this.detail.id
@@ -186,7 +172,6 @@ export default {
   watch: {
     async detail() {
       this.showArticle = this.detail;
-      // this.likeNum = this.detail.likeNum;
       const resMsg = await getArticleDetail({
         articleId: this.detail.id
       });
