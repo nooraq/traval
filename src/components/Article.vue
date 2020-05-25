@@ -110,7 +110,7 @@ export default {
             remark: this.ruleForm.comment,
             remarkuserid: localStorage.userid
           };
-          const res = postRemark(msg);
+          postRemark(msg);
           const resMsg = await getArticleDetail({
             articleId: this.detail.id
           });
@@ -136,14 +136,12 @@ export default {
             likeuserid: localStorage.userid
           });
           this.thumbState = '已点赞';
-          console.log('like:', res);
         } else if (this.thumbState === '已点赞') {
-          const res1 = await postDeLike({
+          await postDeLike({
             articleid: this.detail.id,
             likeuserid: localStorage.userid
           });
           this.thumbState = '点赞';
-          console.log('cancle result:', res1);
         }
         const resMsg = await getArticleDetail({
           articleId: this.detail.id
