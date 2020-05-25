@@ -169,29 +169,27 @@ export default {
 @import '@/theme/variable.scss';
 
 .editor-wrapper {
-  display: inline-block;
+  float: left;
   width: 800px;
-  margin-left: 60px;
-  margin-top: 35px;
+  margin-left: 24px;
 }
 .the-editor {
-  width: 800px;
   background-color: #fff;
+  box-shadow: 0 0.02rem 0.12rem 0 rgba(0, 0, 0, 0.1);
 }
+
 .submitTips {
   font-size: 15px;
   text-align: center;
   margin-bottom: 20px;
 }
 .box-card {
-  width: 330px;
-  height: 330px;
   margin-top: 35px;
+  min-height: 340px;
 }
 .set-msg {
-  margin-left: 40px;
-  display: inline-block;
-  vertical-align: top;
+  margin-left: 860px;
+  margin-right: 24px;
 }
 .title-input {
   margin: 10px 0;
