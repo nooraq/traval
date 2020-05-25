@@ -176,14 +176,14 @@ export default {
 // 文章显示框样式
 .show-article {
   display: inline-block;
-  width: 650px;
+  width: 51%;
 }
 // 文章推荐列
 .recommend {
   font-size: 15px;
 }
 .box-card {
-  width: 350px;
+  // width: 28%;
   height: 420px;
 }
 .link-detail {
@@ -195,7 +195,7 @@ export default {
   font-size: 13px;
 }
 .article-menu {
-  width: 350px;
+  width: 28%;
   height: 450px;
   display: inline-block;
   margin-left: 120px;
