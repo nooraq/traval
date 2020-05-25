@@ -78,40 +78,42 @@ export default {
       this.onArticle = false;
     },
   },
-  // 修复刷新页面后title变色不准确以及登录状态验证bug
-  mounted() {
+  created() {
     this.more = localStorage.username;
     const path = this.$route.path;
-    if (this.isLogin === 'false') {
+    if (this.isLogin === 0) {
       this.$message('还未登录，请先登录！');
       this.more = '未登录...';
       this.$router.push('/login');
-    } else if (path === '/mapTrack') {
-      this.onTrack = true;
-      this.onArticle = false;
-    } else if (path === '/articalShow') {
-      this.onTrack = false;
-      this.onArticle = true;
+    } else {
+      this.more = localStorage.username;
+      if (path === '/mapTrack') {
+        this.onTrack = true;
+        this.onArticle = false;
+      } else if (path === '/articalShow') {
+        this.onTrack = false;
+        this.onArticle = true;
+      }
     }
   },
-  // 监听路径的变化，修复返回导致title变色不同步、登录验证bug
   watch: {
     $route() {
-      // isLogin为false时跳转至登录页，此处判断用！this.Login则无法达到，有疑。
-      if (this.isLogin === 'false') {
+      if (this.isLogin === 0) {
         this.more = '未登录...';
         this.$message('还未登录，请先登录！');
         this.$router.push('/login');
-      } else { this.more = localStorage.username; }
-      if (this.$route.path === '/mapTrack') {
-        this.onTrack = true;
-        this.onArticle = false;
-      } else if (this.$route.path === '/articalShow' || this.$route.params.id) {
-        this.onArticle = true;
-        this.onTrack = false;
       } else {
-        this.onArticle = false;
-        this.onTrack = false;
+        this.more = localStorage.username;
+        if (this.$route.path === '/mapTrack') {
+          this.onTrack = true;
+          this.onArticle = false;
+        } else if (this.$route.path === '/articalShow' || this.$route.params.id) {
+          this.onArticle = true;
+          this.onTrack = false;
+        } else {
+          this.onArticle = false;
+          this.onTrack = false;
+        }
       }
     }
   }

@@ -151,7 +151,7 @@ export default {
       } else if (index === '3') {
         // 判断关注
         if (this.startState === '关注作者') {
-          const res = await postFollow({
+          await postFollow({
             followuserid: this.detail.Userid_id,
             userid: parseInt(localStorage.userid, 10)
           });
@@ -192,13 +192,15 @@ export default {
   width: 100%;
 }
 .content-wrapper {
-  width: 650px;
+  // width: 650px;
+  width: 100%;
   // background-color: $main-bg;
   margin: 0 auto;
 }
 // 内容
 .content {
-  width: 630px;
+  // width: 630px;
+  width: 97%;
   height: 300px;
   font-size: 16px;// 测试字号
 }
@@ -238,10 +240,11 @@ export default {
   border-bottom: 0.7px solid;
 }
 .box-card {
-  width: 650px;
+  // width: 650px;
+  width: 100%;
 }
 .add-comment {
   margin-top: 10px;
-  width: 400px;
+  width: 61%;
 }
 </style>

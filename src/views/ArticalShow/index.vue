@@ -64,19 +64,7 @@ export default {
   data() {
     return {
       activeName: 'local',
-      detail: {
-        // Body: '',
-        // EDate: '',
-        // Location: '',
-        // Public: null,
-        // SDate: '',
-        // Title: '',
-        // Userid_id: null,
-        // allComments: [],
-        // author: '',
-        // id: null,
-        // likeNum: null
-      },
+      detail: {},
       count: 0,
       allArticles: [],
       recommendArticles: [],
@@ -172,18 +160,19 @@ export default {
 .all-wrapper {
   margin: 0 70px;
   margin-top: 33px;
+  width: 100%;
 }
 // 文章显示框样式
 .show-article {
   display: inline-block;
-  width: 51%;
+  width: 50%;
 }
 // 文章推荐列
 .recommend {
   font-size: 15px;
 }
 .box-card {
-  // width: 28%;
+  width: 100%;
   height: 420px;
 }
 .link-detail {
@@ -203,7 +192,7 @@ export default {
 }
 .menu-content {
   height: 320px;
-  width: 330px;
+  // width: 94%;
 }
 .menu-content-li {
   height: 60px;
@@ -230,7 +219,7 @@ export default {
   color: $--color-info;
 }
 .all-search {
-  width: 270px;
+  width: 70%;
   margin-bottom: 25px;
 }
 .search-button {
