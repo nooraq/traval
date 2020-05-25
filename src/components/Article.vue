@@ -90,7 +90,9 @@ export default {
       rules: {
         comment: [
           { required: true, message: '请填写你的评论', trigger: 'blur' },
-          { min: 1, max: 100, message: '最多输入80个字', trigger: 'blur' }
+          {
+            min: 1, max: 100, message: '最多输入80个字', trigger: 'blur'
+          }
         ]
       }
     };
@@ -135,7 +137,7 @@ export default {
           });
           this.thumbState = '已点赞';
           console.log('like:', res);
-        } else if (this.thumbState === '已点赞'){
+        } else if (this.thumbState === '已点赞') {
           const res1 = await postDeLike({
             articleid: this.detail.id,
             likeuserid: localStorage.userid
