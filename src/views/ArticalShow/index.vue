@@ -56,7 +56,7 @@
 <script>
 import ArticleDetail from '@/components/Article.vue';
 import { getArticleSearch, getAll, getShowArticle, getArticleDetail } from '@/api/demo';
-import { mapState, mapMutations } from 'vuex';
+import { mapState } from 'vuex';
 // import articleData from './article.json';
 
 export default {
