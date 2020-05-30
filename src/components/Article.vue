@@ -108,9 +108,9 @@ export default {
           const msg = {
             articleid: this.showArticle.id,
             remark: this.ruleForm.comment,
-            remarkuserid: localStorage.userid
+            remarkuserid: this.user.userid
           };
-          postRemark(msg);
+          const res = await postRemark(msg);
           const resMsg = await getArticleDetail({
             articleId: this.detail.id
           });
@@ -124,22 +124,19 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
     async handleSelect(index) {
       if (index === '2') {
         // 点赞
         if (this.thumbState === '点赞') {
-          await postLike({
+          const like = await postLike({
             articleid: this.detail.id,
-            likeuserid: localStorage.userid
+            likeuserid: this.user.userid
           });
           this.thumbState = '已点赞';
         } else if (this.thumbState === '已点赞') {
           await postDeLike({
             articleid: this.detail.id,
-            likeuserid: localStorage.userid
+            likeuserid: this.user.userid
           });
           this.thumbState = '点赞';
         }
@@ -153,13 +150,13 @@ export default {
         if (this.startState === '关注作者') {
           await postFollow({
             followuserid: this.detail.Userid_id,
-            userid: parseInt(localStorage.userid, 10)
+            userid: this.user.userid
           });
           this.startState = '已关注该作者';
         } else if (this.startState === '已关注该作者') {
           await postDeFollow({
             followuserid: this.detail.Userid_id,
-            userid: parseInt(localStorage.userid, 10)
+            userid: this.user.userid
           });
           this.startState = '关注作者';
         }

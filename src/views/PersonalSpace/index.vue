@@ -82,6 +82,8 @@
                 <span class="location" v-if="showCondtion">状态：<span v-if="!item.Public">私密</span><span v-else>公开</span> </span>
               </div>
               <el-link type="primary" :href="`/#/articalShow/${item.id}`" class="link">查看详情</el-link>
+              <el-link type="danger" @click="deleteA(item.id)" v-if="showCondtion" class="link">删除文章</el-link>
+
               <el-divider><i class="el-icon-tickets"></i></el-divider>
             </li>
           </ul>
@@ -104,7 +106,7 @@
 <script>
 import { mapState } from 'vuex';
 import ArticleDetail from '@/components/Article.vue';
-import { getMyArticles, getMyFollow, getMyLike } from '@/api/demo';
+import { getMyArticles, getMyFollow, getMyLike, deleteArticle } from '@/api/demo';
 
 import personalData from './components/personal.json';
 import RightSide from './components/RightSide.vue';
@@ -141,6 +143,30 @@ export default {
     };
   },
   methods: {
+    deleteA(id) {
+      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          await deleteArticle({
+            action: 'del_article',
+            id: id
+          });
+          const res = await getMyArticles({ userName: localStorage.username });
+          this.myArticle = res.data;
+          this.theArticle = res.data;
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
     async handleSelect(index) {
       if (index === '1') {
         const res = await getMyFollow({ userName: localStorage.username });
@@ -325,5 +351,8 @@ export default {
 .location {
   margin-right: 15px;
   margin-left: 10px;
+}
+.link {
+  margin: 5px 20px 0 0;
 }
 </style>

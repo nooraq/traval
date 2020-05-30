@@ -93,7 +93,7 @@ export default {
       const local = this.searchCity;
       const param = {
         action: 'search_by_location',
-        userid: localStorage.userid,
+        userid: this.user.userid,
         location: local
       };
       const res = await getArticleSearch(param);
@@ -112,7 +112,7 @@ export default {
       // 路径params变化不产生重新渲染，需通过监听改变文章详情
       const resDetail = await getShowArticle({
         action: 'show_article',
-        articleid: this.$route.params.id
+        articleid: parseInt(this.$route.params.id, 10)
       });
       this.detail = resDetail.article[0];
       this.detail.author = resDetail.username;
@@ -129,18 +129,13 @@ export default {
       action: 'recommend'
     });
     this.allArticles = res.retlist;
-    for (let i = 0; i < 10; i += 1) {
-      if (this.allArticles[i] !== undefined) {
-        this.recommendArticles[i] = this.allArticles[i];
-      } else { break; }
-    }
     if (!this.$route.params.id) {
       return;
     }
     // 获取文章具体内容
     const resDetail = await getShowArticle({
       action: 'show_article',
-      articleid: this.$route.params.id
+      articleid: parseInt(this.$route.params.id, 10)
     });
     this.detail = resDetail.article[0];
     this.detail.author = resDetail.username;

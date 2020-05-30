@@ -130,7 +130,7 @@ export default {
       } else {
         const params = this.form;
         params.public = parseInt(params.public, 10);
-        params.userid = localStorage.userid;
+        params.userid = this.user.userid;
         params.body = this.editorContent;
         params.title = this.title;
         const res = await postArticle(params);

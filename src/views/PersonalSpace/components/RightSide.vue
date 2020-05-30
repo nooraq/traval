@@ -32,7 +32,7 @@
         <el-page-header @back="goBack" content="搜索结果"></el-page-header>
       </div>
       <ul class="menu-content" v-infinite-scroll="load" style="overflow:auto">
-        <span class="msg" v-if="searchEmpty">没有搜到该地点的文章</span>
+        <span class="msg" v-if="searchEmpty">{{noSearchResults}}</span>
         <li v-for="(item,index) of searchResults" :key="index" class="menu-content-li">
           <p class="li-header">{{item.Title}}</p>
           <p class="li-msg">
@@ -79,6 +79,7 @@ export default {
       showReport: false,
       searchNow: false,
       searchEmpty: false,
+      noSearchResults: '',
       searchResults: [],
       reportMsg: [
         { msg: '' },
@@ -127,6 +128,7 @@ export default {
       });
       this.searchResults = res.data;
       if (res.data.length === 0) {
+        this.noSearchResults = '没有搜到对应地点的文章';
         this.searchEmpty = true;
       } else {
         this.searchEmpty = false;
@@ -144,6 +146,7 @@ export default {
       this.searchResults = res.data;
       if (res.data.length === 0) {
         this.searchEmpty = true;
+        this.noSearchResults = '没有搜到对应时间的文章';
       } else {
         this.searchEmpty = false;
       }

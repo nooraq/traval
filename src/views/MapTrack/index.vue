@@ -97,7 +97,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isLogin']),
+    ...mapState(['isLogin', 'user']),
     options() {
       return {
       // tooltip: {
@@ -232,7 +232,7 @@ export default {
     } else {
       const res = await getLocation({
         action: 'have_been',
-        userid: parseInt(localStorage.userid, 10)
+        userid: this.user.userid
       });
       const wentLoc = res.retlist.map(item => ({ name: item.Location, value: 0 }));
       this.mapData = [...(_.differenceBy(getData, wentLoc, 'name')), ...wentLoc];
