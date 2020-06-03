@@ -156,7 +156,7 @@ export default {
             type: 'scatter',
             coordinateSystem: 'geo',
             symbol: 'path://M512 85.333333a341.333333 341.333333 0 0 0-341.333333 337.92c0 233.813333 300.8 494.08 313.6 505.173334a42.666667 42.666667 0 0 0 55.466666 0C554.666667 917.333333 853.333333 657.066667 853.333333 423.253333A341.333333 341.333333 0 0 0 512 85.333333z m0 469.333334a149.333333 149.333333 0 1 1 149.333333-149.333334A149.333333 149.333333 0 0 1 512 554.666667z',
-            symbolSize: 14,
+            symbolSize: 16,
             symbolKeepAspect: true,
             silent: true,
             color: styles['theme-5-hex'],
@@ -205,7 +205,8 @@ export default {
       });
       const wentLoc = res.retlist.map(item => (
         { name: item.Location, value: 0 }));
-      this.mapData = [...(_.differenceBy(getData, wentLoc, 'name')), ...wentLoc].map((item) => {
+      this.mapData = [...(_.differenceBy(getData, wentLoc, 'name')
+      ), ...wentLoc].map((item) => {
         if (item.value === 0) {
           item.itemStyle = selectedItemStyle;
         }
