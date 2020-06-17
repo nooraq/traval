@@ -126,15 +126,19 @@ export default {
 .header {
   background-color: #fff;
   height: 58px;
+  line-height: 58px;
   box-shadow: 0 2px 10px rgba(0,0,0,.05);
-  width:100%;
+  // width:100%;
   min-width: 1000px; /* no */
   color: $header-color;
+  // text-align: center;
 }
 // 网站logo包裹
 .logo-wrapper {
   display: inline-block;
-  width: 150px;
+  vertical-align: top;
+  // position: absolute;
+  width: 20%;
 }
 .logo {
   height: 36px;
@@ -151,7 +155,9 @@ export default {
 .title-wrapper {
   vertical-align: top;
   display: inline-block;
-  margin-left: 400px;
+  // margin-left: 400px;
+  width: 58%;
+  text-align: center;
 }
 .head-title {
   font: bold 20px/58px '微软雅黑';
@@ -166,9 +172,13 @@ export default {
 }
 // 更多选择包裹
 .name-wrapper {
-  line-height: 58px;
   margin-right: 20px;
-  float: right;
+  width: 20%;
+  display: inline-block;
+  text-align: right;
+  overflow: hidden;
+  // position: absolute;
+  // float: right;
 }
 .write {
   margin-right: 20px;
