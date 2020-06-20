@@ -153,14 +153,15 @@ export default {
 @import '@/theme/variable.scss';
 
 .all-wrapper {
-  margin: 0 70px;
+  // margin: 0 70px;
+  margin-left: 5%;
   margin-top: 33px;
-  width: 100%;
+  // width: 100%;
 }
 // 文章显示框样式
 .show-article {
   display: inline-block;
-  width: 50%;
+  width: 55%;
 }
 // 文章推荐列
 .recommend {
