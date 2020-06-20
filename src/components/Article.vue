@@ -177,10 +177,18 @@ export default {
       this.cLength = this.detail.allComments.length;
       this.thumbState = '点赞';
       this.startState = '关注作者';
+      console.log(this.showArticle.Body);
     }
   },
 };
 </script>
+
+<style lang="scss">
+.content img{
+  max-width: 250px;
+  margin: 20px;
+}
+</style>
 
 <style lang="scss" scoped>
 @import '@/theme/variable.scss';
@@ -197,8 +205,10 @@ export default {
 // 内容
 .content {
   // width: 630px;
-  width: 97%;
-  height: 300px;
+  width: 98%;
+  // min-width: 50%;
+  min-height: 300px;
+  max-height: 600px;
   font-size: 16px;// 测试字号
 }
 // 文章显示头部
@@ -225,7 +235,7 @@ export default {
 //评论区
 .infinite-list {
   width: 100%;
-  height: 180px;
+  max-height: 180px;
   padding-top: 20px;
   background-color: #fff;
   font-size: 14px;
