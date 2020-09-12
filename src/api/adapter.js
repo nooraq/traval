@@ -10,7 +10,7 @@ import { Message } from 'element-ui';
 // eslint-disable-next-line no-unused-vars
 const getInstance = (baseURL) => {
   const instance = axios.create({
-    baseURL: 'http://175.24.28.193:8080/',
+    baseURL: 'http://59.110.225.87:9000/',
     timeout: 30000,
     withCredentials: false,
     // headers: {
