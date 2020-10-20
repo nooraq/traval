@@ -81,11 +81,38 @@ export default {
   created() {
     this.more = localStorage.username;
     const path = this.$route.path;
+    //判断登录态有效时间
+    if(!localStorage.loginTime) {
+      this.$message('还未登录，请先登录！');
+      this.more = '未登录...';
+      this.$router.push('/login');
+    } else {
+      let now = new Date();
+      let year = now.getFullYear(), month = now.getMonth(), day = now.getDate();
+      console.log('month:',month);
+      let loginTime = localStorage.loginTime.split(',');
+      if(year <= loginTime[0] && month <= loginTime[1] && day <= loginTime[2]) {//有效
+        this.more = localStorage.username;
+        if (path === '/mapTrack') {
+          this.onTrack = true;
+          this.onArticle = false;
+        } else if (this.$route.path === '/articalShow' || this.$route.params.id) {
+          this.onTrack = false;
+          this.onArticle = true;
+        }
+      } else {
+        this.$message('登录已失效，请重新登录！');
+        this.more = '未登录...';
+        this.$store.commit('NotLogin');
+        this.$router.push('/login');
+      }
+    }
     if (this.isLogin === 0) {
       this.$message('还未登录，请先登录！');
       this.more = '未登录...';
       this.$router.push('/login');
     } else {
+      console.log(localStorage.loginTime);
       this.more = localStorage.username;
       if (path === '/mapTrack') {
         this.onTrack = true;
